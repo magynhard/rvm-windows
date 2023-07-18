@@ -1,0 +1,56 @@
+{
+  "name": "rvm-windows",
+  "version": "0.0.1",
+  "description": "Unoffical RVM.io port for windows",
+  "exports": {
+    ".": "./src/rvm-windows/rvm-windows.js",
+    "./": "./src/rvm-windows/"
+  },
+  "main": "src/rvm-windows/rvm-windows.js",
+  "types": "src/rvm-windows/rvm-windows.d.ts",
+  "scripts": {
+    "test": "jasmine",
+    "build": "node scripts/build.js && yarn build_types",
+    "build_types": "yarn tsc src/**/*.js --declaration --allowJs --emitDeclarationOnly --outDir src/rvm-windows",
+    "doc": "node scripts/doc.js"
+  },
+  "files": [
+    "dist/rvm-windows.js",
+    "src/**/*",
+    "doc/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/magynhard/rvm-windows.git"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-es3-member-expression-literals": "^6.22.0",
+    "babel-preset-env": "^1.7.0",
+    "chalk": "^4.1.0",
+    "jasmine": "^3.6.3",
+    "jsdoc": "^3.6.6",
+    "jsdoc-to-markdown": "^6.0.1",
+    "ruby-nice": "^0.1.5",
+    "uglify-js": "^3.12.1",
+    "typescript": "^4.7.4"
+  },
+  "keywords": [
+    "javascript",
+    "get type",
+    "check type",
+    "type",
+    "rvm-windows",
+    "class type",
+    "variable type"
+  ],
+  "author": "Matthäus J. N. Beyrle <rvm-windows.npm@mail.magynhard.de>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/magynhard/rvm-windows/issues"
+  },
+  "homepage": "https://github.com/magynhard/rvm-windows#readme",
+  "dependencies": {
+    "lucky-case": "^1.1.3"
+  }
+}
