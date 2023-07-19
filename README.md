@@ -16,9 +16,6 @@ As there is no RVM.io available for native windows, but only for POSIX by Cygwin
 
 * [Usage](#usage)
 * [Installation](#installation)
-    * [NodeJS](#installation_node_js)
-    * [Browser](#installation_browser)
-* [Documentation](#documentation)
 * [Contributing](#contributing)
 
 <a name="usage"></a>
@@ -35,27 +32,25 @@ rvm list
 
 ## Installation
 
-### NodeJS
-
 You can either use npm or yarn to install *rvm-windows*.
 
 After install the command `rvm` is available on the command line.
 
 On your command line execute the following command:
 
-#### yarn
+### yarn
 
 ```bash
 yarn global add rvm-windows
 ```
 
-#### npm
+### npm
 
 ```bash
 npm install -g rvm-windows
 ```
 
-###
+
 
 
 <a name="contributing"></a>
