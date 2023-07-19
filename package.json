@@ -19,7 +19,7 @@
     "link_dev": "sudo npm link",
     "link_dev_win": "npm link",
     "test": "jasmine",
-    "unlink_dev": "sudo npm rm --global rvm-windows"
+    "unlink_dev": "sudo npm rm --global rvm-windows",
     "unlink_dev_win": "npm rm --global rvm-windows"
   },
   "files": [
