@@ -14,8 +14,6 @@
     "rvm": "src/cli/cli.js"
   },
   "scripts": {
-    "build": "node scripts/build.js && yarn build_types",
-    "build_types": "yarn tsc src/**/*.js --declaration --allowJs --emitDeclarationOnly --outDir src/rvm-windows",
     "cli": "node src/cli/cli.js",
     "doc": "node scripts/doc.js",
     "link_dev": "sudo npm link",
