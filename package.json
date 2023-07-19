@@ -1,21 +1,28 @@
 {
   "name": "rvm-windows",
   "version": "0.0.1",
-  "description": "Unoffical RVM.io port for windows",
-  "exports": {
-    ".": "./src/rvm-windows/rvm-windows.js",
-    "./": "./src/rvm-windows/"
+  "date": "2023-07-19T19:18:40.231Z",
+  "description": "Unofficial RVM.io port for windows",
+  "author": "Matthäus J. N. Beyrle <rvm-windows.npm@mail.magynhard.de>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/magynhard/rvm-windows/issues"
   },
-  "main": "src/rvm-windows/rvm-windows.js",
-  "types": "src/rvm-windows/rvm-windows.d.ts",
+  "homepage": "https://github.com/magynhard/rvm-windows#readme",
+  "main": "src/cli/cli.js",
+  "bin": {
+    "rvm": "src/cli/cli.js"
+  },
   "scripts": {
-    "test": "jasmine",
     "build": "node scripts/build.js && yarn build_types",
     "build_types": "yarn tsc src/**/*.js --declaration --allowJs --emitDeclarationOnly --outDir src/rvm-windows",
-    "doc": "node scripts/doc.js"
+    "cli": "node src/cli/cli.js",
+    "doc": "node scripts/doc.js",
+    "link_dev": "sudo npm link",
+    "test": "jasmine",
+    "unlink_dev": "sudo npm rm --global rvm-windows"
   },
   "files": [
-    "dist/rvm-windows.js",
     "src/**/*",
     "doc/**/*"
   ],
@@ -23,34 +30,31 @@
     "type": "git",
     "url": "git+https://github.com/magynhard/rvm-windows.git"
   },
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-plugin-transform-es3-member-expression-literals": "^6.22.0",
-    "babel-preset-env": "^1.7.0",
+  "dependencies": {
     "chalk": "^4.1.0",
-    "jasmine": "^3.6.3",
-    "jsdoc": "^3.6.6",
-    "jsdoc-to-markdown": "^6.0.1",
-    "ruby-nice": "^0.1.5",
-    "uglify-js": "^3.12.1",
-    "typescript": "^4.7.4"
+    "command-line-args": "^5.1.1",
+    "command-line-usage": "^6.1.1",
+    "curly-bracket-parser": "^1.0.3",
+    "fs-extra": "^10.0.0",
+    "glob": "^7.1.6",
+    "jasmine-browser-runner": "^0.10.0",
+    "jasmine-core": "^3.10.1",
+    "live-server": "^1.2.1",
+    "lucky-case": "^1.1.7",
+    "prompt-sync": "^4.2.0",
+    "ruby-nice": "^0.1.3",
+    "sass": "^1.32.0",
+    "terser": "^5.10.0",
+    "typifier": "^0.0.10"
   },
   "keywords": [
-    "javascript",
-    "get type",
-    "check type",
-    "type",
+    "ruby",
+    "version",
+    "manager",
+    "rvm",
+    "windows",
     "rvm-windows",
-    "class type",
-    "variable type"
-  ],
-  "author": "Matthäus J. N. Beyrle <rvm-windows.npm@mail.magynhard.de>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/magynhard/rvm-windows/issues"
-  },
-  "homepage": "https://github.com/magynhard/rvm-windows#readme",
-  "dependencies": {
-    "lucky-case": "^1.1.3"
-  }
+    "ruby version manager",
+    "native"
+  ]
 }

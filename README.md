@@ -8,6 +8,8 @@
 
 As there is no RVM.io available for native windows, but only for POSIX by Cygwin, this is a complete reimplementation of rvm.io features for native MS Windows.
 
+> Pre alpha project template
+
 # Table of contents
 
 * [Usage](#usage)
