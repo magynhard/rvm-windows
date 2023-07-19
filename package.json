@@ -1,6 +1,6 @@
 {
   "name": "rvm-windows",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "date": "2023-07-19T19:18:40.231Z",
   "description": "Unofficial RVM.io port for windows",
   "author": "Matthäus J. N. Beyrle <rvm-windows.npm@mail.magynhard.de>",
