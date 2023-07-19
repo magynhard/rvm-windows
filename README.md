@@ -8,7 +8,9 @@
 
 As there is no RVM.io available for native windows, but only for POSIX by Cygwin, this is a complete reimplementation of rvm.io features for native MS Windows.
 
-> Pre alpha project template
+> Pre alpha project template.
+> 
+> Our goal is not to 100% reimplement all features of rvm.io, but the most important and common ones. And maybe add some special Windows related stuff.
 
 # Table of contents
 
