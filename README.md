@@ -4,7 +4,7 @@
 ![downloads](https://img.shields.io/npm/dt/rvm-windows?color=blue&style=plastic)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg?style=plastic&logo=mit)](LICENSE)
 
-> Unoffial port of RVM.io (RVM) for MS Windows
+> Unofficial port of RVM.io (RVM) for MS Windows
 
 As there is no RVM.io available for native windows, but only for POSIX by Cygwin, this is a complete reimplementation of rvm.io features for native MS Windows.
 
