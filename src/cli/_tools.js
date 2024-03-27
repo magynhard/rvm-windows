@@ -281,8 +281,6 @@ class RvmCliTools {
     static escapeRegExp(string) {
         return string.replace(/[$+.*?^(){}|[\]\\]/g, '\\$&');
     }
-
-    static addWrapperToPath
 }
 
 RvmCliTools.PACKAGE_JSON_FILE_PATH = RvmCliTools.projectRootPath() + '/package.json';

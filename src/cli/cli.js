@@ -5,6 +5,8 @@ const chalk = require('chalk');
 
 const RvmCliTools = require('./_tools');
 const RvmCliHelp = require('./tasks/_help');
+const RvmCliSetup = require('./tasks/_setup');
+
 
 const taskDefinitions = [
     {name: 'command', type: String, multiple: true, defaultOption: true}, // fall back command
@@ -18,6 +20,7 @@ function logo() {
     console.log(RvmCliTools.logo());
 }
 
+RvmCliSetup.ensureWrapperPathEnvIsSet();
 
 //
 // version
@@ -46,13 +49,6 @@ else if (tasks.current || tasks.command && (tasks.command[0] === 'current' || ta
 else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || tasks.command[0] === 'l')) {
     const RvmCliList = require('./tasks/_list');
     RvmCliList.list();
-}
-//
-// setup
-//
-else if (tasks.setup || tasks.command && (tasks.command[0] === 'setup' || tasks.command[0] === 's')) {
-    const RvmCliSetup = require('./tasks/_setup');
-    RvmCliSetup.ensurePathEnvIsSet();
 }
 //
 // use
