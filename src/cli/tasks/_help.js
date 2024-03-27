@@ -26,7 +26,7 @@ RvmCliHelp.SECTIONS = {};
 RvmCliHelp.SECTIONS.help = [
     {
         header: 'RVM CLI',
-        content: `The RVM CLI (rvm) provides several interactive tasks to ensure programmers happyness. 😊`
+        content: `The RVM CLI (rvm) provides several interactive tasks to ensure programmers happyness when working with several ruby environments on windows. 😊`
     },
     {
         header: 'Available tasks',
