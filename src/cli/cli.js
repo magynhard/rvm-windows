@@ -3,8 +3,8 @@
 const commandLineArgs = require('command-line-args');
 const chalk = require('chalk');
 
-const GroboCliTools = require('./_tools');
-const GroboCliHelp = require('./tasks/_help');
+const RvmCliTools = require('./_tools');
+const RvmCliHelp = require('./tasks/_help');
 
 const taskDefinitions = [
     {name: 'command', type: String, multiple: true, defaultOption: true}, // fall back command
@@ -15,7 +15,7 @@ const taskDefinitions = [
 const tasks = commandLineArgs(taskDefinitions, {partial: true});
 
 function logo() {
-    console.log(GroboCliTools.logo());
+    console.log(RvmCliTools.logo());
 }
 
 
@@ -23,17 +23,45 @@ function logo() {
 // version
 //
 if (tasks.version || tasks.command && (tasks.command[0] === 'version' || tasks.command[0] === 'v')) {
-    const GroboCliVersion = require('./tasks/_version');
-    GroboCliVersion.version();
+    const RvmCliVersion = require('./tasks/_version');
+    RvmCliVersion.version();
 }
 //
 // help
 //
 else if (Object.keys(tasks).length === 0 || tasks.help || tasks.command && (tasks.command[0] === 'help' || tasks.command[0] === 'h')) {
     logo();
-    GroboCliHelp.help();
+    RvmCliHelp.help();
+}
+//
+// current
+//
+else if (tasks.current || tasks.command && (tasks.command[0] === 'current' || tasks.command[0] === 'c')) {
+    const RvmListCurrent = require('./tasks/_current');
+    RvmListCurrent.current();
+}
+//
+// list
+//
+else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || tasks.command[0] === 'l')) {
+    const RvmCliList = require('./tasks/_list');
+    RvmCliList.list();
+}
+//
+// setup
+//
+else if (tasks.setup || tasks.command && (tasks.command[0] === 'setup' || tasks.command[0] === 's')) {
+    const RvmCliSetup = require('./tasks/_setup');
+    RvmCliSetup.ensurePathEnvIsSet();
+}
+//
+// use
+//
+else if (tasks.use || tasks.command && (tasks.command[0] === 'use' || tasks.command[0] === 'u')) {
+    const RvmCliUse = require('./tasks/_use');
+    RvmCliUse.use();
 } else {
     logo();
     let unknown_option = tasks ? tasks.command ? tasks.command[0] : tasks._unknown[0].replace(/-/g,'') : tasks._unknown[0].replace(/-/g,'');
-    GroboCliHelp.unknown(unknown_option);
+    RvmCliHelp.unknown(unknown_option);
 }

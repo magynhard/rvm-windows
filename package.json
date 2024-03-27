@@ -20,7 +20,8 @@
     "link_dev_win": "npm link",
     "test": "jasmine",
     "unlink_dev": "sudo npm rm --global rvm-windows",
-    "unlink_dev_win": "npm rm --global rvm-windows"
+    "unlink_dev_win": "npm rm --global rvm-windows",
+    "relink_win": "npm run unlink_dev_win && npm run link_dev_win"
   },
   "files": [
     "src/**/*",
@@ -34,18 +35,15 @@
     "chalk": "^4.1.0",
     "command-line-args": "^5.1.1",
     "command-line-usage": "^6.1.1",
-    "curly-bracket-parser": "^1.0.3",
+    "curly-bracket-parser": "^1.3.3",
     "fs-extra": "^10.0.0",
     "glob": "^7.1.6",
-    "jasmine-browser-runner": "^0.10.0",
+    "jasmine": "^5.1.0",
     "jasmine-core": "^3.10.1",
-    "live-server": "^1.2.1",
-    "lucky-case": "^1.1.7",
+    "lucky-case": "^1.1.8",
     "prompt-sync": "^4.2.0",
-    "ruby-nice": "^0.1.3",
-    "sass": "^1.32.0",
-    "terser": "^5.10.0",
-    "typifier": "^0.0.10"
+    "ruby-nice": "^0.2.8",
+    "typifier": "^0.1.2"
   },
   "keywords": [
     "ruby",

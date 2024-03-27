@@ -1,27 +1,30 @@
 #!/usr/bin/env node
 
-const chalk = require('chalk');
-const commandLineUsage = require('command-line-usage');
-const prompt = require('prompt-sync')();
-const path = require('path');
-const fs = require('fs');
-const fse = require('fs-extra');
-const GroboCliVersion = require('./tasks/_version');
+const Chalk = require('chalk');
+const CommandLineUsage = require('command-line-usage');
+const Prompt = require('prompt-sync')();
+const Path = require('path');
+const Fs = require('fs');
+const Fse = require('fs-extra');
+const RvmCliVersion = require('./tasks/_version');
+const File = require('ruby-nice/file');
+const Dir = require('ruby-nice/dir');
+const Typifier = require('typifier');
 
 class RvmCliTools {
 
     static logo() {
-        const version_label = chalk.reset.redBright(`  ${GroboCliVersion.getVersion()}  `);
+        const version_label = Chalk.reset.redBright(`  ${RvmCliVersion.getVersion()}  `);
         // ASCII-Font: Calvin S
         // Sub title font: Source Code Pro Bold
-        return chalk.redBright.bold("\n    \n" +
+        return Chalk.redBright.bold("\n    \n" +
             "      ██████╗  ██╗   ██╗ ███╗   ███╗     \n" +
             "      ██╔══██╗ ██║   ██║ ████╗ ████║     \n" +
             "      ██████╔╝ ██║   ██║ ██╔████╔██║     \n" +
             "      ██╔══██╗ ╚██╗ ██╔╝ ██║╚██╔╝██║     \n" +
             "      ██║  ██║  ╚████╔╝  ██║ ╚═╝ ██║     \n" +
             "      ╚═╝  ╚═╝   ╚═══╝   ╚═╝     ╚═╝     \n" +
-            "                                       \n" + chalk.bold.white(
+            "                                       \n" + Chalk.bold.white(
             "      Ruby Version Manager 4 Windows    \n") +
             `              ` + ` ${version_label}      ` +
             "                                         "
@@ -44,7 +47,7 @@ class RvmCliTools {
         }
         Object.keys(hash).forEach(h_key => {
             if (keys.includes(h_key)) {
-                hash[h_key] = chalk[color](hash[h_key]);
+                hash[h_key] = Chalk[color](hash[h_key]);
             }
             if (typeof hash[h_key] === 'object') {
                 self.colorizeValues(hash[h_key], keys, color);
@@ -66,19 +69,19 @@ class RvmCliTools {
         const self = RvmCliTools;
         if(self.first_question) {
             if(preselected_option) {
-                console.log('  Preselection in [' + chalk.redBright('brackets') + '] can be confirmed with ENTER.\n');
+                console.log('  Preselection in [' + Chalk.redBright('brackets') + '] can be confirmed with ENTER.\n');
             }
             self.first_question = false;
         }
         let default_string = null;
         if(preselected_option) {
-            default_string = ' [' + chalk.redBright(preselected_option) + ']';
+            default_string = ' [' + Chalk.redBright(preselected_option) + ']';
         } else {
             default_string = '';
         }
         let input = preselected_option;
         while(true) {
-            input = prompt('  ' + question + default_string + ': ');
+            input = Prompt('  ' + question + default_string + ': ');
             if(input === '') {
                 input = preselected_option !== null ? preselected_option : input;
             }
@@ -92,7 +95,7 @@ class RvmCliTools {
                             process.exit(1);
                         }
                         // invalid input value
-                        self.printLine(chalk.red(`\n  Invalid input '${input}'.`) + `\n  Valid options are: ${options.map((e) => { return chalk.redBright(e); }).join(' | ')}\n`);
+                        self.printLine(Chalk.red(`\n  Invalid input '${input}'.`) + `\n  Valid options are: ${options.map((e) => { return Chalk.redBright(e); }).join(' | ')}\n`);
                     }
                 } else {
                     break;
@@ -102,7 +105,7 @@ class RvmCliTools {
                 if(input === null) {
                     process.exit(1);
                 }
-                self.printLine(chalk.red('Mandatory option, please enter a valid text.' + JSON.stringify(input)));
+                self.printLine(Chalk.red('Mandatory option, please enter a valid text.' + JSON.stringify(input)));
             } else {
                 // CTRL+C
                 if(input === null) {
@@ -142,39 +145,6 @@ class RvmCliTools {
         return [...new Set(array)];
     }
 
-    static isRunningInsideValidGroboProject() {
-        const self = RvmCliTools;
-        return fs.existsSync(self.GROBO_CONFIG_FILE_PATH);
-    }
-
-    static errorNotInsideValidGroboProject() {
-        const self = RvmCliTools;
-        const usage = commandLineUsage(self.SECTIONS.not_inside_valid_project);
-        console.log(usage);
-    }
-
-    static invalidConfigPaths() {
-        const self = RvmCliTools;
-        const config = self.readProjectGroboConfig();
-        let paths = [];
-        if(config.development_server?.sass_watch_paths?.length || 0 > 0) {
-            paths = paths.concat(config.development_server.sass_watch_paths.map(e => `app/${e}`));
-        }
-        let invalid_paths = [];
-        paths.forEach((path) => {
-            if(!fs.existsSync(path)) {
-                invalid_paths.push(path);
-            }
-        });
-        return invalid_paths;
-    }
-
-    static errorInvalidConfigPaths() {
-        const self = RvmCliTools;
-        const usage = commandLineUsage(self.SECTIONS.invalid_config_paths);
-        console.log(usage);
-    }
-
     /**
      * Get only the deepest dirs, without dirs between
      * @param {Array<String>} dirs to filter
@@ -189,9 +159,9 @@ class RvmCliTools {
         return filtered;
     }
 
-    static groboRootPath() {
+    static rvmRootPath() {
         const self = RvmCliTools;
-        return self.normalizePath(path.resolve(__dirname + '/../../'));
+        return self.normalizePath(Path.resolve(__dirname + '/../../'));
     }
 
     static projectRootPath() {
@@ -199,79 +169,70 @@ class RvmCliTools {
         return self.normalizePath(process.cwd());
     }
 
-    static projectName() {
+    static readRvmConfig() {
         const self = RvmCliTools;
-        return self.readProjectPackageJson().name;
+        return File.read(self.rvmConfigPath());
     }
 
-    static readProjectGroboConfig(use_cache = true) {
+    static config() {
         const self = RvmCliTools;
-        let config = null;
-        if(!self.cached_config || use_cache === false) {
-            config = JSON.parse(self.readFile(self.GROBO_CONFIG_FILE_PATH));
-            self.cached_config = Object.assign({}, config);
-        } else {
-            config = self.cached_config;
+        return JSON.parse(self.readRvmConfig());
+    }
+
+    /**
+     * @param {string, Object} content as String or parsed JSON object
+     */
+    static writeRvmConfig(content) {
+        const self = RvmCliTools;
+        if(Typifier.isObject(content)) {
+            content = JSON.stringify(content, null, 2);
         }
-        config = Object.assign(Object.assign({}, self.GROBO_CONFIG_DEFAULTS), config);
-        if(!config.indexer) config.indexer = {};
-        if(!config.indexer.ignored_files) config.indexer.ignored_files = [];
-        return config;
+        File.write(self.rvmConfigPath(), content, { encoding: "utf8" });
     }
 
-    static writeProjectGroboConfig(content) {
+    static rvmConfigPath() {
         const self = RvmCliTools;
-        return self.writeFile(self.GROBO_CONFIG_FILE_PATH, JSON.stringify(content, null, 2));
-    }
-
-    static readProjectPackageJson() {
-        const self = RvmCliTools;
-        return JSON.parse(self.readFile(self.PACKAGE_JSON_FILE_PATH));
-    }
-
-    static writeProjectPackageJson(content) {
-        const self = RvmCliTools;
-        return self.writeFile(self.PACKAGE_JSON_FILE_PATH, JSON.stringify(content, null, 2));
+        return File.expandPath(`${File.getHomePath()}/.rvm.json`);
     }
 
     static makeDir(dir) {
-        fs.mkdirSync(dir, { recursive: true });
+        Fs.mkdirSync(dir, { recursive: true });
     }
 
     static makeDirOfFile(file) {
         const self = RvmCliTools;
-        let final_dir = self.normalizePath(path.dirname(file));
-        fs.mkdirSync(final_dir, { recursive: true });
+        let final_dir = self.normalizePath(Path.dirname(file));
+        Fs.mkdirSync(final_dir, { recursive: true });
     }
 
     static readFile(path, encoding = 'utf8') {
         if(!encoding) {
             encoding = undefined;
         }
-        return fs.readFileSync(path, encoding).toString();
+        return Fs.readFileSync(path, encoding).toString();
     }
 
     static writeFile(path, content) {
         const self = RvmCliTools;
         self.makeDirOfFile(path);
-        return fs.writeFileSync(path, content);
+        return Fs.writeFileSync(path, content);
     }
 
     static copyFile(src, dest) {
         const self = RvmCliTools;
         self.makeDirOfFile(dest);
-        fs.copyFileSync(src, dest);
+        Fs.copyFileSync(src, dest);
     }
 
     static copy(src, dest) {
         const self = RvmCliTools;
-        fse.copySync(src, dest);
+        Fse.copySync(src, dest);
     }
 
     static isDir(path) {
         const self = RvmCliTools;
         try {
-            const stat = fs.lstatSync(path);
+            const stat = Fs.lstatSync(path);
             return stat.isDirectory();
         } catch (e) {
             return false;
@@ -281,7 +242,7 @@ class RvmCliTools {
     static isFile(path) {
         const self = RvmCliTools;
         try {
-            const stat = fs.lstatSync(path);
+            const stat = Fs.lstatSync(path);
             return stat.isFile();
         } catch (e) {
             return false;
@@ -291,7 +252,7 @@ class RvmCliTools {
     static pathExists(path) {
         const self = RvmCliTools;
         try {
-            const stat = fs.lstatSync(path);
+            const stat = Fs.lstatSync(path);
             return true;
         } catch (e) {
             return false;
@@ -314,26 +275,17 @@ class RvmCliTools {
      * @param {String} path
      */
     static removePath(path) {
-        fs.rmSync(path, { recursive: true, force: true });
+        Fs.rmSync(path, { recursive: true, force: true });
     }
 
     static escapeRegExp(string) {
         return string.replace(/[$+.*?^(){}|[\]\\]/g, '\\$&');
     }
+
+    static addWrapperToPath
 }
 
-RvmCliTools.GROBO_CONFIG_FILE_PATH = RvmCliTools.projectRootPath() + '/grobo.json';
 RvmCliTools.PACKAGE_JSON_FILE_PATH = RvmCliTools.projectRootPath() + '/package.json';
-
-RvmCliTools.GROBO_CONFIG_DEFAULTS = {
-    shared_libs: {
-        option_1: true,
-        files: [
-            { from: "assets/style", to: "" },
-            { from: "assets/style", to: "" },
-        ]
-    }
-}
 
 RvmCliTools.first_question = true;
 RvmCliTools.cached_config = null;
@@ -343,23 +295,11 @@ RvmCliTools.SECTIONS.not_inside_valid_project = [
     {
         header: 'Invalid project directory',
         content: [
-            '{red You can run this command at the root directory of a project with grobo configuration only.}',
+            '{red You can run this command at the root directory of a project with rvm configuration only.}',
             '',
             `Current directory:\n {redBright ${RvmCliTools.projectRootPath()}}`
         ]
     }
 ];
-
-if(RvmCliTools.isRunningInsideValidGroboProject()) {
-    RvmCliTools.SECTIONS.invalid_config_paths = [
-        {
-            header: 'Invalid paths found',
-            content: [
-                'The following paths in grobo.json are invalid:',
-                `   → ${RvmCliTools.invalidConfigPaths().map((el) => { return chalk.red(el); }).join("\n  → ")}`,
-            ]
-        }
-    ];
-}
 
 module.exports = RvmCliTools;

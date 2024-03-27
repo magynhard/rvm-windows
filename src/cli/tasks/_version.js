@@ -3,22 +3,22 @@
 const fs = require('fs');
 const File = require('ruby-nice/file');
 
-var GroboCliTools = require('./../_tools');
+var RvmCliTools = require('./../_tools');
 
-class GroboCliVersion {
+class RvmCliVersion {
     static version() {
-        const self = GroboCliVersion;
+        const self = RvmCliVersion;
         console.log(self.getFullVersion());
     }
 
     static getVersion() {
-        const self = GroboCliVersion;
+        const self = RvmCliVersion;
         const package_json = self.getPackageJson();
         return `${package_json.version}`;
     }
 
     static getFullVersion() {
-        const self = GroboCliVersion;
+        const self = RvmCliVersion;
         const package_json = self.getPackageJson();
         return `${package_json.name} ${package_json.version} @ ${package_json.date}`;
     }
@@ -28,4 +28,4 @@ class GroboCliVersion {
     }
 }
 
-module.exports = GroboCliVersion;
+module.exports = RvmCliVersion;
