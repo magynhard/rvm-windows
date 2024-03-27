@@ -6,6 +6,7 @@ const chalk = require('chalk');
 const RvmCliTools = require('./_tools');
 const RvmCliHelp = require('./tasks/_help');
 const RvmCliSetup = require('./tasks/_setup');
+const RvmCliList = require("./tasks/_list");
 
 
 const taskDefinitions = [
@@ -20,7 +21,7 @@ function logo() {
     console.log(RvmCliTools.logo());
 }
 
-RvmCliSetup.ensureWrapperPathEnvIsSet();
+RvmCliSetup.ensureWrapperPathEnvIsSet(true);
 
 //
 // version
@@ -44,11 +45,22 @@ else if (tasks.current || tasks.command && (tasks.command[0] === 'current' || ta
     RvmListCurrent.current();
 }
 //
+// install
+//
+else if (tasks.install || tasks.command && (tasks.command[0] === 'install' || tasks.command[0] === 'i')) {
+    const RvmListInstall = require('./tasks/_install');
+    RvmListInstall.install();
+}
+//
 // list
 //
 else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || tasks.command[0] === 'l')) {
     const RvmCliList = require('./tasks/_list');
-    RvmCliList.list();
+    if(tasks.command[1] === 'known') {
+        RvmCliList.listKnown();
+    } else {
+        RvmCliList.list();
+    }
 }
 //
 // use
