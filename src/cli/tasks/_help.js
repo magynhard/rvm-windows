@@ -1,23 +1,23 @@
 #!/usr/bin/env node
 
-const chalk = require('chalk');
-const commandLineUsage = require('command-line-usage');
+const Chalk = require('chalk');
+const CommandLineUsage = require('command-line-usage');
 const RvmCliTools = require('./../_tools');
 
 class RvmCliHelp {
     static help() {
         const self = RvmCliHelp;
-        let section = RvmCliTools.colorizeValues(self.SECTIONS.help, ['name', 'alias', 'example'], 'redBright');
-        const usage = commandLineUsage(section);
+        let section = RvmCliTools.colorizeValues(self.SECTIONS.help, ['name', 'alias', 'example'], 'green');
+        const usage = CommandLineUsage(section);
         console.log(usage);
     }
 
     static unknown(task) {
         const self = RvmCliHelp;
         let section = self.SECTIONS.unknown;
-        section[0].content = section[0].content.replace('{{task}}', chalk.red(task));
-        section = RvmCliTools.colorizeValues(section, ['name', 'alias', 'example'], 'redBright');
-        const usage = commandLineUsage(section);
+        section[0].content = section[0].content.replace('{{task}}', Chalk.red(task));
+        section = RvmCliTools.colorizeValues(section, ['name', 'alias', 'example'], 'green');
+        const usage = CommandLineUsage(section);
         console.log(usage);
     }
 }
@@ -49,11 +49,11 @@ RvmCliHelp.SECTIONS.help = [
         content: [
             {
                 example: 'rvm version',
-                desc: 'Full length task, its shortcut is {redBright v}'
+                desc: 'Full length task, its shortcut is {green v}'
             },
             {
                 example: 'rvm h',
-                desc: 'Shortcut task for {redBright help}'
+                desc: 'Shortcut task for {green help}'
             },
         ]
     }
@@ -62,7 +62,7 @@ RvmCliHelp.SECTIONS.help = [
 RvmCliHelp.SECTIONS.unknown = [
     {
         header: 'Invalid task',
-        content: `The given task {{task}} is invalid. Run the command with task ${chalk.redBright('help')} to get information about valid tasks.`
+        content: `The given task {{task}} is invalid. Run the command with task ${Chalk.green('help')} to get information about valid tasks.`
     }
 ];
 

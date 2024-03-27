@@ -14,7 +14,7 @@ const Typifier = require('typifier');
 class RvmCliTools {
 
     static logo() {
-        const version_label = Chalk.reset.redBright(`  ${RvmCliVersion.getVersion()}  `);
+        const version_label = Chalk.reset.green(`  ${RvmCliVersion.getVersion()}  `);
         // ASCII-Font: Calvin S
         // Sub title font: Source Code Pro Bold
         return Chalk.redBright.bold("\n    \n" +
@@ -69,13 +69,13 @@ class RvmCliTools {
         const self = RvmCliTools;
         if(self.first_question) {
             if(preselected_option) {
-                console.log('  Preselection in [' + Chalk.redBright('brackets') + '] can be confirmed with ENTER.\n');
+                console.log('  Preselection in [' + Chalk.green('brackets') + '] can be confirmed with ENTER.\n');
             }
             self.first_question = false;
         }
         let default_string = null;
         if(preselected_option) {
-            default_string = ' [' + Chalk.redBright(preselected_option) + ']';
+            default_string = ' [' + Chalk.green(preselected_option) + ']';
         } else {
             default_string = '';
         }
@@ -95,7 +95,7 @@ class RvmCliTools {
                             process.exit(1);
                         }
                         // invalid input value
-                        self.printLine(Chalk.red(`\n  Invalid input '${input}'.`) + `\n  Valid options are: ${options.map((e) => { return Chalk.redBright(e); }).join(' | ')}\n`);
+                        self.printLine(Chalk.red(`\n  Invalid input '${input}'.`) + `\n  Valid options are: ${options.map((e) => { return Chalk.green(e); }).join(' | ')}\n`);
                     }
                 } else {
                     break;
@@ -297,7 +297,7 @@ RvmCliTools.SECTIONS.not_inside_valid_project = [
         content: [
             '{red You can run this command at the root directory of a project with rvm configuration only.}',
             '',
-            `Current directory:\n {redBright ${RvmCliTools.projectRootPath()}}`
+            `Current directory:\n {green ${RvmCliTools.projectRootPath()}}`
         ]
     }
 ];
