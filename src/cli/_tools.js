@@ -10,6 +10,7 @@ const RvmCliVersion = require('./tasks/_version');
 const File = require('ruby-nice/file');
 const Dir = require('ruby-nice/dir');
 const Typifier = require('typifier');
+const {fetch, ProxyAgent} = require("undici");
 
 class RvmCliTools {
 
@@ -281,6 +282,51 @@ class RvmCliTools {
     static escapeRegExp(string) {
         return string.replace(/[$+.*?^(){}|[\]\\]/g, '\\$&');
     }
+
+    static fetchWithProxy(url, opts) {
+        const self = RvmCliTools;
+        return fetch(url, {
+            ...opts,
+            dispatcher: new ProxyAgent({
+                uri: process.env.HTTPS_PROXY || self.config().proxy,
+                keepAliveTimeout: 10,
+                keepAliveMaxTimeout: 10,
+            }),
+        });
+    }
+
+    /**
+     * Sorting string version in format 1.2.3
+     *
+     * @example
+     *      ["1.10.3","2.1.3","1.2.3"].sort(.versionSort)
+     *      // => ["1.2.3","1.10.3","2.1.3"]
+     *
+     * @param {string} a
+     * @param {string} b
+     * @returns {number}
+     */
+    static versionSort(a, b) {
+        if(parseInt(a.split(".")[0]) > parseInt(b.split(".")[0])) {
+            return 1;
+        } else if(parseInt(a.split(".")[0]) < parseInt(b.split(".")[0])) {
+            return -1
+        } else { // same, level 2
+            if(parseInt(a.split(".")[1] || 0) > parseInt(b.split(".")[1] || 0)) {
+                return 1;
+            } else if(parseInt(a.split(".")[1] || 0) < parseInt(b.split(".")[1] || 0)) {
+                return -1
+            } else { // same level 3
+                if(parseInt(a.split(".")[2] || 0) > parseInt(b.split(".")[2] || 0)) {
+                    return 1;
+                } else if(parseInt(a.split(".")[2] || 0) < parseInt(b.split(".")[2] || 0)) {
+                    return -1
+                } else {
+                    return 0;
+                }
+            }
+        }
+    }
 }
 
 RvmCliTools.PACKAGE_JSON_FILE_PATH = RvmCliTools.projectRootPath() + '/package.json';
@@ -299,5 +345,71 @@ RvmCliTools.SECTIONS.not_inside_valid_project = [
         ]
     }
 ];
+
+//
+// pre patch, until new ruby-nice is imported
+//
+
+Object.defineProperty(String.prototype, 'scan', {
+    /**
+     * Matching the pattern (which may be a Regexp or a String).
+     *
+     * For each match, a result is generated and either added to the result array. If the pattern contains no groups, each individual result consists of the matched string.
+     * If the pattern contains groups, each individual result is itself an array containing one entry per group.
+     *
+     * @example
+     *      let a = "cruel world";
+     *
+     *      a.scan(/\w+/)
+     *      // => ["cruel", "world"]
+     *
+     *      a.scan(/.../)
+     *      // => ["cru", "el ", "wor"]
+     *
+     *      a.scan(/(...)/)
+     *      // => [["cru"], ["el "], ["wor"]]
+     *
+     *      a.scan(/(..)(..)/)
+     *      // => [["cr", "ue"], ["l ", "wo"]]
+     *
+     * @param {string|RegExp} pattern
+     *
+     */
+    value: function scan(pattern) {
+        if(typeof pattern === "undefined") {
+            throw new Error(`ArgumentError (wrong number of arguments (given 0, expected 1))`);
+        }
+        const escapeRegExp = (string) => {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+        };
+        if(Typifier.isString(pattern)) {
+            pattern = new RegExp(escapeRegExp(pattern),'gm');
+        } else {
+            // add mandatory global option
+            let new_flags = pattern.flags;
+            if(!new_flags.includes("g")) new_flags += "g";
+            pattern = new RegExp(pattern.source, new_flags);
+        }
+        const contains_groups = !!(pattern.source.match(/(^\(|[^\\]\()/));
+        if(!contains_groups) {
+            return [...this.matchAll(pattern)].map(e => e[0]);
+        }
+        const original_index = pattern.lastIndex;
+        pattern.lastIndex = 0;
+        let results = [];
+        let res = null;
+        while(res = pattern.exec(this)) {
+            results.push(res.slice(1));
+            if(pattern.lastIndex === 0) {
+                break;
+            }
+        }
+        pattern.lastIndex = original_index;
+        return results;
+    }
+});
+
+
+
 
 module.exports = RvmCliTools;
