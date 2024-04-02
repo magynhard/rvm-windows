@@ -7,7 +7,7 @@
 > Unofficial reimplementation of RVM.io (RVM) for MS Windows
 
 As there is no RVM.io available for native windows, but only for POSIX by Cygwin, this is a reimplementation of basic [rvm.io](https://rvm.io/)
-features for native MS Windows. It is based on the packages shipped by [rubyinstaller.org](https://rubyinstaller.org/).
+features for native MS Windows on the classic command line. It is based on the packages shipped by [rubyinstaller.org](https://rubyinstaller.org/).
 
 Ruby environments are managed by RVM per user, but if you install your Rubies globally and just add their paths, you can manage them globally as well.
 
