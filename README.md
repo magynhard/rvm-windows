@@ -14,9 +14,10 @@ Ruby environments are managed by RVM per user, but if you install your Rubies gl
 ```diff
 - Pre beta. Only for test purpose.
 
-Missing basic features:
-- rvm uninstall
+Missing basic features or known bugs:
+- rvm uninstall 
 - rvm upgrade
+- automatically adding to PATH breaks PATHs (of npm) sometimes 
 ```
 
 
