@@ -7,6 +7,7 @@ const RvmCliTools = require('./_tools');
 const RvmCliHelp = require('./tasks/_help');
 const RvmCliSetup = require('./tasks/_setup');
 const RvmCliList = require("./tasks/_list");
+const RvmCliFix = require('./tasks/_fix');
 
 const Wrapper = require("./_wrapper");
 
@@ -42,8 +43,15 @@ else if (Object.keys(tasks).length === 0 || tasks.help || tasks.command && (task
 // current
 //
 else if (tasks.current || tasks.command && (tasks.command[0] === 'current' || tasks.command[0] === 'c')) {
-    const RvmListCurrent = require('./tasks/_current');
-    RvmListCurrent.current();
+    const RvmCliCurrent = require('./tasks/_current');
+    RvmCliCurrent.current();
+}
+//
+// fix
+//
+else if (tasks.fix || tasks.command && (tasks.command[0] === 'fix' || tasks.command[0] === 'f')) {
+    const RvmCliFix = require('./tasks/_fix');
+    RvmCliFix.fix();
 }
 //
 // install
@@ -67,9 +75,7 @@ else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || tasks.co
 // debug - only for developer purpose - put code to debug into this if block
 //
 else if (tasks.debug || tasks.command && (tasks.command[0] === 'debug')) {
-    console.log("VERSION",Wrapper.getRubyVersionForPath("C:/temp"));
-    console.log("PATH",Wrapper.getRubyEnvCommandPath("ruby-3.1.4", "ruby"));
-    console.log("PATH",Wrapper.getRubyEnvCommandPath("ruby-3.1.4", "ruby"));
+    RvmCliFix.fix();
 }
 //
 // use

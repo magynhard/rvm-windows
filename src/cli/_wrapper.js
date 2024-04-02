@@ -39,15 +39,22 @@ class Wrapper {
             return File.isExisting(`${bin_path}/${command}.bat`) ||
                 File.isExisting(`${bin_path}/${command}.cmd`) ||
                 File.isExisting(`${bin_path}/${command}.exe`)
-        } else {
-            throw new Error(`Ruby version ${version} not found!`);
+        } else if(RvmCliUse._matchingVersion(version, RvmCliList.versions())) {
+            return true;
+        }
+        else {
+            return false;
         }
     }
 
     static getRubyEnvCommandPath(version, command) {
         const self = Wrapper;
-        if (RvmCliList.versions().includes(version)) {
-            const bin_path = RvmCliTools.config().envs[version] + '/bin';
+        if (RvmCliList.versions().includes(version) || RvmCliUse._matchingVersion(version, RvmCliList.versions())) {
+            let final_version = version;
+            if(!RvmCliList.versions().includes(version) && RvmCliUse._matchingVersion(version, RvmCliList.versions())) {
+                final_version = RvmCliUse._matchingVersion(version, RvmCliList.versions());
+            }
+            const bin_path = RvmCliTools.config().envs[final_version] + '/bin';
             let final_command = null;
             ['exe','bat','cmd'].eachWithIndex((ext) => {
                 let path = `${bin_path}/${command}.${ext}`;
@@ -58,7 +65,7 @@ class Wrapper {
             });
             return final_command;
         } else {
-            throw new Error(`Ruby version ${version} not found!`);
+            throw new Error(`Ruby version ${final_version} not found!`);
         }
     }
 }
