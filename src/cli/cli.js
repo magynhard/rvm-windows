@@ -33,11 +33,25 @@ if (tasks.version || tasks.command && (tasks.command[0] === 'version' || tasks.c
     RvmCliVersion.version();
 }
 //
+// add
+//
+else if (tasks.add || tasks.command && (tasks.command[0] === 'add' || tasks.command[0] === 'a')) {
+    const RvmCliAdd = require('./tasks/_add');
+    RvmCliAdd.add();
+}
+//
 // help
 //
 else if (Object.keys(tasks).length === 0 || tasks.help || tasks.command && (tasks.command[0] === 'help' || tasks.command[0] === 'h')) {
     logo();
     RvmCliHelp.help();
+}
+//
+// config
+//
+else if (tasks.config || tasks.command && (tasks.command[0] === 'config' || tasks.command[0] === 'cfg')) {
+    const RvmCliConfig = require('./tasks/_config');
+    RvmCliConfig.config();
 }
 //
 // current

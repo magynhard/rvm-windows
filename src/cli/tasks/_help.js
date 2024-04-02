@@ -35,6 +35,7 @@ RvmCliHelp.SECTIONS.help = [
     {
         content: [
             {name: 'add <path>', alias: 'a', summary: 'Add a installed ruby environment to the list'},
+            {name: 'config', alias: 'cfg', summary: 'Print current RVM config'},
             {name: 'current', alias: 'c', summary: 'Print current ruby version'},
             {name: 'fix', alias: 'f', summary: 'Automatically fix paths and versions in RVM configuration'},
             {name: 'help', alias: 'h', summary: 'Print this usage guide'},

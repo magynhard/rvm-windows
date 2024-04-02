@@ -33,7 +33,19 @@ class RvmCliFix {
      * Check for ruby installations not listed in config envs
      */
     static fixMissingEnvironmentPaths() {
-
+        const self = RvmCliFix;
+        const paths = execSync(`where ruby`).toString();
+        let new_config = RvmCliTools.config();
+        paths.split("\n").eachWithIndex((path, i) => {
+            path = File.normalizePath(path.trim());
+            path = path.replace("/bin/ruby.exe", "");
+           if(!path.includes(`${File.getHomePath()}/.rvm/`)) {
+               if(!Object.values(new_config).includes(path)) {
+                   new_config.envs["unknown_" + i] = File.normalizePath(path);
+               }
+           }
+        });
+        RvmCliTools.writeRvmConfig(new_config);
     }
 
     /**
@@ -44,7 +56,7 @@ class RvmCliFix {
         RvmCliTools.config().envs.eachWithIndex((version, path) => {
             const final_path = `${path}/bin/ruby.exe`;
             if(!File.isExisting(final_path)) {
-                throw new Error(`Invalid ruby env for '${final_path}'`);
+                delete new_config.envs[version];
             } else {
                 const result = execSync(`${final_path} --version`);
                 const pure_version = result.toString().match(/ruby\s+([0-9\.]+)/gm)[0].split(" ")[1];
