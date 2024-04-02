@@ -8,6 +8,7 @@ const RvmCliHelp = require('./tasks/_help');
 const RvmCliSetup = require('./tasks/_setup');
 const RvmCliList = require("./tasks/_list");
 
+const Wrapper = require("./_wrapper");
 
 const taskDefinitions = [
     {name: 'command', type: String, multiple: true, defaultOption: true}, // fall back command
@@ -61,6 +62,14 @@ else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || tasks.co
     } else {
         RvmCliList.list();
     }
+}
+//
+// debug - only for developer purpose - put code to debug into this if block
+//
+else if (tasks.debug || tasks.command && (tasks.command[0] === 'debug')) {
+    console.log("VERSION",Wrapper.getRubyVersionForPath("C:/temp"));
+    console.log("PATH",Wrapper.getRubyEnvCommandPath("ruby-3.1.4", "ruby"));
+    console.log("PATH",Wrapper.getRubyEnvCommandPath("ruby-3.1.4", "ruby"));
 }
 //
 // use
