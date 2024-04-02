@@ -51,7 +51,7 @@ class RvmCliUse {
             if(split.length === 2) {
                 const minor_version = split[0] + "." + split[1];
                 let version_match = null;
-                versions.sort().reverse().eachWithIndex((v) => {
+                versions.sort(RvmCliTools.versionSort).reverse().eachWithIndex((v) => {
                     if(v.startsWith(`${minor_version}.`)) {
                         version_match = v;
                         return false; // break
@@ -62,7 +62,7 @@ class RvmCliUse {
                 }
             } else if(split.length === 1) {
                 let version_match = null;
-                versions.sort().reverse().eachWithIndex((v) => {
+                versions.sort(RvmCliTools.versionSort).reverse().eachWithIndex((v) => {
                    if(v.startsWith(`${split[0]}.`)) {
                        version_match = v;
                        return false;
