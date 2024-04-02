@@ -6,7 +6,7 @@ const RvmCliList = require('./tasks/_list');
 
 class Wrapper {
     /**
-     * Search for .ruby-version in the current folder or parent folders.
+     * Search for .ruby-version or ruby in Gemfile in the current folder or parent folders.
      *
      * If found, return its version, otherwise return current ruby.
      *
@@ -16,8 +16,15 @@ class Wrapper {
         const self = Wrapper;
         let version = RvmCliTools.config().current;
         while (true) {
+            let gem_file_version = null;
             if (File.isExisting(path + '/.ruby-version')) {
                 version = File.read(path + '/.ruby-version');
+                break;
+            } else if (File.isExisting(path + '/Gemfile') && File.read(path + '/Gemfile').match(/ruby\s*["']([0-9\.]+)['"]/gm)) {
+                const gem_file_content = File.read(path + '/Gemfile');
+                const ruby_version_regex = /ruby\s*["']([0-9\.]+)['"]/gm;
+                const gem_version = ruby_version_regex.exec(gem_file_content)[1].trim()
+                version = gem_version;
                 break;
             } else {
                 path = File.getDirname(path);
@@ -26,10 +33,11 @@ class Wrapper {
                 }
             }
         }
+        version = version.trim();
         if (RvmCliUse._startsWithNumber(version)) {
             version = `ruby-${version}`;
         }
-        return version;
+        return version.trim();
     }
 
     static hasRubyEnvCommand(version, command) {
@@ -39,10 +47,9 @@ class Wrapper {
             return File.isExisting(`${bin_path}/${command}.bat`) ||
                 File.isExisting(`${bin_path}/${command}.cmd`) ||
                 File.isExisting(`${bin_path}/${command}.exe`)
-        } else if(RvmCliUse._matchingVersion(version, RvmCliList.versions())) {
+        } else if (RvmCliUse._matchingVersion(version, RvmCliList.versions())) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -51,14 +58,14 @@ class Wrapper {
         const self = Wrapper;
         if (RvmCliList.versions().includes(version) || RvmCliUse._matchingVersion(version, RvmCliList.versions())) {
             let final_version = version;
-            if(!RvmCliList.versions().includes(version) && RvmCliUse._matchingVersion(version, RvmCliList.versions())) {
+            if (!RvmCliList.versions().includes(version) && RvmCliUse._matchingVersion(version, RvmCliList.versions())) {
                 final_version = RvmCliUse._matchingVersion(version, RvmCliList.versions());
             }
             const bin_path = RvmCliTools.config().envs[final_version] + '/bin';
             let final_command = null;
-            ['exe','bat','cmd'].eachWithIndex((ext) => {
+            ['exe', 'bat', 'cmd'].eachWithIndex((ext) => {
                 let path = `${bin_path}/${command}.${ext}`;
-                if(File.isExisting(path)) {
+                if (File.isExisting(path)) {
                     final_command = path;
                     return false;
                 }

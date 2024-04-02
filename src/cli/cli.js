@@ -64,7 +64,6 @@ else if (tasks.current || tasks.command && (tasks.command[0] === 'current' || ta
 // fix
 //
 else if (tasks.fix || tasks.command && (tasks.command[0] === 'fix' || tasks.command[0] === 'f')) {
-    const RvmCliFix = require('./tasks/_fix');
     RvmCliFix.fix();
 }
 //
@@ -89,7 +88,7 @@ else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || tasks.co
 // debug - only for developer purpose - put code to debug into this if block
 //
 else if (tasks.debug || tasks.command && (tasks.command[0] === 'debug')) {
-    RvmCliFix.fix();
+    Wrapper.getRubyVersionForPath("C:\\_noscan\\dev\\github.com\\grob-net4industry\\gn4i-webservice-smoke-tests");
 }
 //
 // use

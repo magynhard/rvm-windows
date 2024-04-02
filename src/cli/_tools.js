@@ -196,6 +196,16 @@ class RvmCliTools {
         return File.expandPath(`${File.getHomePath()}/.rvm.json`);
     }
 
+    static rvmConfigTemplatePath() {
+        const self = RvmCliTools;
+        return self.rvmRootPath() + '/src/templates/.rvm.json';
+    }
+
+    static rvmBatchTemplatePath() {
+        const self = RvmCliTools;
+        return self.rvmRootPath() + '/src/templates/wrapper_template.bat';
+    }
+
     static makeDir(dir) {
         Fs.mkdirSync(dir, { recursive: true });
     }

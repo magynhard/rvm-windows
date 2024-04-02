@@ -2,15 +2,37 @@
 const {execSync} = require('child_process');
 const Fs = require('fs');
 const File = require('ruby-nice/file');
+const Dir = require('ruby-nice/dir');
+require('ruby-nice/object');
+const FileUtils = require('ruby-nice/file-utils');
 
 var RvmCliTools = require('./../_tools');
 
 class RvmCliFix {
     static fix() {
         const self = RvmCliFix;
+        self.fixConfig();
         self.fixExistingEnvironmentPaths();
         self.fixMissingEnvironmentPaths();
         self.fixEnvironmentVersions();
+        self.fixWrapperFiles();
+    }
+
+    static fixConfig() {
+        const self = RvmCliFix;
+        // create config if not available
+        if(!File.isExisting(RvmCliTools.rvmConfigPath())) {
+            FileUtils.mkdirP(File.getDirname(RvmCliTools.rvmConfigPath()));
+            FileUtils.copy(RvmCliTools.rvmConfigTemplatePath(), RvmCliTools.rvmConfigPath());
+        } else {
+            try {
+                JSON.parse(RvmCliTools.rvmConfigPath());
+            } catch (e) {
+                // recreate config if broken
+                FileUtils.rmRf(RvmCliTools.rvmConfigPath());
+                FileUtils.copy(RvmCliTools.rvmConfigTemplatePath(), RvmCliTools.rvmConfigPath());
+            }
+        }
     }
 
     /**
@@ -70,6 +92,37 @@ class RvmCliFix {
             }
         });
         RvmCliTools.writeRvmConfig(new_config);
+    }
+
+    /**
+     * Remove and recreate all wrapper files based on the available ruby environments
+     */
+    static fixWrapperFiles() {
+        const self = RvmCliFix;
+        const wrapper_path = File.getHomePath() + '/.rvm/wrapper';
+        FileUtils.rmRf(wrapper_path);
+        FileUtils.mkdirP(wrapper_path);
+        RvmCliTools.config().envs.eachWithIndex((version, path) => {
+            const env_bin_files = Dir.glob(path + '/bin/*.*');
+            env_bin_files.eachWithIndex((file) => {
+                const file_name = File.getBasename(file);
+                if(file_name.endsWith('.bat')) {
+                    if(!File.isExisting(wrapper_path + '/' + file_name)) {
+                        FileUtils.copy(RvmCliTools.rvmBatchTemplatePath(), wrapper_path + '/' + file_name);
+                    }
+                } else if(file_name.endsWith('.exe')) {
+                    if(!File.isExisting(wrapper_path + '/' + file_name)) {
+                        FileUtils.copy(RvmCliTools.rvmBatchTemplatePath(), wrapper_path + '/' + file_name + '.bat');
+                        FileUtils.copy(RvmCliTools.rvmBatchTemplatePath(), wrapper_path + '/' + File.getBasename(file_name,'.exe') + '.bat');
+                    }
+                } else if(file_name.endsWith('.cmd')) {
+                    if(!File.isExisting(wrapper_path + '/' + file_name)) {
+                        FileUtils.copy(RvmCliTools.rvmBatchTemplatePath(), wrapper_path + '/' + file_name + '.bat');
+                        FileUtils.copy(RvmCliTools.rvmBatchTemplatePath(), wrapper_path + '/' + File.getBasename(file_name, '.cmd') + '.bat');
+                    }
+                }
+            });
+        });
     }
 }
 
