@@ -317,6 +317,8 @@ class RvmCliTools {
      * @returns {number}
      */
     static versionSort(a, b) {
+        a = a.replace("ruby-","");
+        b = b.replace("ruby-","");
         if(parseInt(a.split(".")[0]) > parseInt(b.split(".")[0])) {
             return 1;
         } else if(parseInt(a.split(".")[0]) < parseInt(b.split(".")[0])) {
