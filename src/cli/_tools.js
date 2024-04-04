@@ -295,14 +295,20 @@ class RvmCliTools {
 
     static fetchWithProxy(url, opts) {
         const self = RvmCliTools;
-        return fetch(url, {
-            ...opts,
-            dispatcher: new ProxyAgent({
-                uri: process.env.HTTPS_PROXY || self.config().proxy,
-                keepAliveTimeout: 10,
-                keepAliveMaxTimeout: 10,
-            }),
-        });
+        let final_opts = {};
+        if(RvmCliTools.config().proxy) {
+            final_opts = {
+                ...opts,
+                dispatcher: new ProxyAgent({
+                    uri: process.env.HTTPS_PROXY || self.config().proxy,
+                    keepAliveTimeout: 10,
+                    keepAliveMaxTimeout: 10,
+                }),
+            };
+        } else {
+            final_opts = opts;
+        }
+        return fetch(url, final_opts);
     }
 
     /**

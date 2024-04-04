@@ -14,8 +14,6 @@ var RvmCliTools = require('./../_tools');
 var RvmCliUse = require('./../tasks/_use');
 var RvmCliList = require('./../tasks/_list');
 
-const {fetch, ProxyAgent} = require("undici");
-
 
 class RvmCliInstall {
 
