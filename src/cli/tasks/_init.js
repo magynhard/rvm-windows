@@ -5,6 +5,8 @@ const File = require('ruby-nice/file');
 const {execSync} = require('child_process');
 
 var RvmCliTools = require('./../_tools');
+var RvmCliFix = require('./../tasks/_fix');
+var RvmCliScan = require('./../tasks/_scan');
 
 class RvmCliInit {
     /**
@@ -16,9 +18,12 @@ class RvmCliInit {
         const rvm_wrapper_path = File.expandPath(`${File.getHomePath()}/.rvm/wrapper`);
         // add at the beginning of path env variable
         const add_path_cmd = `setx PATH "${rvm_wrapper_path};%PATH%"`;
+        // we also add explicitly to current session, so the commands will be available instantly
+        const add_tmp_path_cmd = `set "PATH=${rvm_wrapper_path};%PATH%"`;
         let stdout3 = null;
         try {
-            stdout3 = execSync(add_path_cmd, {encoding: 'utf-8', stdio: 'ignore'});
+            execSync(add_path_cmd, {encoding: 'utf-8', stdio: 'ignore'});
+            execSync(add_tmp_path_cmd, {encoding: 'utf-8', stdio: 'ignore'});
             if (!silent) {
                 console.log(`Added path successfully!`);
             }
@@ -26,6 +31,16 @@ class RvmCliInit {
             if (!silent) {
                 console.error(`Error when adding path: ${e.message}`);
             }
+        }
+    }
+
+    static initAfterInstall() {
+        const self = RvmCliInit;
+        if(!File.isExisting(RvmCliTools.rvmConfigPath())) {
+            RvmCliFix.fixConfig();
+            self.ensureWrapperPathEnvIsSet(true);
+            RvmCliScan.scan();
+            console.log(`RVM has been initialized. Close your terminals and reopen, to `);
         }
     }
 }

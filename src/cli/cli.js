@@ -8,6 +8,7 @@ const RvmCliHelp = require('./tasks/_help');
 const RvmCliList = require("./tasks/_list");
 const RvmCliFix = require('./tasks/_fix');
 const RvmCliScan = require('./tasks/_scan');
+const RvmCliInit = require('./tasks/_init');
 
 const Wrapper = require("./_wrapper");
 
@@ -18,6 +19,8 @@ const taskDefinitions = [
 ]
 
 const tasks = commandLineArgs(taskDefinitions, {partial: true});
+
+RvmCliInit.initAfterInstall();
 
 function logo() {
     console.log(RvmCliTools.logo());

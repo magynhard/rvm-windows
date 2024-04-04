@@ -1,8 +1,7 @@
 {
-  "proxy": "http://127.0.0.1:3128",
-  "default": "ruby-9.8.7",
-  "current": "ruby-1.2.3",
+  "proxy": "",
+  "default": "",
+  "current": "",
   "envs": {
-    "ruby-1.2.3": "C:\\sample"
   }
 }
