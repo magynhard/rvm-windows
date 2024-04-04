@@ -7,12 +7,12 @@ set "RVM_ROOT_PATH={{rvm_root_dir}}"
 
 REM RUBYPATH
 for /f "delims=" %%a in ('%NODE_JS_RUNTIME_PATH% "%RVM_ROOT_PATH%\src\wrapper\wrapper_rubypath.js" "%CD%" %~n0') do set "return_path=%%a"
-echo Returned path: "%return_path%"
+REM echo Returned path: "%return_path%"
 call %return_path%
 
 REM PROXY
 for /f "delims=" %%b in ('%NODE_JS_RUNTIME_PATH% "%RVM_ROOT_PATH%\src\wrapper\wrapper_proxy.js" "%CD%" %~n0') do set "return_proxy=%%b"
-echo Returned proxy: "%return_proxy%"
+REM echo Returned proxy: "%return_proxy%"
 if not "%return_proxy%" == "" (
 	set "HTTP_PROXY=%return_proxy%"
 	set "HTTPS_PROXY=%return_proxy%"
