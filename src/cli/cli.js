@@ -51,8 +51,7 @@ else if (Object.keys(tasks).length === 0 || tasks.help || tasks.command && (task
 // init
 //
 else if (tasks.init || tasks.command && (tasks.command[0] === 'init')) {
-    const RvmCliInit = require('./tasks/_init');
-    RvmCliInit.ensureWrapperPathEnvIsSet(true);
+    RvmCliInit.initAfterInstall(true);
 }
 //
 // config
