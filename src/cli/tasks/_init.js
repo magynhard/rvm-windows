@@ -38,9 +38,9 @@ class RvmCliInit {
         const self = RvmCliInit;
         if(!File.isExisting(RvmCliTools.rvmConfigPath()) || force) {
             RvmCliFix.fixConfig();
-            self.ensureWrapperPathEnvIsSet();
+            self.ensureWrapperPathEnvIsSet(true);
             RvmCliScan.scan();
-            console.log(`RVM has been initialized after the first run! Reopen your terminal `);
+            console.log(`RVM has been initialized after the first run! Reopen your terminal, to reload the PATH environment variable!`);
         }
     }
 }
