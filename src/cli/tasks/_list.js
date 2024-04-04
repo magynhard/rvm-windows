@@ -1,15 +1,7 @@
 #!/usr/bin/env node
 
-const Fs = require('fs');
-const File = require('ruby-nice/file');
-const {execSync} = require('child_process');
 const Chalk = require('chalk');
-const Axios = require('axios');
-const HttpsProxyAgent = require('hpagent');
 const {Octokit} = require('@octokit/rest');
-const fetch2 = require('node-fetch');
-const {ProxyAgent, fetch} = require("undici");
-const {Readable} = require('stream');
 
 var RvmCliTools = require('./../_tools');
 
