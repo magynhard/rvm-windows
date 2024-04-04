@@ -40,7 +40,7 @@ class RvmCliInit {
             RvmCliFix.fixConfig();
             self.ensureWrapperPathEnvIsSet(true);
             RvmCliScan.scan();
-            console.log(`RVM has been initialized after the first run! Reopen your terminal, to reload the PATH environment variable!`);
+            console.log(`RVM has been initialized and is ready to use!`);
         }
     }
 }
