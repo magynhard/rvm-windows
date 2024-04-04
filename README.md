@@ -17,6 +17,7 @@ Ruby environments are managed by RVM per user.
 Missing basic features or known bugs:
 - rvm uninstall 
 - rvm upgrade
+- automatic "ridk install 1" and "ridk install 3" after installing a ruby environment
 - automatically adding to PATH (init) breaks PATHs (of npm) sometimes
 - define/set default version 
 - rvm use system
