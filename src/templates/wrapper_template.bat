@@ -1,5 +1,9 @@
 @echo off
-set "ORIGINAL_PROXY=%HTTP_PROXY%"
+REM use UTF8
+chcp 65001
+
+set "ORIGINAL_HTTP_PROXY=%HTTP_PROXY%"
+set "ORIGINAL_HTTPS_PROXY=%HTTPS_PROXY%"
 set "ORIGINAL_RUBYPATH=%RUBYPATH%"
 
 set "NODE_JS_RUNTIME_PATH={{node_js_runtime_path}}"
@@ -31,8 +35,6 @@ REM echo Returned value: "%return_value%"
 call %return_value% %*
 
 REM reset variables
-set "HTTP_PROXY=%ORIGINAL_PROXY%"
-set "HTTPS_PROXY=%ORIGINAL_PROXY%"
-set "http_proxy=%ORIGINAL_PROXY%"
-set "https_proxy=%ORIGINAL_PROXY%"
+set "HTTP_PROXY=%ORIGINAL_HTTP_PROXY%"
+set "HTTPS_PROXY=%ORIGINAL_HTTPS_PROXY%"
 set "RUBYPATH=%ORIGINAL_RUBYPATH%"

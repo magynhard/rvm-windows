@@ -32,6 +32,7 @@ Missing basic features or known bugs:
 * [Features](#features)
 * [Usage](#usage)
 * [Installation](#installation)
+* [Troubleshooting](#troubleshooting)
 * [Contributing](#contributing)
 
 <a name="features"></a>
@@ -74,6 +75,8 @@ version           # Display build version
 rvm list
 ```
 
+
+
 <a name="installation"></a>
 
 ## Installation
@@ -95,6 +98,27 @@ yarn global add rvm-windows
 ```bash
 npm install -g rvm-windows
 ```
+
+
+
+
+<a name="troubleshooting"></a>
+
+## Troubleshooting
+
+### Does not run the selected ruby
+Check if in your system wide PATH setting some ruby environment is listed and remove it from the system PATH variable.
+
+Otherwise try
+```
+rvm init
+```
+or
+```
+rvm fix
+```
+again.
+
 
 <a name="contributing"></a>
 
