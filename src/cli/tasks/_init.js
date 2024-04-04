@@ -40,7 +40,7 @@ class RvmCliInit {
             RvmCliFix.fixConfig();
             self.ensureWrapperPathEnvIsSet(true);
             RvmCliScan.scan();
-            console.log(`RVM has been initialized. Close your terminals and reopen, to `);
+            console.log(`RVM has been initialized and is ready to use!`);
         }
     }
 }
