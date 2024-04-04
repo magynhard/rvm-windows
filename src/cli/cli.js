@@ -5,9 +5,9 @@ const chalk = require('chalk');
 
 const RvmCliTools = require('./_tools');
 const RvmCliHelp = require('./tasks/_help');
-const RvmCliSetup = require('./tasks/_setup');
 const RvmCliList = require("./tasks/_list");
 const RvmCliFix = require('./tasks/_fix');
+const RvmCliScan = require('./tasks/_scan');
 
 const Wrapper = require("./_wrapper");
 
@@ -22,8 +22,6 @@ const tasks = commandLineArgs(taskDefinitions, {partial: true});
 function logo() {
     console.log(RvmCliTools.logo());
 }
-
-RvmCliSetup.ensureWrapperPathEnvIsSet(true);
 
 //
 // version
@@ -45,6 +43,13 @@ else if (tasks.add || tasks.command && (tasks.command[0] === 'add' || tasks.comm
 else if (Object.keys(tasks).length === 0 || tasks.help || tasks.command && (tasks.command[0] === 'help' || tasks.command[0] === 'h')) {
     logo();
     RvmCliHelp.help();
+}
+//
+// init
+//
+else if (tasks.init || tasks.command && (tasks.command[0] === 'init')) {
+    const RvmCliInit = require('./tasks/_init');
+    RvmCliInit.ensureWrapperPathEnvIsSet(true);
 }
 //
 // config
@@ -74,6 +79,19 @@ else if (tasks.install || tasks.command && (tasks.command[0] === 'install' || ta
     RvmListInstall.install();
 }
 //
+// scan
+//
+else if (tasks.scan || tasks.command && (tasks.command[0] === 'scan' || tasks.command[0] === 's')) {
+    RvmCliScan.scan();
+}
+//
+// kit
+//
+else if (tasks.kit || tasks.command && (tasks.command[0] === 'kit' || tasks.command[0] === 'k')) {
+    const RvmCliKit = require('./tasks/_kit');
+    RvmCliKit.kit();
+}
+//
 // list
 //
 else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || tasks.command[0] === 'l')) {
@@ -88,7 +106,10 @@ else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || tasks.co
 // debug - only for developer purpose - put code to debug into this if block
 //
 else if (tasks.debug || tasks.command && (tasks.command[0] === 'debug')) {
-    Wrapper.getRubyVersionForPath("C:\\_noscan\\dev\\github.com\\grob-net4industry\\gn4i-webservice-smoke-tests");
+    //Wrapper.getRubyVersionForPath("C:\\_noscan\\dev\\github.com\\grob-net4industry\\gn4i-webservice-smoke-tests");
+    process.argv[3] = "ruby"
+    process.argv[4] = "-v"
+    require("../wrapper/wrapper_runner");
 }
 //
 // use
@@ -97,7 +118,6 @@ else if (tasks.use || tasks.command && (tasks.command[0] === 'use' || tasks.comm
     const RvmCliUse = require('./tasks/_use');
     RvmCliUse.use();
 } else {
-    logo();
     let unknown_option = tasks ? tasks.command ? tasks.command[0] : tasks._unknown[0].replace(/-/g,'') : tasks._unknown[0].replace(/-/g,'');
     RvmCliHelp.unknown(unknown_option);
 }

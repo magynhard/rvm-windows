@@ -1,10 +1,8 @@
 {
   "proxy": "http://127.0.0.1:3128",
-  "default": "ruby-3.2.2",
-  "current": "ruby-2.7.2",
+  "default": "ruby-9.8.7",
+  "current": "ruby-1.2.3",
   "envs": {
-    "ruby-3.2.2": "C:\\_noscan\\software\\Ruby32-x64",
-    "ruby-2.7.2": "C:\\_noscan\\software\\Ruby27-x64",
-    "ruby-2.4.10": "C:\\_noscan\\software\\Ruby24-x64"
+    "ruby-1.2.3": "C:\\sample"
   }
 }

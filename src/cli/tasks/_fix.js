@@ -13,7 +13,6 @@ class RvmCliFix {
         const self = RvmCliFix;
         self.fixConfig();
         self.fixExistingEnvironmentPaths();
-        self.fixMissingEnvironmentPaths();
         self.fixEnvironmentVersions();
         self.fixWrapperFiles();
     }
@@ -26,7 +25,7 @@ class RvmCliFix {
             FileUtils.copy(RvmCliTools.rvmConfigTemplatePath(), RvmCliTools.rvmConfigPath());
         } else {
             try {
-                JSON.parse(RvmCliTools.rvmConfigPath());
+                JSON.parse(File.read(RvmCliTools.rvmConfigPath()));
             } catch (e) {
                 // recreate config if broken
                 FileUtils.rmRf(RvmCliTools.rvmConfigPath());
@@ -47,25 +46,6 @@ class RvmCliFix {
             } else {
                 new_config.envs[version] = File.normalizePath(path);
             }
-        });
-        RvmCliTools.writeRvmConfig(new_config);
-    }
-
-    /**
-     * Check for ruby installations not listed in config envs
-     */
-    static fixMissingEnvironmentPaths() {
-        const self = RvmCliFix;
-        const paths = execSync(`where ruby`).toString();
-        let new_config = RvmCliTools.config();
-        paths.split("\n").eachWithIndex((path, i) => {
-            path = File.normalizePath(path.trim());
-            path = path.replace("/bin/ruby.exe", "");
-           if(!path.includes(`${File.getHomePath()}/.rvm/`)) {
-               if(!Object.values(new_config).includes(path)) {
-                   new_config.envs["unknown_" + i] = File.normalizePath(path);
-               }
-           }
         });
         RvmCliTools.writeRvmConfig(new_config);
     }
@@ -99,26 +79,32 @@ class RvmCliFix {
      */
     static fixWrapperFiles() {
         const self = RvmCliFix;
+        const node_path = process.argv[0];
+        if(!node_path.endsWith('node.exe')) {
+            throw new Error(`Can not determine node js runtime!`);
+        }
+        const rvm_root_dir = RvmCliTools.rvmRootPath();
         const wrapper_path = File.getHomePath() + '/.rvm/wrapper';
         FileUtils.rmRf(wrapper_path);
         FileUtils.mkdirP(wrapper_path);
         RvmCliTools.config().envs.eachWithIndex((version, path) => {
             const env_bin_files = Dir.glob(path + '/bin/*.*');
+            let parsed_template = File.read(RvmCliTools.rvmBatchTemplatePath()).replace('{{node_js_runtime_path}}', node_path).replace('{{rvm_root_dir}}', rvm_root_dir);
             env_bin_files.eachWithIndex((file) => {
                 const file_name = File.getBasename(file);
                 if(file_name.endsWith('.bat')) {
                     if(!File.isExisting(wrapper_path + '/' + file_name)) {
-                        FileUtils.copy(RvmCliTools.rvmBatchTemplatePath(), wrapper_path + '/' + file_name);
+                        File.write( wrapper_path + '/' + file_name, parsed_template);
                     }
                 } else if(file_name.endsWith('.exe')) {
                     if(!File.isExisting(wrapper_path + '/' + file_name)) {
-                        FileUtils.copy(RvmCliTools.rvmBatchTemplatePath(), wrapper_path + '/' + file_name + '.bat');
-                        FileUtils.copy(RvmCliTools.rvmBatchTemplatePath(), wrapper_path + '/' + File.getBasename(file_name,'.exe') + '.bat');
+                        File.write( wrapper_path + '/' + file_name + '.bat', parsed_template);
+                        File.write( wrapper_path + '/' + File.getBasename(file_name,'.exe') + '.bat', parsed_template);
                     }
                 } else if(file_name.endsWith('.cmd')) {
                     if(!File.isExisting(wrapper_path + '/' + file_name)) {
-                        FileUtils.copy(RvmCliTools.rvmBatchTemplatePath(), wrapper_path + '/' + file_name + '.bat');
-                        FileUtils.copy(RvmCliTools.rvmBatchTemplatePath(), wrapper_path + '/' + File.getBasename(file_name, '.cmd') + '.bat');
+                        File.write( wrapper_path + '/' + file_name + '.bat', parsed_template);
+                        File.write( wrapper_path + '/' + File.getBasename(file_name,'.cmd') + '.bat', parsed_template);
                     }
                 }
             });

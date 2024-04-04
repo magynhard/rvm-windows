@@ -45,16 +45,19 @@ Beneath you can switch your ruby version instantly.
 The following commands are or will be available in rvm-windows:
 
 ```ruby
-rvm add <path>           # add a local installation to the rvm list
-rvm current              # show current ruby environment
-rvm config               # show current RVM config
-rvm fix                  # try to fix a broken RVM automatically 
-rvm help        
-rvm install <version>    # install specific ruby version
-rvm list                 # list all installed ruby versions
-rvm list known           # list all available ruby versions
-rvm use <version>        # switch to a specific ruby version
-rvm version              # display version of RVM
+add <path>        # Add a installed ruby environment to the list
+config            # Print current RVM config
+current           # Print current ruby version
+fix               # Automatically fix paths and versions in RVM configuration
+help              # Print this usage guide
+init              # Initialize RVM by adding to PATH environment variable
+install           # Install a specific ruby version
+kit               # Install x64 dependencies to build native gems like postgresql, mysql2, ...
+list              # List all installed ruby versions managed by RVM
+scan              # Scan for ruby installations and add them to the RVM configuration
+update            # Check for RVM updates
+use               # Switch to specified ruby version
+version           # Display build version
 ```
 
 

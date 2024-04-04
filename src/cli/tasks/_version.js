@@ -20,7 +20,7 @@ class RvmCliVersion {
     static getFullVersion() {
         const self = RvmCliVersion;
         const package_json = self.getPackageJson();
-        return `${package_json.name} ${package_json.version} @ ${package_json.date}`;
+        return `${package_json.name} ${package_json.version}`;
     }
 
     static getPackageJson() {

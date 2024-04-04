@@ -72,7 +72,14 @@ class Wrapper {
             });
             return final_command;
         } else {
-            throw new Error(`Ruby version ${final_version} not found!`);
+            throw new Error(`Ruby version ${version} not found!`);
+        }
+    }
+
+    static getPathOfMatchingRubyVersion(version) {
+        const matching_version = RvmCliUse._matchingVersion(version, RvmCliList.versions());
+        if(matching_version) {
+            return RvmCliTools.config().envs[matching_version];
         }
     }
 }
