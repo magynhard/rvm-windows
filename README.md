@@ -17,7 +17,8 @@ Ruby environments are managed by RVM per user, but if you install your Rubies gl
 Missing basic features or known bugs:
 - rvm uninstall 
 - rvm upgrade
-- automatically adding to PATH breaks PATHs (of npm) sometimes 
+- automatically adding to PATH (init) breaks PATHs (of npm) sometimes
+- define/set default version 
 ```
 
 
