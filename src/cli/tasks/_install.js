@@ -74,11 +74,11 @@ class RvmCliInstall {
             proxy_command = `set HTTP_PROXY=${proxy} && set HTTPS_PROXY=${proxy} && `;
         }
         const command = `${proxy_command}"${source}" /verysilent /currentuser /dir="${install_dir}" /tasks="noassocfiles,nomodpath`;
-        const result = execSync(command);
+        const result = execSync(command, {encoding: 'utf-8'});
         let new_config = RvmCliTools.config();
         new_config.envs[version] = install_dir;
         RvmCliTools.writeRvmConfig(new_config);
-        console.log(`Finished with status: ${result}`);
+        console.log(`Installation complete!`);
     }
 
     static isAlreadyInstalled(version) {
