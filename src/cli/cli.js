@@ -98,8 +98,11 @@ else if (tasks.kit || tasks.command && (tasks.command[0] === 'kit' || tasks.comm
 //
 else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || tasks.command[0] === 'l')) {
     const RvmCliList = require('./tasks/_list');
-    if(tasks.command[1] === 'known') {
+    const c = tasks.command[1];
+    if(c === 'known') {
         RvmCliList.listKnown();
+    } else if(c === 'verbose' || c === "v") {
+        RvmCliList.listVerbose();
     } else {
         RvmCliList.list();
     }
@@ -108,10 +111,7 @@ else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || tasks.co
 // debug - only for developer purpose - put code to debug into this if block
 //
 else if (tasks.debug || tasks.command && (tasks.command[0] === 'debug')) {
-    //Wrapper.getRubyVersionForPath("C:\\_noscan\\dev\\github.com\\grob-net4industry\\gn4i-webservice-smoke-tests");
-    process.argv[3] = "ruby"
-    process.argv[4] = "-v"
-    require("../wrapper/wrapper_runner");
+    RvmCliList.listVerbose();
 }
 //
 // use

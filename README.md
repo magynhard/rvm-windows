@@ -4,10 +4,20 @@
 ![downloads](https://img.shields.io/npm/dt/rvm-windows?color=blue&style=plastic)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg?style=plastic&logo=mit)](LICENSE)
 
-> Unofficial reimplementation of RVM.io (RVM) for MS Windows
+<div style="display: inline-block; padding: 8px; background: black; border-radius: 16px">
+<img src="doc/img/rvm_cmd_logo.png"/>
+</div>
 
-As there is no RVM.io available for native windows, but only for POSIX by Cygwin, this is a reimplementation of basic [rvm.io](https://rvm.io/)
+> Unofficial reimplementation of most important [rvm.io](https://www.rvm.io) features for MS Windows
+
+As there is no rvm.io available for native windows, but only for POSIX by Cygwin, this is a reimplementation of basic [rvm.io](https://rvm.io/)
 features for native MS Windows on the classic command line. It is based on the packages shipped by [rubyinstaller.org](https://rubyinstaller.org/).
+
+RVM 4 Windows allows you to comfortably install and manage several versions of Ruby on your Windows machine.
+
+It automatically detects `.ruby-version` files or ruby version definitions in Gemfiles and runs your project on the classic windows command line on the specified ruby version automatically.
+
+Beneath you can switch your ruby version instantly.
 
 Ruby environments are managed by RVM per user.
 
@@ -17,8 +27,7 @@ Ruby environments are managed by RVM per user.
 Missing basic features or known bugs:
 - rvm uninstall 
 - rvm upgrade
-- automatic "ridk install 1" and "ridk install 3" after installing a ruby environment
-- automatically adding to PATH (init) breaks PATHs (of npm) sometimes
+- automatic "ridk install 1" and "ridk install 3" after installing a ruby environment (?)
 - define/set default version 
 - rvm use system
 ```
@@ -30,20 +39,10 @@ Missing basic features or known bugs:
 
 # Table of contents
 
-* [Features](#features)
 * [Usage](#usage)
 * [Installation](#installation)
 * [Troubleshooting](#troubleshooting)
 * [Contributing](#contributing)
-
-<a name="features"></a>
-
-## Features
-RVM 4 Windows allows you to comfortably install and manage several versions of Ruby on your Windows machine.
-
-It automatically detects `.ruby-version` files or ruby version definitions in Gemfiles and runs your project on the classic windows command line on the specified ruby version automatically.
-
-Beneath you can switch your ruby version instantly.
 
 ### Commands
 The following commands are or will be available in rvm-windows:
@@ -56,8 +55,10 @@ fix               # Automatically fix paths and versions in RVM configuration
 help              # Print this usage guide
 init              # Initialize RVM by adding to PATH environment variable
 install           # Install a specific ruby version
-kit               # Install x64 dependencies to build native gems like postgresql, mysql2, ...
+kit               # (experimental, instable) Install x64 dependencies to build native gems like postgresql, mysql2, ...
 list              # List all installed ruby versions managed by RVM
+list verbose      # List all installable ruby versions with additional info
+list known        # List all installable ruby versions
 scan              # Scan for ruby installations and add them to the RVM configuration
 update            # Check for RVM updates
 use               # Switch to specified ruby version
@@ -70,11 +71,81 @@ version           # Display build version
 
 ## Usage
 
-### Usage example
+### Usage examples
 
+#### List installed rubies
 ```bash
 rvm list
 ```
+
+<div style="background: black; color: white; border-radius: 16px;">
+<pre>
+ * <span style="color: green">ruby-3.2.2</span>
+   <span style="color: green">ruby-2.4.10</span>
+=> <span style="color: green">ruby-2.7.8</span>
+
+&#35; => - current
+&#35; =* - current && default
+&#35;  * - default
+</pre>
+</div>
+
+
+#### List installable rubies
+```bash
+rvm list known
+```
+
+<div style="background: black; color: white; border-radius: 16px;">
+<pre>
+ - ruby-3.3.0
+ - ruby-3.2.3
+ - <span style="color: green">ruby-3.2.2</span>
+ - ruby-3.2.1
+ - ruby-3.2.0
+ - ruby-3.1.4
+...
+ - ruby-3.0.2
+ - ruby-3.0.1
+ - ruby-3.0.0
+ - <span style="color: green">ruby-2.7.8</span>
+ - ruby-2.7.7
+ - ruby-2.7.6
+ - ruby-2.7.5
+...
+ - ruby-2.5.1
+ - <span style="color: green">ruby-2.4.10</span>
+ - ruby-2.4.9
+...
+ - ruby-2.4.4
+ - ruby-2.4.4
+</pre>
+</div>
+
+
+#### Switch version
+You do not need to prefix `ruby-`
+```bash
+rvm use 2.4.10
+```
+
+<div style="background: black; color: white; border-radius: 16px;">
+<pre>
+Using <span style="color: green">ruby-2.4.10</span> ...
+</pre>
+</div>
+
+You even do not need to specify the exact version, it will automatically use or install the highest one available!
+```bash
+rvm use 2
+```
+
+<div style="background: black; color: white; border-radius: 16px;">
+<pre>
+Using <span style="color: green">ruby-2.7.8</span> ...
+</pre>
+</div>
+
 
 
 

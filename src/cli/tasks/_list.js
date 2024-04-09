@@ -2,8 +2,10 @@
 
 const Chalk = require('chalk');
 const {Octokit} = require('@octokit/rest');
+const CommandLineUsage = require('command-line-usage');
 
 var RvmCliTools = require('./../_tools');
+const {execSync} = require("child_process");
 
 const octokit_rest = new Octokit({
     request: {
@@ -28,6 +30,40 @@ class RvmCliList {
             }
             console.log(`${prefix} ${Chalk.green(version)}`);
         });
+        self.legend();
+    }
+
+    static listVerbose() {
+        const self = RvmCliList;
+        const config = RvmCliTools.config();
+        let section = [{
+            content: {
+                options: {
+                    noTrim: true
+                },
+                data: []
+            },
+        }];
+        config.envs.eachWithIndex((version, path) => {
+            let prefix = "  ";
+            if (version === config.current) {
+                if (version === config.default) {
+                    prefix = "=*";
+                } else {
+                    prefix = "=>";
+                }
+            } else if (version === config.default) {
+                prefix = " *";
+            }
+            section[0].content.data.push({
+                prefix: prefix,
+                version: Chalk.green(version),
+                path: path,
+                platform: execSync(`${path}/bin/ruby.exe --version`, {encoding: 'utf-8'}).toString().trim()
+            });
+            //console.log(`${prefix} ${Chalk.green(version)}`);
+        });
+        console.log(CommandLineUsage(section));
         self.legend();
     }
 

@@ -43,6 +43,8 @@ RvmCliHelp.SECTIONS.help = [
             {name: 'install', alias: 'i', summary: 'Install a specific ruby version'},
             {name: 'kit', alias: 'k', summary: 'Install x64 dependencies to build native gems like postgresql, mysql2, ...'},
             {name: 'list', alias: 'l', summary: 'List all installed ruby versions managed by RVM'},
+            {name: 'list verbose', alias: '', summary: 'List all installed ruby versions managed by RVM with additional info'},
+            {name: 'list known', alias: '', summary: 'List all installable ruby versions'},
             {name: 'scan', alias: 's', summary: 'Scan for ruby installations and add them to the RVM configuration'},
             {name: 'update', alias: 'up', summary: 'Check for RVM updates'},
             {name: 'use', alias: 'u', summary: 'Switch to specified ruby version'},

@@ -1,0 +1,7 @@
+
+%PATH% is a mix of USER and SYSTEM path.
+
+So if we add a path by SETX PATH %NEW_PATH%;%PATH%,
+we add all SYSTEM PATHs to USER PATH as well - and as PATH is limited to 1024 characters, it can be cut as well.
+
+That leads to corrupting PATH. The batch files in this directory get the USER PATH by registry, to use SETX without beeing destructive.
