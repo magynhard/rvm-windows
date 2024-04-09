@@ -144,7 +144,18 @@ Using <span style="color: green">ruby-2.7.8</span> ...
 </pre>
 </div>
 
+#### Install new version
+```bash
+rvm install 3.2
+```
 
+<div style="background: black; color: white; border-radius: 16px;">
+<pre>
+<span style="color: green">Installing ruby-3.2.3 ...</span>
+
+...
+</pre>
+</div>
 
 
 <a name="installation"></a>
