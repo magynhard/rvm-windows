@@ -11,7 +11,7 @@ const RvmCliFix = require("./_fix");
 class RvmCliAdd {
     static add() {
         const self = RvmCliAdd;
-        let path = File.normalizePath(process.argv[3]);
+        let path = File.normalizePath(process.argv.slice(3).join(' '));
         path = path.replace("/bin/ruby.exe","");
         if(Object.values(RvmCliTools.config().envs).includes(path)) {
             console.log(`Ruby at ${Chalk.green(path)} is already added. Nothing to do.`);

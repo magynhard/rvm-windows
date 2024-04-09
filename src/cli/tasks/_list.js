@@ -59,7 +59,7 @@ class RvmCliList {
                 prefix: prefix,
                 version: Chalk.green(version),
                 path: path,
-                platform: execSync(`${path}/bin/ruby.exe --version`, {encoding: 'utf-8'}).toString().trim()
+                platform: execSync(`"${path}/bin/ruby.exe" --version`, {encoding: 'utf-8'}).toString().trim()
             });
             //console.log(`${prefix} ${Chalk.green(version)}`);
         });

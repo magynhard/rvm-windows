@@ -61,7 +61,7 @@ class RvmCliFix {
             if(!File.isExisting(final_path)) {
                 delete new_config.envs[version];
             } else {
-                const result = execSync(`${final_path} --version`, {encoding: 'utf-8'});
+                const result = execSync(`"${final_path}" --version`, {encoding: 'utf-8'});
                 const pure_version = self.getRubyVersionFromRubyPath(path);
                 if(pure_version) {
                     const old_path = new_config.envs[version];
@@ -78,7 +78,7 @@ class RvmCliFix {
     static getRubyVersionFromRubyPath(ruby_path) {
         const self = RvmCliFix;
         let final_path = `${ruby_path}/bin/ruby.exe`;
-        const result = execSync(`${final_path} --version`, {encoding: 'utf-8'});
+        const result = execSync(`"${final_path}" --version`, {encoding: 'utf-8'});
         const pure_version = result.toString().match(/ruby\s+([0-9\.]+)/gm)[0].split(" ")[1];
         return pure_version;
     }
@@ -86,7 +86,7 @@ class RvmCliFix {
     static getRubyPlatformFromRubyPath(ruby_path) {
         const self = RvmCliFix;
         let final_path = `${ruby_path}/bin/ruby.exe`;
-        const result = execSync(`${final_path} --version`, {encoding: 'utf-8'});
+        const result = execSync(`"${final_path}" --version`, {encoding: 'utf-8'});
         let pure_platform = result.toString().match(/ruby\s+[0-9\.]+[^\[]+\[([^\[]+)\]/gm)[0].trim().split(" ").getLast();
         pure_platform = pure_platform.substring(1,pure_platform.length-1);
         return pure_platform;
