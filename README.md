@@ -28,6 +28,7 @@ Missing basic features or known bugs:
 - automatic "ridk install 1" and "ridk install 3" after installing a ruby environment (?)
 - define/set default version 
 - rvm use system
+- check if 'cd' wrapper does make sense on windows to detect rubies on directory change
 ```
 
 
