@@ -81,7 +81,7 @@ rvm list
  * <span style="color: green">ruby-3.2.2</span>
    <span style="color: green">ruby-2.4.10</span>
 => <span style="color: green">ruby-2.7.8</span>
-
+<br/>
 &#35; => - current
 &#35; =* - current && default
 &#35;  * - default
