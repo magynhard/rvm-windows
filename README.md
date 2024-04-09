@@ -4,9 +4,7 @@
 ![downloads](https://img.shields.io/npm/dt/rvm-windows?color=blue&style=plastic)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg?style=plastic&logo=mit)](LICENSE)
 
-<block style="display: inline-block; padding: 8px; background: black; border-radius: 16px">
-<img src="doc/img/rvm_cmd_logo.png"/>
-</block>
+<img src="doc/img/rvm_cmd_logo_round.png"/>
 
 > Unofficial reimplementation of most important [rvm.io](https://www.rvm.io) features for MS Windows
 
