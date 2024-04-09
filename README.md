@@ -28,6 +28,8 @@ Missing basic features or known bugs:
 - automatic "ridk install 1" and "ridk install 3" after installing a ruby environment (?)
 - define/set default version 
 - rvm use system
+- rvm update
+- rvm get stable
 - rvm reinstall <version>
 - check if 'cd' wrapper does make sense on windows to detect rubies on directory change
 ```
@@ -52,6 +54,7 @@ add <path>        # Add a installed ruby environment to the list
 config            # Print current RVM config
 current           # Print current ruby version
 fix               # Automatically fix paths and versions in RVM configuration
+get stable        # Upgrade RVM to its latest stable version
 help              # Print this usage guide
 init              # Initialize RVM by adding to PATH environment variable
 install           # Install a specific ruby version
@@ -60,9 +63,9 @@ list              # List all installed ruby versions managed by RVM
 list verbose      # List all installable ruby versions with additional info
 list known        # List all installable ruby versions
 scan              # Scan for ruby installations and add them to the RVM configuration
-update            # Check for RVM updates
+upgrade <version_from> <version_to>  # Update current or given version to given or latest patch version
 use               # Switch to specified ruby version
-version           # Display build version
+version           # Display RVM build version
 ```
 
 
