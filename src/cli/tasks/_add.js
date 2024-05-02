@@ -20,6 +20,7 @@ class RvmCliAdd {
             new_config.envs['add'] = path;
             RvmCliTools.writeRvmConfig(new_config);
             RvmCliFix.fixEnvironmentVersions();
+            RvmCliFix.fixWrapperFiles();
             console.log(`Added Ruby environment at ${Chalk.green(path)}.`);
         }
     }

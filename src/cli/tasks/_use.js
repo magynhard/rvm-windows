@@ -7,6 +7,7 @@ const Chalk = require('chalk');
 
 var RvmCliTools = require('./../_tools');
 var RvmCliList = require('./_list');
+var RvmCliFix = require('./_fix');
 
 class RvmCliUse {
     static use() {
@@ -29,6 +30,7 @@ class RvmCliUse {
             config.current = match;
             RvmCliTools.writeRvmConfig(config);
             console.log(`Using ${Chalk.green(match)} ...`);
+            RvmCliFix.fixWrapperFiles();
         } else {
             console.error(`No version for ${Chalk.red(version)} available! Run ${Chalk.green('rvm list')} to show available versions.`);
         }

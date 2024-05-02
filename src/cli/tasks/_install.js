@@ -13,6 +13,7 @@ const Chalk = require('chalk');
 var RvmCliTools = require('./../_tools');
 var RvmCliUse = require('./../tasks/_use');
 var RvmCliList = require('./../tasks/_list');
+var RvmCliFix = require('./_fix');
 
 
 class RvmCliInstall {
@@ -78,6 +79,7 @@ class RvmCliInstall {
         let new_config = RvmCliTools.config();
         new_config.envs[version] = install_dir;
         RvmCliTools.writeRvmConfig(new_config);
+        RvmCliFix.fixWrapperFiles();
         console.log(`Installation complete!`);
     }
 
