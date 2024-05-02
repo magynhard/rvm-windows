@@ -40,4 +40,4 @@ set "HTTPS_PROXY=%ORIGINAL_HTTPS_PROXY%"
 set "RUBYPATH=%ORIGINAL_RUBYPATH%"
 
 REM AFTER COMMAND
-%NODE_JS_RUNTIME_PATH% "%RVM_ROOT_PATH%\src\wrapper\wrapper_after.js" "%CD%" %~n0
+"%NODE_JS_RUNTIME_PATH%" "%RVM_ROOT_PATH%\src\wrapper\wrapper_after.js" "%CD%" %~n0
