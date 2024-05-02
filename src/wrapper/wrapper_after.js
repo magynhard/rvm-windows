@@ -10,7 +10,5 @@ let version = Wrapper.getRubyVersionForPath(cwd);
 
 // Refresh wrapper files after installing gems, to ensure new commands are available
 if(command === "gem" || command === "bundle") {
-    console.log("Updating wrapper files ...");
     RvmCliFix.fixWrapperFiles();
-    console.log("done");
 }
