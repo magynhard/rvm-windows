@@ -32,6 +32,7 @@ Missing basic features or known bugs:
 - rvm get stable
 - rvm reinstall <version>
 - check if 'cd' wrapper does make sense on windows to detect rubies on directory change
+- official automatic proxy (wrapper) support
 ```
 
 
