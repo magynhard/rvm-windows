@@ -97,10 +97,21 @@ class RvmCliFix {
      */
     static fixWrapperFiles() {
         const self = RvmCliFix;
-        const node_path = process.argv[0];
+        let node_path = process.argv[0];
         if(!node_path.endsWith('node.exe')) {
             throw new Error(`Can not determine node js runtime!`);
         }
+        // escape spaces in path segments
+        // @example
+        // C:\Program Files\node\node.exe => C:\"Program Files"\node\node.exe
+        //
+        node_path = node_path.split("\\").map((el) => {
+            if(el.includes(" ")) {
+                return `"${el}"`;
+            } else {
+                return el;
+            }
+        }).join("\\");
         const rvm_root_dir = RvmCliTools.rvmRootPath();
         const wrapper_path = File.getHomePath() + '/.rvm/wrapper';
         FileUtils.rmRf(wrapper_path);
