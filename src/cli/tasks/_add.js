@@ -2,6 +2,7 @@
 const {execSync} = require('child_process');
 const Fs = require('fs');
 const File = require('ruby-nice/file');
+const Dir = require('ruby-nice/dir');
 
 var RvmCliTools = require('./../_tools');
 const Chalk = require("chalk");
@@ -16,12 +17,16 @@ class RvmCliAdd {
         if(Object.values(RvmCliTools.config().envs).includes(path)) {
             console.log(`Ruby at ${Chalk.green(path)} is already added. Nothing to do.`);
         } else {
-            let new_config = RvmCliTools.config();
-            new_config.envs['add'] = path;
-            RvmCliTools.writeRvmConfig(new_config);
-            RvmCliFix.fixEnvironmentVersions();
-            RvmCliFix.fixWrapperFiles();
-            console.log(`Added Ruby environment at ${Chalk.green(path)}.`);
+            if(!Dir.isExisting(path)) {
+                console.log(`Could not find path ${Chalk.red(path)}`);
+            } else {
+                let new_config = RvmCliTools.config();
+                new_config.envs['add'] = path;
+                RvmCliTools.writeRvmConfig(new_config);
+                RvmCliFix.fixEnvironmentVersions();
+                RvmCliFix.fixWrapperFiles();
+                console.log(`Added Ruby environment at ${Chalk.green(path)}.`);
+            }
         }
     }
 }

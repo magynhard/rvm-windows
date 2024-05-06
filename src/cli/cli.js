@@ -21,6 +21,7 @@ const taskDefinitions = [
 const tasks = commandLineArgs(taskDefinitions, {partial: true});
 
 RvmCliInit.initAfterInstall();
+RvmCliInit.initSessionToRvmExes();
 
 function logo() {
     console.log(RvmCliTools.logo());
@@ -36,7 +37,7 @@ if (tasks.version || tasks.command && (tasks.command[0] === 'version' || tasks.c
 //
 // add
 //
-else if (tasks.add || tasks.command && (tasks.command[0] === 'add' || tasks.command[0] === 'a')) {
+else if (tasks.add || tasks.mount || tasks.command && (tasks.command[0] === 'add' || tasks.command[0] === 'a' || tasks.command[0] === 'mount' || tasks.command[0] === 'm')) {
     const RvmCliAdd = require('./tasks/_add');
     RvmCliAdd.add();
 }
@@ -68,6 +69,13 @@ else if (tasks.current || tasks.command && (tasks.command[0] === 'current' || ta
     RvmCliCurrent.current();
 }
 //
+// default
+//
+else if (tasks.default || tasks.command && (tasks.command[0] === 'default' || tasks.command[0] === 'd')) {
+    const RvmCliDefault = require('./tasks/_default');
+    RvmCliDefault.default();
+}
+//
 // fix
 //
 else if (tasks.fix || tasks.command && (tasks.command[0] === 'fix' || tasks.command[0] === 'f')) {
@@ -83,7 +91,7 @@ else if (tasks.install || tasks.command && (tasks.command[0] === 'install' || ta
 //
 // scan
 //
-else if (tasks.scan || tasks.command && (tasks.command[0] === 'scan' || tasks.command[0] === 's')) {
+else if (tasks.scan || tasks.automount || tasks.command && (tasks.command[0] === 'scan' || tasks.command[0] === 's' || tasks.command[0] === 'automount' || tasks.command[0] === 'am')) {
     RvmCliScan.scan();
 }
 //

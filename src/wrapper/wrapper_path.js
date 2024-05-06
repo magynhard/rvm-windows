@@ -8,7 +8,7 @@ const wrapper_path = File.getHomePath() + '/.rvm/wrapper';
 
 // add path temporary to not pollute the original PATH env
 let path_var = "";
-if(RvmCliTools.config().current !== "system") {
+if(RvmCliTools.getCurrentVersion() !== "system") {
     path_var = `set "PATH=${wrapper_path}/bin;%PATH%"`;
 } else {
     path_var = `@echo off`;

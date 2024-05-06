@@ -14,7 +14,7 @@ class Wrapper {
      */
     static getRubyVersionForPath(path) {
         const self = Wrapper;
-        let version = RvmCliTools.config().current;
+        let version = RvmCliTools.getCurrentVersion();
         while (true) {
             let gem_file_version = null;
             if (File.isExisting(path + '/.ruby-version')) {
@@ -34,7 +34,7 @@ class Wrapper {
             }
         }
         version = version.trim();
-        if (RvmCliUse._startsWithNumber(version)) {
+        if (RvmCliTools.startsWithNumber(version)) {
             version = `ruby-${version}`;
         }
         return version.trim();
@@ -42,12 +42,12 @@ class Wrapper {
 
     static hasRubyEnvCommand(version, command) {
         const self = Wrapper;
-        if (RvmCliList.versions().includes(version)) {
+        if (RvmCliTools.versions().includes(version)) {
             const bin_path = RvmCliTools.config().envs[version] + '/bin';
             return File.isExisting(`${bin_path}/${command}.bat`) ||
                 File.isExisting(`${bin_path}/${command}.cmd`) ||
                 File.isExisting(`${bin_path}/${command}.exe`)
-        } else if (RvmCliUse._matchingVersion(version, RvmCliList.versions())) {
+        } else if (RvmCliTools.matchingVersion(version, RvmCliTools.versions())) {
             return true;
         } else {
             return false;
@@ -56,10 +56,10 @@ class Wrapper {
 
     static getRubyEnvCommandPath(version, command) {
         const self = Wrapper;
-        if (RvmCliList.versions().includes(version) || RvmCliUse._matchingVersion(version, RvmCliList.versions())) {
+        if (RvmCliTools.versions().includes(version) || RvmCliTools.matchingVersion(version, RvmCliTools.versions())) {
             let final_version = version;
-            if (!RvmCliList.versions().includes(version) && RvmCliUse._matchingVersion(version, RvmCliList.versions())) {
-                final_version = RvmCliUse._matchingVersion(version, RvmCliList.versions());
+            if (!RvmCliTools.versions().includes(version) && RvmCliTools.matchingVersion(version, RvmCliTools.versions())) {
+                final_version = RvmCliTools.matchingVersion(version, RvmCliTools.versions());
             }
             const bin_path = RvmCliTools.config().envs[final_version] + '/bin';
             let final_command = null;
@@ -77,7 +77,7 @@ class Wrapper {
     }
 
     static getPathOfMatchingRubyVersion(version) {
-        const matching_version = RvmCliUse._matchingVersion(version, RvmCliList.versions());
+        const matching_version = RvmCliTools.matchingVersion(version, RvmCliTools.versions());
         if(matching_version) {
             return RvmCliTools.config().envs[matching_version];
         }

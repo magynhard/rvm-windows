@@ -9,6 +9,7 @@ const Fse = require('fs-extra');
 const RvmCliVersion = require('./tasks/_version');
 const File = require('ruby-nice/file');
 const Dir = require('ruby-nice/dir');
+const System = require('ruby-nice/system');
 const Typifier = require('typifier');
 const {fetch, ProxyAgent} = require("undici");
 
@@ -118,6 +119,116 @@ class RvmCliTools {
         return input || '';
     }
 
+    static startsWithNumber(content) {
+        if(content) {
+            return `${parseInt(content[0])}` === content[0];
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Return  matching version from given versions or installed environments.
+     *
+     * Given version can be incomplete. Then it will return the highest matching version.
+     *
+     * @example
+     *
+     * matchingVersion("3")
+     * // => "3.2.2"
+     *
+     * @param {string} version
+     * @param {Array<string>} versions
+     * @returns {*}
+     */
+    static matchingVersion(version, versions) {
+        const self = RvmCliTools;
+        let match = null;
+        versions = versions ?? RvmCliTools.versions();
+        // direct match
+        if(versions.includes(version)) {
+            return version;
+        } else {
+            let split = version.split(".");
+            // minor match
+            if(split.length === 2) {
+                const minor_version = split[0] + "." + split[1];
+                let version_match = null;
+                versions.sort(RvmCliTools.versionSort).reverse().eachWithIndex((v) => {
+                    if(v.startsWith(`${minor_version}.`)) {
+                        version_match = v;
+                        return false; // break
+                    }
+                });
+                if(version_match) {
+                    return version_match;
+                }
+            } else if(split.length === 1) {
+                let version_match = null;
+                versions.sort(RvmCliTools.versionSort).reverse().eachWithIndex((v) => {
+                    if(v.startsWith(`${split[0]}.`)) {
+                        version_match = v;
+                        return false;
+                    }
+                });
+                if(version_match) {
+                    return version_match;
+                }
+            }
+        }
+    }
+
+    static versions() {
+        const self = RvmCliTools;
+        return Object.keys(self.config().envs).sort(self.versionSort);
+    }
+
+    static setCurrentVersion(version) {
+        const self = RvmCliTools;
+        if(version && process.env.RVM_SESSION) {
+            const file_name = File.expandPath(RvmCliTools.rvmSessionsDir() + '/' + process.env.RVM_SESSION);
+            File.write(file_name, version);
+        }
+    }
+
+    static getCurrentVersion() {
+        let rvm_session = process.env.RVM_SESSION;
+        if(rvm_session) {
+            const session_file = File.expandPath(RvmCliTools.rvmSessionsDir() + '/' + process.env.RVM_SESSION);
+            if(File.isExisting(session_file)) {
+                return File.read(session_file);
+            }
+        }
+        return RvmCliTools.getDefaultVersion();
+    }
+
+
+
+    static setDefaultVersion(version) {
+        const self = RvmCliTools;
+        if(!version) {
+            console.error(`No version given. Run ${Chalk.green('rvm default <version>')}, for example: ${Chalk.green('rvm default ruby-3.2.2')}`);
+            process.exit(1);
+        }
+        // prefix ruby- if it starts with number
+        if(RvmCliTools.startsWithNumber(version)) {
+            version = "ruby-" + version;
+        }
+        let match = RvmCliTools.matchingVersion(version);
+        if(match) {
+            let config = RvmCliTools.config();
+            config.default = match;
+            RvmCliTools.writeRvmConfig(config);
+            console.log(`Set default ${Chalk.green(match)} from ${Chalk.green(RvmCliTools.config().envs[match])} ...`);
+        } else {
+            console.error(`No version for ${Chalk.red(version)} available! Run ${Chalk.green('rvm list')} to show available versions.`);
+        }
+    }
+
+    static getDefaultVersion() {
+        return RvmCliTools.config().default;
+    }
+
     /**
      * Print line with trailing new line
      *
@@ -194,6 +305,11 @@ class RvmCliTools {
     static rvmConfigPath() {
         const self = RvmCliTools;
         return File.expandPath(`${File.getHomePath()}/.rvm.json`);
+    }
+
+    static rvmSessionsDir() {
+        const self = RvmCliTools;
+        return File.expandPath(`${File.getHomePath()}/.rvm/sessions`);
     }
 
     static rvmConfigTemplatePath() {

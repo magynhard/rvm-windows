@@ -5,6 +5,7 @@ const {Octokit} = require('@octokit/rest');
 const CommandLineUsage = require('command-line-usage');
 
 var RvmCliTools = require('./../_tools');
+var RvmCliCurrent = require('./_current');
 const {execSync} = require("child_process");
 
 const octokit_rest = new Octokit({
@@ -19,7 +20,7 @@ class RvmCliList {
         const config = RvmCliTools.config();
         config.envs.eachWithIndex((version, path) => {
             let prefix = "  ";
-            if (version === config.current) {
+            if (version === RvmCliTools.getCurrentVersion()) {
                 if (version === config.default) {
                     prefix = "=*";
                 } else {
@@ -46,7 +47,7 @@ class RvmCliList {
         }];
         config.envs.eachWithIndex((version, path) => {
             let prefix = "  ";
-            if (version === config.current) {
+            if (version === RvmCliTools.getCurrentVersion()) {
                 if (version === config.default) {
                     prefix = "=*";
                 } else {
@@ -138,11 +139,6 @@ class RvmCliList {
                 console.error(`Error retrieving releases from ${url}`);
             });
         });
-    }
-
-    static versions() {
-        const self = RvmCliList;
-        return Object.keys(RvmCliTools.config().envs).sort(RvmCliTools.versionSort);
     }
 
     static legend() {

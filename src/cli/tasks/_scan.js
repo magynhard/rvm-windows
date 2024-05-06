@@ -26,7 +26,7 @@ class RvmCliScan {
     static scanMissingEnvironmentPaths() {
         const self = RvmCliScan;
         try {
-            let paths = execSync(`where ruby`, { stdio: 'pipe'}).toString();
+            let paths = execSync(`chcp 65001 > NUL & where ruby`, { stdio: 'pipe'}).toString();
             paths = paths.split("\n");
             const rvm_paths = Dir.glob(File.getHomePath() + '/.rvm/envs/*');
             paths = paths.concat(rvm_paths);

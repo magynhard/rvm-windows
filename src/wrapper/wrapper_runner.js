@@ -14,8 +14,8 @@ var final_command = "";
 
 if(Wrapper.hasRubyEnvCommand(version, command)) {
     final_command = `"${Wrapper.getRubyEnvCommandPath(version, command)}"`;
-} else if(Wrapper.hasRubyEnvCommand(RvmCliTools.config().current, command)) {
-    const current_version = RvmCliTools.config().current;
+} else if(Wrapper.hasRubyEnvCommand(RvmCliTools.getCurrentVersion(), command)) {
+    const current_version = RvmCliTools.getCurrentVersion();
     final_command = `"${Wrapper.getRubyEnvCommandPath(current_version, command)}"`;
 } else {
     console.log(`@echo off && echo '${command}' is not recognized as an internal or external command, operable program or batch file. && exit /b 9009`);

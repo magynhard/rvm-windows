@@ -26,11 +26,11 @@ class RvmCliInstall {
             process.exit(1);
         }
         // prefix ruby- if it starts with number
-        if (RvmCliUse._startsWithNumber(version)) {
+        if (RvmCliTools.startsWithNumber(version)) {
             version = "ruby-" + version;
         }
         RvmCliList.listKnown(true).then((releases) => {
-            const version_match = RvmCliUse._matchingVersion(version, releases);
+            const version_match = RvmCliTools.matchingVersion(version, releases);
             if (version_match) {
                 if (self.isAlreadyInstalled(version_match)) {
                     console.log(Chalk.yellow(`Already installed ${version_match}.`));
@@ -78,14 +78,18 @@ class RvmCliInstall {
         const result = execSync(command, {encoding: 'utf-8'});
         let new_config = RvmCliTools.config();
         new_config.envs[version] = install_dir;
+        if(!new_config.default) {
+            new_config.default = version;
+        }
         RvmCliTools.writeRvmConfig(new_config);
+        RvmCliTools.setCurrentVersion(version);
         RvmCliFix.fixWrapperFiles();
         console.log(`Installation complete!`);
     }
 
     static isAlreadyInstalled(version) {
         const self = RvmCliInstall;
-        return !!RvmCliUse._matchingVersion(version, RvmCliList.versions());
+        return !!RvmCliTools.matchingVersion(version, RvmCliTools.versions());
     }
 
     static download(url, destination) {

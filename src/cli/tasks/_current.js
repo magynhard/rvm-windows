@@ -10,8 +10,7 @@ var RvmCliTools = require('./../_tools');
 class RvmCliCurrent {
     static current() {
         const self = RvmCliCurrent;
-        const current = RvmCliTools.config().current;
-        console.log(current);
+        console.log(RvmCliTools.getCurrentVersion());
     }
 }
 
