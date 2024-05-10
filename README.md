@@ -170,6 +170,8 @@ rvm install 3.2
 
 You can either use npm or yarn to install *rvm-windows*.
 
+NodeJS >= 18.x is required.
+
 After install the command `rvm` is available on the command line.
 
 On your command line execute the following command:

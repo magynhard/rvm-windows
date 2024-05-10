@@ -12,6 +12,15 @@
   "bin": {
     "rvm": "src/cli/cli.js"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "os": [
+    "win32","win64"
+  ],
+  "cpu": [
+    "x64","!arm"
+  ],
   "scripts": {
     "cli": "node src/cli/cli.js",
     "doc": "node scripts/doc.js",
