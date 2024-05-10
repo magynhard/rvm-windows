@@ -104,14 +104,15 @@ else if (tasks.kit || tasks.command && (tasks.command[0] === 'kit' || tasks.comm
 //
 // list
 //
-else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || tasks.command[0] === 'l')) {
+else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || ['l','lv','la','lk'].includes(tasks.command[0]))) {
     const RvmCliList = require('./tasks/_list');
+    const f = tasks.command[0];
     const c = tasks.command[1];
-    if(c === 'known') {
+    if(c === 'known' || f === 'lk') {
         RvmCliList.listKnown();
-    } else if(c === 'all') {
+    } else if(c === 'all' || f === 'la') {
         RvmCliList.listAll();
-    } else if(c === 'verbose' || c === "v") {
+    } else if(c === 'verbose' || c === 'v' || f === 'lv') {
         RvmCliList.listVerbose();
     } else {
         RvmCliList.list();

@@ -16,6 +16,7 @@ class RvmCliKit {
     static kit() {
         const self = RvmCliKit;
         console.log("Installing a bunch of helpful dependencies for building native gems ...\n");
+        self.installRidkTools();
         const platform = RvmCliFix.getRubyPlatformFromRubyPath(ruby_env_path);
         if(platform && self.dependencies[platform]) {
             self.dependencies[platform].eachWithIndex((dep) => {
@@ -36,6 +37,13 @@ class RvmCliKit {
         const self = RvmCliKit;
         dependency = dependency.split(" ")[0]; // security
         execSync(`chcp 65001 > NUL && ridk exec sh -c "pacman --noconfirm -S ${dependency}"`, {encoding: 'utf-8'})
+    }
+
+    static installRidkTools() {
+        console.log(`Ensure ridk tools are installed (1) ...`);
+        execSync(`chcp 65001 > NUL && ridk install 1`, {encoding: 'utf-8'})
+        console.log(`Ensure ridk tools are installed (3) ...`);
+        execSync(`chcp 65001 > NUL && ridk install 3`, {encoding: 'utf-8'})
     }
 }
 

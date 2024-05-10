@@ -30,32 +30,35 @@ RvmCliHelp.SECTIONS.help = [
     },
     {
         header: 'Available tasks',
-        content: 'Use either the full length task or its shortcut.'
+        content: 'Use either the full length task name or its shortcut.'
     },
     {
         content: [
             {name: 'add <path>', alias: 'a', summary: 'Add a installed ruby environment to the list (alias: mount)'},
             {name: 'automount', alias: 'am', summary: 'Scan for ruby installations and add them to the RVM configuration (alias: scan)'},
             {name: 'config', alias: 'cfg', summary: 'Print current RVM config'},
-            {name: 'current', alias: 'c', summary: 'Print current ruby version'},
+            {name: 'current', alias: 'c', summary: 'Print current ruby environment version'},
             {name: 'default', alias: 'd', summary: 'Get default ruby version'},
             {name: 'default <version>', alias: 'd <version>', summary: 'Set default ruby version (alias: use --default <version>)'},
-            {name: 'delete', alias: 'del', summary: 'Delete current or given ruby and delete its sources (alias: remove)'},
+            {name: 'delete <version>', alias: 'del', summary: 'Delete given ruby environment (alias: remove)'},
             {name: 'fix', alias: 'f', summary: 'Automatically fix paths and versions in RVM configuration'},
             {name: 'get stable', alias: '', summary: 'Upgrade RVM to its latest stable version'},
             {name: 'help', alias: 'h', summary: 'Print this usage guide'},
-            {name: 'init', alias: '', summary: 'Initialize RVM by adding to PATH environment variable'},
+            {name: 'init', alias: '', summary: 'Initialize RVM by adding it to the PATH environment variable'},
             {name: 'install <version>', alias: 'i', summary: 'Install a specific ruby version'},
-            {name: 'kit', alias: 'k', summary: 'Install x64 dependencies to build native gems like postgresql, mysql2, ...'},
+            {name: 'kick <version>', alias: '', summary: 'Only remove given ruby environment from the RVM list without deleting any ruby environment.'},
+            {name: 'kit', alias: 'k', summary: 'Install a bunch of widely used x64 dependencies automatically, which are needed to build native gems like postgresql, mysql2, ...'},
             {name: 'list', alias: 'l', summary: 'List all installed ruby versions managed by RVM'},
-            {name: 'list verbose', alias: '', summary: 'List all installed ruby versions managed by RVM with additional info'},
-            {name: 'list known', alias: '', summary: 'List all installable ruby versions with latest patch version'},
-            {name: 'list all', alias: '', summary: 'List all installable ruby versions'},
+            {name: 'list verbose', alias: 'lv', summary: 'List all installed ruby versions managed by RVM with additional info'},
+            {name: 'list known', alias: 'lk', summary: 'List all installable ruby versions with latest patch version'},
+            {name: 'list all', alias: 'la', summary: 'List all installable ruby versions'},
             {name: 'mount <path>', alias: 'm', summary: 'Add a installed ruby environment to the list (alias: add)'},
-            {name: 'remove', alias: 'r', summary: 'Remove current or given ruby and delete its sources (alias: delete)'},
+            {name: 'reinstall <version>', alias: 'ri', summary: 'Delete given ruby environment and install it again.'},
+            {name: 'remove', alias: 'r', summary: 'Delete given ruby environment (alias: uninstall)'},
             {name: 'scan', alias: 's', summary: 'Scan for ruby installations and add them to the RVM configuration (alias: automount)'},
-            {name: 'uninstall <version>', alias: 'ui', summary: 'Uninstall current or given version from list, keeping its sources'},
-            {name: 'upgrade <from_version> <to_version>', alias: 'up', summary: 'Update current or given version to given version qor latest patch version'},
+            {name: 'uninstall <version>', alias: 'ui', summary: 'Delete given ruby environment (alias: remove)'},
+            {name: 'upgrade <version>', alias: 'up <version>', summary: 'Upgrade given version to latest patch version'},
+            {name: 'upgrade <from> <to>', alias: 'up <from> <to>', summary: 'Upgrade given from_version to given to_version'},
             {name: 'use <version>', alias: 'u', summary: 'Switch to specified ruby version'},
             {name: 'version', alias: 'v', summary: 'Display RVM build version'},
         ]
@@ -65,7 +68,7 @@ RvmCliHelp.SECTIONS.help = [
         content: [
             {
                 example: 'rvm version',
-                desc: 'Full length task, its shortcut is {green v}'
+                desc: 'Full name task, its shortcut is {green v}'
             },
             {
                 example: 'rvm h',
