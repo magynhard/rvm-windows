@@ -168,27 +168,32 @@ rvm install 3.2
 
 ## Installation
 
+### Requirements
+rvm-windows requires
+* Windows >= 10.x
+* NodeJS >= 18.x
+
+
+### Setup
 You can either use npm or yarn to install *rvm-windows*.
 
-NodeJS >= 18.x is required.
+Ensure that NodeJS >= 18.x is already installed.
 
-After install the command `rvm` is available on the command line.
+Then on your command line execute the following command:
 
-On your command line execute the following command:
-
-### yarn
+#### yarn
 
 ```bash
 yarn global add rvm-windows
 ```
 
-### npm
+#### npm
 
 ```bash
 npm install -g rvm-windows
 ```
 
-
+After installing the command `rvm` is available on the command line.
 
 
 <a name="troubleshooting"></a>
