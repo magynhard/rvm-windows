@@ -88,6 +88,7 @@ class RvmCliFix {
         let final_path = `${ruby_path}/bin/ruby.exe`;
         const result = execSync(`"${final_path}" --version`, {encoding: 'utf-8'});
         let pure_platform = result.toString().match(/ruby\s+[0-9\.]+[^\[]+\[([^\[]+)\]/gm)[0].trim().split(" ").getLast();
+        // remove brackets
         pure_platform = pure_platform.substring(1,pure_platform.length-1);
         return pure_platform;
     }

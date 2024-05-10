@@ -34,8 +34,8 @@ class RvmCliInstall {
             if (version_match) {
                 if (self.isAlreadyInstalled(version_match)) {
                     console.log(Chalk.yellow(`Already installed ${version_match}.`));
-                    console.log(Chalk.yellow(`To reinstall use:`));
-                    console.log(Chalk.yellow(`\n\trvm reinstall ${version_match}`));
+                    console.log(`To reinstall use:`);
+                    console.log(Chalk.green(`\n\trvm reinstall ${version_match}`));
                 } else {
                     console.log(Chalk.green(`Installing ${version_match} ...`));
                     console.log();
