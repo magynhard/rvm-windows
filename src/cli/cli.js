@@ -109,6 +109,8 @@ else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || tasks.co
     const c = tasks.command[1];
     if(c === 'known') {
         RvmCliList.listKnown();
+    } else if(c === 'all') {
+        RvmCliList.listAll();
     } else if(c === 'verbose' || c === "v") {
         RvmCliList.listVerbose();
     } else {

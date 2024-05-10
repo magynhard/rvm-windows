@@ -72,7 +72,47 @@ class RvmCliList {
         const self = RvmCliList;
         return new Promise((resolve, reject) => {
             if (!silent) {
-                console.log("\nRetrieving x64 devkit releases on\nhttps://rubyinstaller.org/downloads/archives/\n...");
+                console.log("\nRetrieving latest minor x64 devkit releases on\nhttps://rubyinstaller.org/downloads/archives/\n...");
+            }
+            const config = RvmCliTools.config();
+            const installed_versions = Object.keys(config.envs);
+            self.rubyInstallerReleasesList().then((releases) => {
+                let beautified_releases = releases.map(e => e.version)
+                    .sort(RvmCliTools.versionSort)
+                    .reverse();
+                let latest_minor_releases = [];
+                // get all minor, e.g. 3.3, 3.2, 3.1, 2.7, 2.6
+                const latest_minor_versions = [...new Set(beautified_releases.map(e => e.split(".").slice(0,2).join(".")))];
+                latest_minor_versions.eachWithIndex((v, i) => {
+                   const latest_patch = Math.max(...beautified_releases.filter(e => e.startsWith(v)).map(e => parseInt(e.split(".").getLast())));
+                   latest_minor_releases.push(`${v}.${latest_patch}`);
+                });
+                const final_releases = latest_minor_releases.map((e) => {
+                    return `ruby-${e}`;
+                });
+                if (!silent) {
+                    console.log(
+                        "\n - " + final_releases.map((version) => {
+                            if (installed_versions.includes(version)) {
+                                return Chalk.green(version);
+                            } else {
+                                return version;
+                            }
+                        }).join("\n - ")
+                    );
+                }
+                resolve(final_releases);
+            }).catch((e) => {
+                reject(e);
+            });
+        });
+    }
+
+    static listAll(silent = false) {
+        const self = RvmCliList;
+        return new Promise((resolve, reject) => {
+            if (!silent) {
+                console.log("\nRetrieving all x64 devkit releases on\nhttps://rubyinstaller.org/downloads/archives/\n...");
             }
             const config = RvmCliTools.config();
             const installed_versions = Object.keys(config.envs);
