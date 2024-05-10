@@ -273,12 +273,12 @@ class RvmCliTools {
 
     static rvmRootPath() {
         const self = RvmCliTools;
-        return self.normalizePath(Path.resolve(__dirname + '/../../'));
+        return File.expandPath(Path.resolve(__dirname + '/../../'));
     }
 
     static projectRootPath() {
         const self = RvmCliTools;
-        return self.normalizePath(process.cwd());
+        return File.expandPath(process.cwd());
     }
 
     static readRvmConfig() {
@@ -328,7 +328,7 @@ class RvmCliTools {
 
     static makeDirOfFile(file) {
         const self = RvmCliTools;
-        let final_dir = self.normalizePath(Path.dirname(file));
+        let final_dir = File.expandPath(Path.dirname(file));
         Fs.mkdirSync(final_dir, { recursive: true });
     }
 
@@ -387,7 +387,7 @@ class RvmCliTools {
     }
 
     /**
-     * Ensure path is divided by slashes / and not back slahes \
+     * Ensure path is divided by slashes / and not back slashes \
      * to ensure compatibility with MS Windows
      *
      * @param {String} path
