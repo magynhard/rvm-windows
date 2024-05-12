@@ -28,7 +28,7 @@ class RvmCliInit {
         if (user_path && !user_path.startsWith(rvm_wrapper_path)) {
             user_path = user_path.replace(";" + rvm_wrapper_path, ""); // remove existing path
             // add at the beginning of path env variable
-            const add_path_cmd = `setx PATH "${rvm_wrapper_path};${user_path}"`;
+            const add_path_cmd = `chcp 65001 > NUL && setx PATH "${rvm_wrapper_path};${user_path}"`;
             let stdout3 = null;
             try {
                 execSync(add_path_cmd, {encoding: 'utf-8', stdio: 'ignore'});
