@@ -61,16 +61,16 @@ RvmCliKit.dependencies = {
 
 RvmCliKit.after_commands = {
     'x64-mingw-ucrt': [
-        `gem install mysql2 --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/ucrt64"`
-        `gem install pg --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/ucrt64"`
-        `gem install eventmachine --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/ucrt64"`
-        `gem install nokogiri --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/ucrt64"`
+        `gem install mysql2 --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/ucrt64"`,
+        `gem install pg --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/ucrt64"`,
+        `gem install eventmachine --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/ucrt64"`,
+        `gem install nokogiri --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/ucrt64"`,
     ],
     'x64-mingw32': [
-        `gem install mysql2 --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/mingw64"`
-        `gem install pg --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/mingw64"`
-        `gem install eventmachine --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/mingw64"`
-        `gem install nokogiri --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/mingw64"`
+        `gem install mysql2 --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/mingw64"`,
+        `gem install pg --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/mingw64"`,
+        `gem install eventmachine --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/mingw64"`,
+        `gem install nokogiri --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/mingw64"`,
     ]
 }
 
