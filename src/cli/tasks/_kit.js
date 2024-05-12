@@ -49,7 +49,7 @@ class RvmCliKit {
     }
 
     static installRidkTools() {
-        console.log(`Ensure ridk tools are installed ...`);
+        console.log(`Ensure ridk tools are installed ... please wait ...`);
         const vs = RvmCliTools.getCurrentRawVersion().split(".");
         // ridk install 1 2 3 still works fine on ruby 2.6.x / 2.7.x / 3.0.x, but not on 2.4.x / 2.5.x
         // so we install and copy msys64 from ruby 3.0.x when using ruby < 3
@@ -67,6 +67,8 @@ class RvmCliKit {
             FileUtils.rmRf(File.expandPath(target_path + '/msys64'));
             FileUtils.cp_r(source_path + '/msys64', target_path + '/msys64');
             console.log("Patch complete!");
+            console.log("");
+            console.log("Updating dev tools by ridk ... please wait ...");
             console.log("");
         }
         execSync(`chcp 65001 > NUL && ridk install 1 2 3`, {encoding: 'utf-8'})
