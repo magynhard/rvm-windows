@@ -22,7 +22,7 @@ class RvmCliInit {
      */
     static ensureWrapperPathEnvIsSet(silent = false) {
         const self = RvmCliInit;
-        const rvm_wrapper_path = File.expandPath(`${File.getHomePath()}/.rvm/wrapper`);
+        const rvm_wrapper_path = File.expandPath(`${RvmCliTools.getRvmDataDir()}/wrapper`);
         let user_path = self.getUserPath();
         // add only if not already added
         if (user_path && !user_path.startsWith(rvm_wrapper_path)) {

@@ -28,19 +28,18 @@ class RvmCliScan {
         try {
             let paths = execSync(`chcp 65001 > NUL & where ruby`, { stdio: 'pipe'}).toString();
             paths = paths.split("\n");
-            const rvm_paths = Dir.glob(File.getHomePath() + '/.rvm/envs/*');
+            const rvm_paths = Dir.glob(RvmCliTools.getRvmDataDir() + '/envs/*');
             paths = paths.concat(rvm_paths);
             paths.concat(Dir.glob("C:\\Program Files\\Ruby*"));
+            paths.concat(Dir.glob("C:\\Ruby*"));
             let new_config = RvmCliTools.config();
             paths.eachWithIndex((path, i) => {
                 if(path) {
                     path = File.normalizePath(path.trim());
                     path = path.replace("/bin/ruby.exe", "");
-                    //if(!path.includes(`${File.getHomePath()}/.rvm/`)) {
-                        if(!Object.values(new_config).includes(path)) {
-                            new_config.envs["unknown_" + i] = File.normalizePath(path);
-                        }
-                    //}
+                    if(!Object.values(new_config).includes(path)) {
+                        new_config.envs["unknown_" + i] = File.normalizePath(path);
+                    }
                 }
             });
             RvmCliTools.writeRvmConfig(new_config);

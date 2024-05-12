@@ -4,7 +4,7 @@ const RvmCliTools = require('../cli/_tools');
 const Wrapper = require('../cli/_wrapper');
 const File = require('ruby-nice/file');
 
-const wrapper_path = File.getHomePath() + '/.rvm/wrapper';
+const wrapper_path = RvmCliTools.getRvmDataDir() + '/wrapper';
 
 // add path temporary to not pollute the original PATH env
 let path_var = "";

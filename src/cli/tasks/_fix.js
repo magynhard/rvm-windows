@@ -114,7 +114,7 @@ class RvmCliFix {
             }
         }).join("\\");
         const rvm_root_dir = RvmCliTools.rvmRootPath();
-        const wrapper_path = File.getHomePath() + '/.rvm/wrapper';
+        const wrapper_path = RvmCliTools.getRvmDataDir() + '/wrapper';
         FileUtils.rmRf(wrapper_path);
         FileUtils.mkdirP(wrapper_path);
         RvmCliTools.config().envs.eachWithIndex((version, path) => {

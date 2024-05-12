@@ -119,6 +119,20 @@ class RvmCliTools {
         return input || '';
     }
 
+    static getRvmDataDir() {
+        const self = RvmCliTools;
+        let dir = self.config().rvm_data_dir || self.getDefaultRvmDataDir();
+        // cut slash or backslash at the end
+        if(dir.endsWith("/") || dir.endsWith("\\")) {
+            dir = dir.substring(0, dir.length-1);
+        }
+        return dir;
+    }
+
+    static getDefaultRvmDataDir() {
+        return File.expandPath("C:/ProgramData/rvm");
+    }
+
     static startsWithNumber(content) {
         if(content) {
             return `${parseInt(content[0])}` === content[0];

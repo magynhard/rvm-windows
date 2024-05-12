@@ -3,6 +3,7 @@
 const Chalk = require('chalk');
 const {Octokit} = require('@octokit/rest');
 const CommandLineUsage = require('command-line-usage');
+const File = require('ruby-nice/file');
 
 var RvmCliTools = require('./../_tools');
 var RvmCliCurrent = require('./_current');
@@ -59,7 +60,7 @@ class RvmCliList {
             section[0].content.data.push({
                 prefix: prefix,
                 version: Chalk.green(version),
-                path: path,
+                path: File.expandPath(path).replaceAll("\\","\\\\"),
                 platform: execSync(`"${path}/bin/ruby.exe" --version`, {encoding: 'utf-8'}).toString().trim()
             });
             //console.log(`${prefix} ${Chalk.green(version)}`);

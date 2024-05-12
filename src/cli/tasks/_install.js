@@ -42,7 +42,7 @@ class RvmCliInstall {
                     RvmCliList.rubyInstallerReleasesList().then((list) => {
                         const final = list.find(e => `ruby-${e.version}` === version_match);
                         const file_name = final.url.split('/').slice(-1);
-                        const destination = File.getHomePath() + '/.rvm/downloads/' + file_name;
+                        const destination = RvmCliTools.getRvmDataDir() + '/downloads/' + file_name;
                         if(File.isExisting(destination)) {
                             console.log(`Found and use cached ${Chalk.green(destination)}`);
                             self.runInstaller(destination, version_match);
@@ -66,7 +66,7 @@ class RvmCliInstall {
     }
 
     static runInstaller(source, version) {
-        const install_dir = `${File.getHomePath()}/.rvm/envs/${version}`;
+        const install_dir = File.expandPath(`${RvmCliTools.getRvmDataDir()}/envs/${version}`);
         FileUtils.mkdirP(install_dir);
         console.log(`Installing at ${Chalk.green(install_dir)} ... please wait, this task will take some minutes ...`);
         let proxy_command = '';
