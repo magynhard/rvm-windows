@@ -48,7 +48,7 @@ RvmCliHelp.SECTIONS.help = [
             {name: 'install <version>', alias: 'i', summary: 'Install a specific ruby version'},
             {name: 'kick <version>', alias: '', summary: 'Only remove given ruby environment from the RVM list without deleting any ruby environment.'},
             {name: 'kit', alias: 'k', summary: 'Install a bunch of widely used x64 dependencies automatically, which are needed to build native gems like postgresql, mysql2, ...'},
-            {name: 'list', alias: 'l', summary: 'List all installed ruby versions managed by RVM'},
+            {name: 'list', alias: 'l ls', summary: 'List all installed ruby versions managed by RVM'},
             {name: 'list verbose', alias: 'lv', summary: 'List all installed ruby versions managed by RVM with additional info'},
             {name: 'list known', alias: 'lk', summary: 'List all installable ruby versions with latest patch version'},
             {name: 'list all', alias: 'la', summary: 'List all installable ruby versions'},

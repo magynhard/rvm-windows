@@ -104,7 +104,7 @@ else if (tasks.kit || tasks.command && (tasks.command[0] === 'kit' || tasks.comm
 //
 // list
 //
-else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || ['l','lv','la','lk'].includes(tasks.command[0]))) {
+else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || ['l','lv','la','lk','ls'].includes(tasks.command[0]))) {
     const RvmCliList = require('./tasks/_list');
     const f = tasks.command[0];
     const c = tasks.command[1];
