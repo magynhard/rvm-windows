@@ -24,15 +24,12 @@ Ruby environment configuration are managed by RVM per user in `C:\Users\%USERNAM
 
 Missing basic features or known bugs:
 - rvm uninstall 
-- rvm upgrade
-- automatic "ridk install 1" and "ridk install 3" after installing a ruby environment (?)
-- define/set default version 
-- rvm use system
+- rvm upgrade 
+- rvm use system (?) - store installed ruby from path at install in rvm.json as "system"
 - rvm update
 - rvm get stable
 - rvm reinstall <version>
-- check if 'cd' wrapper does make sense on windows to detect rubies on directory change
-- official automatic proxy (wrapper) support
+- rvm proxy <proxy> / rvm proxy (get) - official implicit, basic proxy (wrapper) support
 ```
 
 
@@ -59,7 +56,7 @@ get stable        # Upgrade RVM to its latest stable version
 help              # Print this usage guide
 init              # Initialize RVM by adding to PATH environment variable
 install           # Install a specific ruby version
-kit               # (experimental, instable) Install x64 dependencies to build native gems like postgresql, mysql2, ...
+kit               # Automatically configure msys and install x64 dependencies to build native gems like postgresql, mysql2, ...
 list              # List all installed ruby versions managed by RVM
 list verbose      # List all installable ruby versions with additional info
 list known        # List all installable ruby versions
