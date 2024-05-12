@@ -148,8 +148,8 @@ class RvmCliTools {
      *
      * @example
      *
-     * matchingVersion("3")
-     * // => "3.2.2"
+     * matchingVersion("ruby-3")
+     * // => "ruby-3.2.2"
      *
      * @param {string} version
      * @param {Array<string>} versions
@@ -197,6 +197,11 @@ class RvmCliTools {
         return Object.keys(self.config().envs).sort(self.versionSort);
     }
 
+    static rawVersions() {
+        const self = RvmCliTools;
+        return self.versions().map(e => e.replace("ruby-", ""));
+    }
+
     static setCurrentVersion(version) {
         const self = RvmCliTools;
         if(version && process.env.RVM_SESSION) {
@@ -214,6 +219,14 @@ class RvmCliTools {
             }
         }
         return RvmCliTools.getDefaultVersion();
+    }
+
+    /**
+     * Get current version without ruby- prefix
+     */
+    static getCurrentRawVersion() {
+        const self = RvmCliTools;
+        return self.getCurrentVersion().replace("ruby-","");
     }
 
 

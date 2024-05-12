@@ -24,14 +24,14 @@ class RvmCliUse {
             console.error(`No version given. Run ${Chalk.green('rvm use <version>')}, for example: ${Chalk.green('rvm use ruby-3.2.2')}`);
             process.exit(1);
         }
+        else if(version === "default") {
+            match = RvmCliTools.config().default;
+        }
         // prefix ruby- if it starts with number
         if(RvmCliTools.startsWithNumber(version)) {
             version = "ruby-" + version;
         }
         let match = RvmCliTools.matchingVersion(version);
-        if(version === "default") {
-            match = RvmCliTools.config().default;
-        }
         if(match) {
             RvmCliTools.setCurrentVersion(match);
             console.log(`Using ${Chalk.green(match)} from ${Chalk.green(RvmCliTools.config().envs[match])} ...`);

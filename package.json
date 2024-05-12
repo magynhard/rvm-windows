@@ -53,7 +53,7 @@
     "lucky-case": "^1.1.8",
     "node-fetch": "^2.7.0",
     "prompt-sync": "^4.2.0",
-    "ruby-nice": "^0.2.8",
+    "ruby-nice": "^0.3.1",
     "typifier": "^0.1.2",
     "undici": "^6.10.2"
   },

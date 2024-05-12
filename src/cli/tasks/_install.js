@@ -85,7 +85,7 @@ class RvmCliInstall {
         RvmCliTools.writeRvmConfig(new_config);
         RvmCliTools.setCurrentVersion(version);
         RvmCliFix.fixWrapperFiles();
-        console.log(`Installation complete!`);
+        console.log(`Installation complete!\n\nRun ${Chalk.green("rvm kit")} to install development tools and a bunch of widely used x64 dependencies automatically.`);
     }
 
     static isAlreadyInstalled(version) {

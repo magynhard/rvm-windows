@@ -2,6 +2,7 @@
 
 const Fs = require('fs');
 const File = require('ruby-nice/file');
+const FileUtils = require('ruby-nice/file-utils');
 const { execSync } = require('child_process');
 
 var RvmCliTools = require('./../_tools');
@@ -18,7 +19,6 @@ class RvmCliKit {
         console.log("Installing a bunch of helpful dependencies for building native gems ...\n");
         self.installRidkTools();
         console.log("Updating pacman dependencies ...\n");
-        self.installRidkTools();
         const platform = RvmCliFix.getRubyPlatformFromRubyPath(ruby_env_path);
         if(platform && self.dependencies[platform]) {
             self.dependencies[platform].eachWithIndex((dep) => {
@@ -26,8 +26,15 @@ class RvmCliKit {
                 self.installPacmanDependency(dep);
             });
             self.after_commands[platform].eachWithIndex((cmd) => {
-                console.log(`Running fix command ${Chalk.green(cmd)} ...`);
-                execSync(cmd, {encoding: 'utf-8'});
+                let final_command = cmd;
+                let patch_version = null;
+                if((patch_version = Object.keys(self.latest_supported_versions).find(e => RvmCliTools.getCurrentRawVersion().startsWith(e)))) {
+                    RvmCliKit.latest_supported_versions[patch_version].eachWithIndex((gem, version) => {
+                        final_command = final_command.replace(`gem install ${gem} `, `gem install ${gem} -v ${version} `);
+                    });
+                }
+                console.log(`Running fix command ${Chalk.green(final_command)} ...`);
+                execSync(final_command, {encoding: 'utf-8'});
             });
             console.log("\nInstallation complete!");
         } else {
@@ -43,7 +50,25 @@ class RvmCliKit {
 
     static installRidkTools() {
         console.log(`Ensure ridk tools are installed ...`);
-        // work fine on ruby 2.6.x / 2.7.x / 3.0.x, but not on 2.4.x / 2.5.x
+        const vs = RvmCliTools.getCurrentRawVersion().split(".");
+        // ridk install 1 2 3 still works fine on ruby 2.6.x / 2.7.x / 3.0.x, but not on 2.4.x / 2.5.x
+        // so we install and copy msys64 from ruby 3.0.x when using ruby < 3
+        if(vs[0] === "2") {
+            const old_version = RvmCliTools.getCurrentVersion();
+            if(!RvmCliTools.matchingVersion("ruby-3.0")) {
+                console.log(`Installing ${Chalk.green("ruby-3.0.x")} to patch current ${Chalk.green(RvmCliTools.getCurrentVersion())} with its msys64 ... please wait ...`);
+                execSync(`rvm install 3.0`);
+                execSync(`rvm use ${old_version}`);
+            }
+            let matching_version = RvmCliTools.matchingVersion("ruby-3.0");
+            console.log(`Patch current version ${Chalk.green(RvmCliTools.getCurrentVersion())} with msys from ${Chalk.green(matching_version)} ... please wait ...`);
+            const source_path = RvmCliTools.config().envs[matching_version];
+            const target_path = RvmCliTools.config().envs[RvmCliTools.getCurrentVersion()];
+            FileUtils.rmRf(File.expandPath(target_path + '/msys64'));
+            FileUtils.cp_r(source_path + '/msys64', target_path + '/msys64');
+            console.log("Patch complete!");
+            console.log("");
+        }
         execSync(`chcp 65001 > NUL && ridk install 1 2 3`, {encoding: 'utf-8'})
     }
 }
@@ -72,6 +97,16 @@ RvmCliKit.after_commands = {
         `gem install eventmachine --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/mingw64"`,
         `gem install nokogiri --platform=ruby -- --with-mysql-dir="${ruby_env_path}/msys64/mingw64"`,
     ]
+}
+
+/*
+    some gems end their support at specific versions, that need to be installed explicitly if using that ruby version
+ */
+RvmCliKit.latest_supported_versions = {
+    '2.4': {
+        'pg': '1.2.3',
+        'nokogiri': '1.10.10',
+    }
 }
 
 module.exports = RvmCliKit;
