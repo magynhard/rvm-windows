@@ -54,6 +54,7 @@ class RvmCliInstall {
                             }).catch((e) => {
                                 console.error("Error downloading file!", e.message);
                             });
+                            console.log("");
                         }
                     });
                 }

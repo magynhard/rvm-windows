@@ -63,7 +63,6 @@ class RvmCliList {
                 path: File.expandPath(path).replaceAll("\\","\\\\"),
                 platform: execSync(`"${path}/bin/ruby.exe" --version`, {encoding: 'utf-8'}).toString().trim()
             });
-            //console.log(`${prefix} ${Chalk.green(version)}`);
         });
         console.log(CommandLineUsage(section));
         self.legend();
