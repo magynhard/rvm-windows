@@ -2,6 +2,7 @@
 
 const Chalk = require('chalk');
 const CommandLineUsage = require('command-line-usage');
+const { execSync } = require('child_process');
 const Prompt = require('prompt-sync')();
 const Path = require('path');
 const Fs = require('fs');
@@ -12,6 +13,7 @@ const Dir = require('ruby-nice/dir');
 const System = require('ruby-nice/system');
 const Typifier = require('typifier');
 const {fetch, ProxyAgent} = require("undici");
+const RvmCliUse = require("./tasks/_use");
 
 class RvmCliTools {
 
@@ -219,6 +221,32 @@ class RvmCliTools {
             }
         }
         return RvmCliTools.getDefaultVersion();
+    }
+
+    /**
+     * Check of currently set "default" and "current" versions are available or set at all.
+     * Then reset if needed.
+     */
+    static fixDefaultAndCurrent() {
+        const self = RvmCliTools;
+        execSync(`rvm fix`);
+        const new_version = Object.keys(RvmCliTools.config().envs)[0];
+        const default_version = RvmCliTools.config().default;
+        const current_version = self.getCurrentVersion();
+        if (!RvmCliTools.config().envs[current_version]) {
+            if (RvmCliTools.config().envs[default_version]) {
+                RvmCliUse.runUse(default_version);
+            } else if(new_version) {
+                RvmCliUse.runUse(new_version);
+            }
+        }
+        if(!RvmCliTools.config().envs[default_version]) {
+            if (RvmCliTools.config().envs[current_version]) {
+                RvmCliUse.runUse(current_version);
+            } else if(new_version) {
+                RvmCliUse.runUse(new_version);
+            }
+        }
     }
 
     /**

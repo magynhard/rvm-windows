@@ -2,8 +2,10 @@
 
 const FileUtils = require('ruby-nice/file-utils');
 const Chalk = require('chalk');
+const Dir = require('ruby-nice/dir');
 
-var RvmCliTools = require('./../_tools');
+const RvmCliTools = require('./../_tools');
+const RvmCliUse = require("./_use");
 
 
 class RvmCliUninstall {
@@ -27,6 +29,9 @@ class RvmCliUninstall {
             delete config.envs[version];
             RvmCliTools.writeRvmConfig(config);
             console.log(`The environment ${Chalk.red(version)} has been successfully removed!`);
+            console.log("");
+            console.log("");
+            RvmCliTools.fixDefaultAndCurrent();
         } else {
             console.error(`Given version ${Chalk.red(version)} not found. To list all installed versions, run ${Chalk.green("rvm list")}.`);
         }

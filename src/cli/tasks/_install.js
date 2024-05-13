@@ -82,6 +82,9 @@ class RvmCliInstall {
         if(!new_config.default) {
             new_config.default = version;
         }
+        if(!new_config.default) {
+            new_config.default = version;
+        }
         RvmCliTools.writeRvmConfig(new_config);
         RvmCliTools.setCurrentVersion(version);
         RvmCliFix.fixWrapperFiles();

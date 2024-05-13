@@ -9,9 +9,9 @@ var RvmCliTools = require('./../_tools');
 var RvmCliFix = require('./_fix');
 
 class RvmCliUse {
-    static runUse() {
+    static runUse(version) {
         const self = RvmCliUse;
-        let version = process.argv[3];
+        version = version || process.argv[3];
         let param = process.argv[4];
         if(version.startsWith("--")) {
             version = param;
