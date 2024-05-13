@@ -23,12 +23,8 @@ Ruby environment configuration are managed by RVM per user in `C:\Users\%USERNAM
 - Pre beta. Only for test purpose.
 
 Missing basic features or known bugs:
-- rvm uninstall 
 - rvm upgrade 
 - rvm use system (?) - store installed ruby from path at install in rvm.json as "system"
-- rvm update
-- rvm get stable
-- rvm reinstall <version>
 - rvm proxy <proxy> / rvm proxy (get) - official implicit, basic proxy (wrapper) support
 ```
 
