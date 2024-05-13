@@ -42,7 +42,7 @@ class RvmCliInstall {
                     RvmCliList.rubyInstallerReleasesList().then((list) => {
                         const final = list.find(e => `ruby-${e.version}` === version_match);
                         const file_name = final.url.split('/').slice(-1);
-                        const destination = RvmCliTools.getRvmDataDir() + '/downloads/' + file_name;
+                        const destination = File.expandPath(RvmCliTools.getRvmDataDir() + '/downloads/' + file_name);
                         if(File.isExisting(destination)) {
                             console.log(`Found and use cached ${Chalk.green(destination)}`);
                             self.runInstaller(destination, version_match);
