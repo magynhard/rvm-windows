@@ -50,10 +50,10 @@ class RvmCliKit {
 
     static installRidkTools() {
         console.log(`Ensure ridk tools are installed ... please wait ...`);
-        const vs = RvmCliTools.getCurrentRawVersion().split(".");
+        const vs = RvmCliTools.getCurrentRawVersion();
         // ridk install 1 2 3 still works fine on ruby 2.6.x / 2.7.x / 3.0.x, but not on 2.4.x / 2.5.x
         // so we install and copy msys64 from ruby 3.0.x when using ruby < 3
-        if(vs[0] === "2" && vs[1] === "4") {
+        if(vs.startsWith("2.4.") || vs.startsWith("2.5.")) {
             const old_version = RvmCliTools.getCurrentVersion();
             if(!RvmCliTools.matchingVersion("ruby-2.6")) {
                 console.log(`Installing ${Chalk.green("ruby-2.6.x")} to patch current ${Chalk.green(RvmCliTools.getCurrentVersion())} with its msys64 ... please wait ...`);
@@ -71,7 +71,8 @@ class RvmCliKit {
             console.log("Updating dev tools by ridk ... please wait ...");
             console.log("");
         }
-        execSync(`chcp 65001 > NUL && ridk install 1 2 3`, {encoding: 'utf-8'})
+        execSync(`chcp 65001 > NUL && ridk install 1 2 3`, {encoding: 'utf-8'});
+        execSync(`ridk exec pacman --noconfirm -Sy`); // fixes pg install on 2.4 / 2.5
     }
 }
 
