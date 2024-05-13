@@ -108,7 +108,10 @@ RvmCliKit.latest_supported_versions = {
     '2.4': {
         'pg': '1.2.3',
         'nokogiri': '1.10.10',
-    }
+    },
+    '2.7': {
+        'nokogiri': '1.15.6',
+    },
 }
 
 module.exports = RvmCliKit;
