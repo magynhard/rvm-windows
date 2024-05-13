@@ -8,6 +8,7 @@ const RvmCliTools = require('./../_tools');
 const RvmCliUninstall = require('./_uninstall');
 const RvmCliInstall = require('./_install');
 const RvmCliVersion = require('./_version');
+const RvmCliInit = require('./_init');
 
 
 class RvmCliGet {
@@ -24,6 +25,7 @@ class RvmCliGet {
             console.log(`Nothing to do. rvm-windows is already up to date!`);
         } else {
             console.log(`Update complete. New version is ${Chalk.green(new_version)}.`);
+            RvmCliInit.initSessionToRvmExes(true);
         }
     }
 }
