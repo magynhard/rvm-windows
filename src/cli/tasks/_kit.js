@@ -10,7 +10,7 @@ var RvmCliFix = require('./../tasks/_fix');
 var Wrapper = require('./../_wrapper');
 const Chalk = require('chalk');
 
-const ruby_env_path = Wrapper.getPathOfMatchingRubyVersion(Wrapper.getRubyVersionForPath(process.cwd()));
+const ruby_env_path = Wrapper.getPathOfMatchingRubyVersion(Wrapper.getRubyVersionForPath(process.cwd())).replaceAll("\\","/");
 
 class RvmCliKit {
 
