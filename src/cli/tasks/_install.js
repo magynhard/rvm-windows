@@ -37,7 +37,7 @@ class RvmCliInstall {
                     console.log(`To reinstall use:`);
                     console.log(Chalk.green(`\n\trvm reinstall ${version_match}`));
                 } else {
-                    console.log(Chalk.green(`Installing ${version_match} ...`));
+                    console.log(`Installing ${Chalk.green(version_match)} ...`);
                     console.log();
                     RvmCliList.rubyInstallerReleasesList().then((list) => {
                         const final = list.find(e => `ruby-${e.version}` === version_match);
