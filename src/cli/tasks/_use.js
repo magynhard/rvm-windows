@@ -18,13 +18,12 @@ class RvmCliUse {
         if(RvmCliTools.startsWithNumber(param) && process.argv[3].startsWith("--")) {
             param = process.argv[3];
         }
-
         if(!version) {
             console.error(`No version given. Run ${Chalk.green('rvm use <version>')}, for example: ${Chalk.green('rvm use ruby-3.2.2')}`);
             process.exit(1);
         }
         else if(version === "default") {
-            match = RvmCliTools.config().default;
+            version = RvmCliTools.config().default || RvmCliTools.config().envs[0];
         }
         // prefix ruby- if it starts with number
         if(RvmCliTools.startsWithNumber(version)) {
