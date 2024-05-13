@@ -96,6 +96,13 @@ else if (tasks.get || tasks.command && (tasks.command[0] === 'get' || tasks.comm
     RvmCliGet.runGet();
 }
 //
+// kick
+//
+else if (tasks.kick || tasks.command && (tasks.command[0] === 'kick' || tasks.command[0] === 'k')) {
+    const RvmCliKick = require('./tasks/_kick');
+    RvmCliKick.runKick();
+}
+//
 // reinstall
 //
 else if (tasks.reinstall || tasks.command && (tasks.command[0] === 'reinstall' || tasks.command[0] === 'ri')) {
