@@ -12,28 +12,29 @@ class RvmCliUninstall {
 
     static runUninstall(version) {
         const self = RvmCliUninstall;
-        version = version || process.argv[3];
-        if (!version) {
+        let final_version = version || process.argv[3];
+        if (!final_version) {
             console.error(`No version given. Run ${Chalk.green('rvm uninstall <version>')}, for example: ${Chalk.green('rvm uninstall ruby-3.2.2')}`);
             process.exit(1);
         }
         // prefix ruby- if it starts with number
-        if (RvmCliTools.startsWithNumber(version)) {
-            version = "ruby-" + version;
+        if (RvmCliTools.startsWithNumber(final_version)) {
+            final_version = "ruby-" + final_version;
         }
-        const install_dir = RvmCliTools.config().envs[version];
+        const install_dir = RvmCliTools.config().envs[final_version];
         if(install_dir && Dir.isExisting(install_dir)) {
-            console.log(`Uninstalling ${Chalk.green(version)} from ${Chalk.red(install_dir)} ... please wait ...`);
+            console.log(`Uninstalling ${Chalk.green(final_version)} from ${Chalk.red(install_dir)} ... please wait ...`);
             FileUtils.rmRf(install_dir);
             let config = RvmCliTools.config();
-            delete config.envs[version];
+            delete config.envs[final_version];
             RvmCliTools.writeRvmConfig(config);
-            console.log(`The environment ${Chalk.red(version)} has been successfully removed!`);
+            console.log(`The environment ${Chalk.red(final_version)} has been successfully removed!`);
             console.log("");
-            console.log("");
-            RvmCliUse.fixDefaultAndCurrent();
+            if(!version) {
+                RvmCliUse.fixDefaultAndCurrent();
+            }
         } else {
-            console.error(`Given version ${Chalk.red(version)} not found. To list all installed versions, run ${Chalk.green("rvm list")}.`);
+            console.error(`Given version ${Chalk.red(final_version)} not found. To list all installed versions, run ${Chalk.green("rvm list")}.`);
         }
     }
 }

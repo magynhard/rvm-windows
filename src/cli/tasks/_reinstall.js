@@ -17,6 +17,10 @@ class RvmCliReinstall {
             console.error(`No version given. Run ${Chalk.green('rvm reinstall <version>')}, for example: ${Chalk.green('rvm reinstall ruby-3.2.2')}`);
             process.exit(1);
         }
+        // prefix ruby- if it starts with number
+        if (RvmCliTools.startsWithNumber(version)) {
+            version = "ruby-" + version;
+        }
         const install_dir = RvmCliTools.config().envs[version];
         if(install_dir) {
             RvmCliUninstall.runUninstall(version);
