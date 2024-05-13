@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-const Fs = require('fs');
-const File = require('ruby-nice/file');
 const {execSync} = require('child_process');
 const Chalk = require('chalk');
 
@@ -41,6 +39,33 @@ class RvmCliUse {
             }
         } else {
             console.error(`No version for ${Chalk.red(version)} available! Run ${Chalk.green('rvm list')} to show available versions.`);
+        }
+    }
+
+
+    /**
+     * Check of currently set "default" and "current" versions are available or set at all.
+     * Then reset if needed.
+     */
+    static fixDefaultAndCurrent() {
+        const self = RvmCliTools;
+        execSync(`rvm fix`);
+        const new_version = Object.keys(RvmCliTools.config().envs)[0];
+        const default_version = RvmCliTools.config().default;
+        const current_version = self.getCurrentVersion();
+        if (!RvmCliTools.config().envs[current_version]) {
+            if (RvmCliTools.config().envs[default_version]) {
+                RvmCliUse.runUse(default_version);
+            } else if(new_version) {
+                RvmCliUse.runUse(new_version);
+            }
+        }
+        if(!RvmCliTools.config().envs[default_version]) {
+            if (RvmCliTools.config().envs[current_version]) {
+                RvmCliUse.runUse(current_version);
+            } else if(new_version) {
+                RvmCliUse.runUse(new_version);
+            }
         }
     }
 }
