@@ -53,14 +53,14 @@ class RvmCliKit {
         const vs = RvmCliTools.getCurrentRawVersion().split(".");
         // ridk install 1 2 3 still works fine on ruby 2.6.x / 2.7.x / 3.0.x, but not on 2.4.x / 2.5.x
         // so we install and copy msys64 from ruby 3.0.x when using ruby < 3
-        if(vs[0] === "2") {
+        if(vs[0] === "2" && vs[1] === "4") {
             const old_version = RvmCliTools.getCurrentVersion();
-            if(!RvmCliTools.matchingVersion("ruby-3.0")) {
-                console.log(`Installing ${Chalk.green("ruby-3.0.x")} to patch current ${Chalk.green(RvmCliTools.getCurrentVersion())} with its msys64 ... please wait ...`);
-                execSync(`rvm install 3.0`);
+            if(!RvmCliTools.matchingVersion("ruby-2.6")) {
+                console.log(`Installing ${Chalk.green("ruby-2.6.x")} to patch current ${Chalk.green(RvmCliTools.getCurrentVersion())} with its msys64 ... please wait ...`);
+                execSync(`rvm install 2.6`);
                 execSync(`rvm use ${old_version}`);
             }
-            let matching_version = RvmCliTools.matchingVersion("ruby-3.0");
+            let matching_version = RvmCliTools.matchingVersion("ruby-2.6");
             console.log(`Patch current version ${Chalk.green(RvmCliTools.getCurrentVersion())} with msys from ${Chalk.green(matching_version)} ... please wait ...`);
             const source_path = RvmCliTools.config().envs[matching_version];
             const target_path = RvmCliTools.config().envs[RvmCliTools.getCurrentVersion()];
