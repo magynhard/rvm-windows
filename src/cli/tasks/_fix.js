@@ -9,7 +9,7 @@ const FileUtils = require('ruby-nice/file-utils');
 var RvmCliTools = require('./../_tools');
 
 class RvmCliFix {
-    static fix() {
+    static runFix() {
         const self = RvmCliFix;
         self.fixConfig();
         self.fixExistingEnvironmentPaths();

@@ -8,7 +8,7 @@ const Chalk = require('chalk');
 var RvmCliTools = require('./../_tools');
 
 class RvmCliCurrent {
-    static current() {
+    static runCurrent() {
         const self = RvmCliCurrent;
         console.log(RvmCliTools.getCurrentVersion());
     }

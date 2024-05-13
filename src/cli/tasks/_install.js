@@ -18,7 +18,7 @@ var RvmCliFix = require('./_fix');
 
 class RvmCliInstall {
 
-    static install() {
+    static runInstall() {
         const self = RvmCliInstall;
         let version = process.argv[3];
         if (!version) {
@@ -29,7 +29,7 @@ class RvmCliInstall {
         if (RvmCliTools.startsWithNumber(version)) {
             version = "ruby-" + version;
         }
-        RvmCliList.listKnown(true).then((releases) => {
+        RvmCliList.runListKnown(true).then((releases) => {
             const version_match = RvmCliTools.matchingVersion(version, releases);
             if (version_match) {
                 if (self.isAlreadyInstalled(version_match)) {

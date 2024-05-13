@@ -11,13 +11,13 @@ var RvmCliFix = require('./_fix');
 var RvmCliList = require('./_list');
 
 class RvmCliScan {
-    static scan() {
+    static runScan() {
         const self = RvmCliScan;
         console.log(`Scanning for installed rubies and add them to list ...\n`);
         self.scanMissingEnvironmentPaths();
         RvmCliFix.fixEnvironmentVersions();
         RvmCliFix.fixWrapperFiles();
-        RvmCliList.listVerbose();
+        RvmCliList.runListVerbose();
     }
 
     /**

@@ -9,7 +9,7 @@ const RvmCliUse = require("./_use");
 const RvmCliFix = require("./_fix");
 
 class RvmCliConfig {
-    static config() {
+    static runConfig() {
         const self = RvmCliConfig;
         const config_path = RvmCliTools.rvmConfigPath();
         console.log(`RVM configuration at ${Chalk.green(config_path)}`);

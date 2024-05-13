@@ -5,14 +5,14 @@ const CommandLineUsage = require('command-line-usage');
 const RvmCliTools = require('./../_tools');
 
 class RvmCliHelp {
-    static help() {
+    static runHelp() {
         const self = RvmCliHelp;
         let section = RvmCliTools.colorizeValues(self.SECTIONS.help, ['name', 'alias', 'example'], 'green');
         const usage = CommandLineUsage(section);
         console.log(usage);
     }
 
-    static unknown(task) {
+    static runUnknownCommand(task) {
         const self = RvmCliHelp;
         let section = self.SECTIONS.unknown;
         section[0].content = section[0].content.replace('{{task}}', Chalk.red(task));

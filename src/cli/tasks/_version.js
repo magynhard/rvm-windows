@@ -6,7 +6,7 @@ const File = require('ruby-nice/file');
 var RvmCliTools = require('./../_tools');
 
 class RvmCliVersion {
-    static version() {
+    static runVersion() {
         const self = RvmCliVersion;
         console.log(self.getFullVersion());
     }

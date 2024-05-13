@@ -16,7 +16,7 @@ const octokit_rest = new Octokit({
 });
 
 class RvmCliList {
-    static list() {
+    static runList() {
         const self = RvmCliList;
         const config = RvmCliTools.config();
         config.envs.eachWithIndex((version, path) => {
@@ -35,7 +35,7 @@ class RvmCliList {
         self.legend();
     }
 
-    static listVerbose() {
+    static runListVerbose() {
         const self = RvmCliList;
         const config = RvmCliTools.config();
         let section = [{
@@ -68,7 +68,7 @@ class RvmCliList {
         self.legend();
     }
 
-    static listKnown(silent = false) {
+    static runListKnown(silent = false) {
         const self = RvmCliList;
         return new Promise((resolve, reject) => {
             if (!silent) {
@@ -108,7 +108,7 @@ class RvmCliList {
         });
     }
 
-    static listAll(silent = false) {
+    static runListAll(silent = false) {
         const self = RvmCliList;
         return new Promise((resolve, reject) => {
             if (!silent) {

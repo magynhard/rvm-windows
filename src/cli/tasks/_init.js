@@ -133,7 +133,7 @@ class RvmCliInit {
         if (!File.isExisting(RvmCliTools.rvmConfigPath()) || force) {
             RvmCliFix.fixConfig();
             self.ensureWrapperPathEnvIsSet(true);
-            RvmCliScan.scan();
+            RvmCliScan.runScan();
             console.log(`RVM has been initialized and is ready to use! (Open terminals will need to be restarted to reload PATH environment variable)`);
         }
     }

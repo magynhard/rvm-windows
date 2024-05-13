@@ -5,7 +5,7 @@ const Chalk = require('chalk');
 var RvmCliTools = require('./../_tools');
 
 class RvmCliDefault {
-    static default() {
+    static runDefault() {
         const self = RvmCliDefault;
         let version = process.argv[3];
         if(version) {

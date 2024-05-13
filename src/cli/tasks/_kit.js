@@ -14,7 +14,7 @@ const ruby_env_path = Wrapper.getPathOfMatchingRubyVersion(Wrapper.getRubyVersio
 
 class RvmCliKit {
 
-    static kit() {
+    static runKit() {
         const self = RvmCliKit;
         console.log("Installing a bunch of helpful dependencies for building native gems ...\n");
         self.installRidkTools();
