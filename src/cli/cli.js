@@ -89,6 +89,13 @@ else if (tasks.install || tasks.command && (tasks.command[0] === 'install' || ta
     RvmCliInstall.runInstall();
 }
 //
+// get
+//
+else if (tasks.get || tasks.command && (tasks.command[0] === 'get' || tasks.command[0] === 'g')) {
+    const RvmCliGet = require('./tasks/_get');
+    RvmCliGet.runGet();
+}
+//
 // reinstall
 //
 else if (tasks.reinstall || tasks.command && (tasks.command[0] === 'reinstall' || tasks.command[0] === 'ri')) {
