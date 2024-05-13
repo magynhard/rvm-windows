@@ -5,6 +5,7 @@ const Chalk = require('chalk');
 
 var RvmCliTools = require('./../_tools');
 var RvmCliFix = require('./_fix');
+var RvmCliDefault = require('./_default');
 
 class RvmCliUse {
     static runUse(version) {
@@ -62,9 +63,9 @@ class RvmCliUse {
         }
         if(!RvmCliTools.config().envs[default_version]) {
             if (RvmCliTools.config().envs[current_version]) {
-                RvmCliUse.runUse(current_version);
+                RvmCliDefault.runDefault(current_version);
             } else if(new_version) {
-                RvmCliUse.runUse(new_version);
+                RvmCliDefault.runDefault(new_version);
             }
         }
     }
