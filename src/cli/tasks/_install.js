@@ -18,9 +18,9 @@ var RvmCliFix = require('./_fix');
 
 class RvmCliInstall {
 
-    static runInstall() {
+    static runInstall(version) {
         const self = RvmCliInstall;
-        let version = process.argv[3];
+        version = version || process.argv[3];
         if (!version) {
             console.error(`No version given. Run ${Chalk.green('rvm install <version>')}, for example: ${Chalk.green('rvm install ruby-3.2.2')}`);
             process.exit(1);

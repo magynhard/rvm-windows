@@ -89,7 +89,14 @@ else if (tasks.install || tasks.command && (tasks.command[0] === 'install' || ta
     RvmCliInstall.runInstall();
 }
 //
-// install
+// reinstall
+//
+else if (tasks.reinstall || tasks.command && (tasks.command[0] === 'reinstall' || tasks.command[0] === 'ri')) {
+    const RvmCliReinstall = require('./tasks/_reinstall');
+    RvmCliReinstall.runReinstall();
+}
+//
+// uninstall
 //
 else if (tasks.uninstall || tasks.remove || tasks.delete || tasks.command && (tasks.command[0] === 'uninstall' || tasks.command[0] === 'ui' || tasks.command[0] === 'remove' || tasks.command[0] === 'rem' || tasks.command[0] === 'delete' || tasks.command[0] === 'del')) {
     const RvmCliUninstall = require('./tasks/_uninstall');
