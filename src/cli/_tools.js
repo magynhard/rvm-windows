@@ -211,6 +211,18 @@ class RvmCliTools {
         }
     }
 
+    static killRunningMsysProcesses() {
+        console.log(`Kill running msys processes ...`);
+        execSync(`taskkill /f /im "msys2.exe"`);
+        execSync(`taskkill /f /im "ucrt64.exe"`);
+        execSync(`taskkill /f /im "mingw64.exe"`);
+        execSync(`taskkill /f /im "mingw32.exe"`);
+        execSync(`taskkill /f /im "clang64.exe"`);
+        execSync(`taskkill /f /im "clang32.exe"`);
+        execSync(`taskkill /f /im "msys2_shell.cmd"`);
+        execSync(`taskkill /f /im "autorebase.cmd"`);
+    }
+
     static getCurrentVersion() {
         let rvm_session = process.env.RVM_SESSION;
         if(rvm_session) {

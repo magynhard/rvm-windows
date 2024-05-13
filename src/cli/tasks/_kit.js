@@ -49,6 +49,7 @@ class RvmCliKit {
     }
 
     static installRidkTools() {
+        RvmCliTools.killRunningMsysProcesses();
         console.log(`Ensure ridk tools are installed ... please wait ...`);
         const vs = RvmCliTools.getCurrentRawVersion();
         // ridk install 1 2 3 still works fine on ruby 2.6.x / 2.7.x / 3.0.x, but not on 2.4.x / 2.5.x

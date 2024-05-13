@@ -89,6 +89,7 @@ class RvmCliInstall {
         RvmCliFix.fixWrapperFiles();
         console.log(`Installation complete!\n`);
         RvmCliUse.runUse(version);
+        RvmCliTools.killRunningMsysProcesses();
         console.log(`\nRun ${Chalk.green("rvm kit")} to install development tools and a bunch of widely used x64 dependencies automatically.`);
     }
 
