@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const File = require('ruby-nice/file');
 const FileUtils = require('ruby-nice/file-utils');
 const Chalk = require('chalk');
 const Dir = require('ruby-nice/dir');
