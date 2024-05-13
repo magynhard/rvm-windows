@@ -221,6 +221,7 @@ class RvmCliTools {
         execSync(`taskkill /f /im "clang32.exe"`);
         execSync(`taskkill /f /im "msys2_shell.cmd"`);
         execSync(`taskkill /f /im "autorebase.cmd"`);
+        execSync(`taskkill /f /fi "MODULES eq msys-2.0.dll"`);
     }
 
     static getCurrentVersion() {
