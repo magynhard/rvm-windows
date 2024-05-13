@@ -53,6 +53,7 @@ else if (Object.keys(tasks).length === 0 || tasks.help || tasks.command && (task
 //
 else if (tasks.init || tasks.command && (tasks.command[0] === 'init')) {
     RvmCliInit.initAfterInstall(true);
+    RvmCliInit.initSessionToRvmExes(true);
 }
 //
 // config
