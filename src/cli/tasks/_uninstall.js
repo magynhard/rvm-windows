@@ -22,9 +22,9 @@ class RvmCliUninstall {
         if (RvmCliTools.startsWithNumber(final_version)) {
             final_version = "ruby-" + final_version;
         }
-        const install_dir = File.expandPath(RvmCliTools.config().envs[final_version]);
+        const install_dir = RvmCliTools.config().envs[final_version];
         if(install_dir && Dir.isExisting(install_dir)) {
-            console.log(`Uninstalling ${Chalk.green(final_version)} from ${Chalk.red(install_dir)} ... please wait ...`);
+            console.log(`Uninstalling ${Chalk.green(final_version)} from ${Chalk.red(File.expandPath(install_dir))} ... please wait ...`);
             FileUtils.rmRf(install_dir);
             let config = RvmCliTools.config();
             delete config.envs[final_version];
