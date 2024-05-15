@@ -12,7 +12,7 @@ class RvmCliKick {
         const self = RvmCliKick;
         version = version || process.argv[3];
         if (!version) {
-            console.error(`No version given. Run ${Chalk.green('rvm kick <version>')}, for example: ${Chalk.green('rvm kick ruby-3.2.2')}`);
+            console.error(`${Chalk.red("No version given.")} Run ${Chalk.green('rvm kick <version>')}, for example: ${Chalk.green('rvm kick ruby-3.2.2')}`);
             process.exit(1);
         }
         // prefix ruby- if it starts with number

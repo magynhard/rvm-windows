@@ -213,15 +213,24 @@ class RvmCliTools {
 
     static killRunningMsysProcesses() {
         console.log(`Kill running msys processes ...`);
-        execSync(`taskkill /f /im "msys2.exe"`);
-        execSync(`taskkill /f /im "ucrt64.exe"`);
-        execSync(`taskkill /f /im "mingw64.exe"`);
-        execSync(`taskkill /f /im "mingw32.exe"`);
-        execSync(`taskkill /f /im "clang64.exe"`);
-        execSync(`taskkill /f /im "clang32.exe"`);
-        execSync(`taskkill /f /im "msys2_shell.cmd"`);
-        execSync(`taskkill /f /im "autorebase.cmd"`);
-        execSync(`taskkill /f /fi "MODULES eq msys-2.0.dll"`);
+        const commands = [
+            `taskkill /f /im "msys2.exe"`,
+            `taskkill /f /im "ucrt64.exe"`,
+            `taskkill /f /im "mingw64.exe"`,
+            `taskkill /f /im "mingw32.exe"`,
+            `taskkill /f /im "clang64.exe"`,
+            `taskkill /f /im "clang32.exe"`,
+            `taskkill /f /im "msys2_shell.cmd"`,
+            `taskkill /f /im "autorebase.cmd"`,
+            `taskkill /f /fi "MODULES eq msys-2.0.dll"`,
+        ];
+        commands.eachWithIndex((cmd) => {
+           try {
+               execSync(cmd, {stdio: 'ignore'});
+           } catch (e) {
+               // we catch it, if command could not be stopped or found
+           }
+        });
     }
 
     static getCurrentVersion() {
@@ -248,7 +257,7 @@ class RvmCliTools {
     static setDefaultVersion(version) {
         const self = RvmCliTools;
         if(!version) {
-            console.error(`No version given. Run ${Chalk.green('rvm default <version>')}, for example: ${Chalk.green('rvm default ruby-3.2.2')}`);
+            console.error(`${Chalk.red("No version given.")} Run ${Chalk.green('rvm default <version>')}, for example: ${Chalk.green('rvm default ruby-3.2.2')}`);
             process.exit(1);
         }
         // prefix ruby- if it starts with number

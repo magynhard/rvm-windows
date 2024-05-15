@@ -77,6 +77,13 @@ else if (tasks.default || tasks.command && (tasks.command[0] === 'default' || ta
     RvmCliDefault.runDefault();
 }
 //
+// default
+//
+else if (tasks.system || tasks.command && (tasks.command[0] === 'system' || tasks.command[0] === 'd')) {
+    const RvmCliSystem = require('./tasks/_system');
+    RvmCliSystem.runSystem();
+}
+//
 // fix
 //
 else if (tasks.fix || tasks.command && (tasks.command[0] === 'fix' || tasks.command[0] === 'f')) {

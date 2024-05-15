@@ -15,7 +15,7 @@ class RvmCliUninstall {
         const self = RvmCliUninstall;
         let final_version = version || process.argv[3];
         if (!final_version) {
-            console.error(`No version given. Run ${Chalk.green('rvm uninstall <version>')}, for example: ${Chalk.green('rvm uninstall ruby-3.2.2')}`);
+            console.error(`${Chalk.red("No version given.")} Run ${Chalk.green('rvm uninstall <version>')}, for example: ${Chalk.green('rvm uninstall ruby-3.2.2')}`);
             process.exit(1);
         }
         // prefix ruby- if it starts with number

@@ -22,8 +22,11 @@ class RvmCliScan {
 
     /**
      * Check for ruby installations not listed in config envs
+     *
+     * @param {boolean} write=true write new paths to config
+     * @return {Array<string>} array of all paths found
      */
-    static scanMissingEnvironmentPaths() {
+    static scanMissingEnvironmentPaths(write=true) {
         const self = RvmCliScan;
         let paths = [];
         try {
@@ -46,7 +49,10 @@ class RvmCliScan {
                 }
             }
         });
-        RvmCliTools.writeRvmConfig(new_config);
+        if(write) {
+            RvmCliTools.writeRvmConfig(new_config);
+        }
+        return paths;
     }
 }
 

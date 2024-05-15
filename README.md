@@ -20,12 +20,11 @@ Beneath you can switch your ruby version instantly.
 Ruby environment configuration are managed by RVM per user in `C:\Users\%USERNAME%\.rvm` but stored for all users in `C:\ProgramData\rvm` by default.
 
 ```diff
-- Pre beta. Only for test purpose.
+- Beta. Release coming soon...
 
 Missing basic features or known bugs:
 - rvm upgrade 
-- rvm use system (?) - store installed ruby from path at install in rvm.json as "system"
-- rvm proxy <proxy> / rvm proxy (get) - official implicit, basic proxy (wrapper) support
+- rvm config proxy <host> / rvm config proxy (get) / rvm config proxy delete - official implicit, basic proxy (wrapper) support
 ```
 
 
@@ -41,25 +40,41 @@ Missing basic features or known bugs:
 * [Contributing](#contributing)
 
 ### Commands
-The following commands are or will be available in rvm-windows:
+The following commands are available in rvm-windows:
 
 ```ruby
-add <path>        # Add a installed ruby environment to the list
-config            # Print current RVM config
-current           # Print current ruby version
-fix               # Automatically fix paths and versions in RVM configuration
-get stable        # Upgrade RVM to its latest stable version
-help              # Print this usage guide
-init              # Initialize RVM by adding to PATH environment variable
-install           # Install a specific ruby version
-kit               # Automatically configure msys and install x64 dependencies to build native gems like postgresql, mysql2, ...
-list              # List all installed ruby versions managed by RVM
-list verbose      # List all installable ruby versions with additional info
-list known        # List all installable ruby versions
-scan              # Scan for ruby installations and add them to the RVM configuration
-upgrade <version_from> <version_to>  # Update current or given version to given or latest patch version
-use               # Switch to specified ruby version
-version           # Display RVM build version
+add <path>                 # Add a installed ruby environment to the list (alias: mount)
+automount                  # Scan for ruby installations and add them to the RVM configuration (alias: scan)
+config                     # Print current RVM config
+config default             # Print default version
+config default <version>   # Set default version
+config proxy               # Get the configured proxy host.
+config proxy <host>        # Set the proxy server host. E.g. http://proxy:12345
+config proxy delete        # Remove the proxy server host from the configuration.
+current                    # Print current ruby environment version
+default                    # Use default ruby version (alias: rvm use default)
+delete <version>           # Delete given ruby environment (alias: remove)
+fix                        # Automatically fix paths and versions in RVM configuration
+get                        # Upgrade RVM to its latest release version
+help                       # Print this usage guide
+init                       # Initialize RVM by adding it to the PATH environment variable
+install <version>          # Install a specific ruby version
+kick <version>             # Only remove given ruby environment from the RVM list without deleting any ruby environment.
+kit                        # Install a bunch of widely used x64 dependencies automatically to the current ruby environment, which are needed to build native gems like postgresql, mysql2, ...
+list                       # List all installed ruby versions managed by RVM
+list verbose               # List all installed ruby versions managed by RVM with additional info
+list known                 # List all installable ruby versions with latest patch version
+list all                   # List all installable ruby versions
+mount <path>               # Add a installed ruby environment to the list (alias: add <path>)
+reinstall <version>        # Delete given ruby environment and install it again.
+remove <version>           # Delete given ruby environment (alias: uninstall)
+scan                       # Scan for ruby installations and add them to the RVM configuration (alias: automount)
+system                     # Use the system ruby (alias: rvm use system)
+uninstall <version>        # Delete given ruby environment (alias: remove)
+upgrade <version>          # Upgrade given version to its latest patch version
+upgrade <from> <to>        # Upgrade given from_version to given to_version
+use <version>              # Switch to specified ruby version
+version                    # Display RVM build version
 ```
 
 

@@ -14,7 +14,7 @@ class RvmCliReinstall {
         const self = RvmCliReinstall;
         version = version || process.argv[3];
         if (!version) {
-            console.error(`No version given. Run ${Chalk.green('rvm reinstall <version>')}, for example: ${Chalk.green('rvm reinstall ruby-3.2.2')}`);
+            console.error(`${Chalk.red("No version given.")} Run ${Chalk.green('rvm reinstall <version>')}, for example: ${Chalk.green('rvm reinstall ruby-3.2.2')}`);
             process.exit(1);
         }
         // prefix ruby- if it starts with number

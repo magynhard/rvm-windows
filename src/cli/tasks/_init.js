@@ -2,6 +2,7 @@
 
 const Fs = require('fs');
 const Os = require('os');
+const Chalk = require('chalk');
 const File = require('ruby-nice/file');
 const FileUtils = require('ruby-nice/file-utils');
 const Dir = require('ruby-nice/dir');
@@ -81,6 +82,10 @@ class RvmCliInit {
             self._writeToSecondLine(cmd_path_without_extension + '.ps1', `& "${File.expandPath(RvmCliTools.rvmRootPath() + '/src/tools/current/ps_rvm_prepend.ps1')}"`);
             self._writeToSecondLine(cmd_path_without_extension + '.cmd', `call "${File.expandPath(RvmCliTools.rvmRootPath() + '/src/tools/current/cmd_rvm_prepend.bat')}"`);
             FileUtils.mkdirP(RvmCliTools.rvmSessionsDir());
+        }
+        if(!process.env.RVM_SESSION && process.argv[2] !== "init") {
+            console.log(`${Chalk.red("No rvm session found!")} Run ${Chalk.green("rvm init")} to recreate session wrappers. Otherwise ${Chalk.green("rvm use")} is not working.`);
+            console.log(``);
         }
         self._cleanSessions();
     }

@@ -3,6 +3,7 @@ const {execSync} = require('child_process');
 const Fs = require('fs');
 const File = require('ruby-nice/file');
 const Dir = require('ruby-nice/dir');
+const Chalk = require('chalk');
 require('ruby-nice/object');
 const FileUtils = require('ruby-nice/file-utils');
 
@@ -11,10 +12,18 @@ var RvmCliTools = require('./../_tools');
 class RvmCliFix {
     static runFix() {
         const self = RvmCliFix;
+        console.log(`Fix several issues that could have happened ...`);
+        RvmCliTools.killRunningMsysProcesses();
+        console.log(`Fix config ...`);
         self.fixConfig();
+        console.log(`Fix existing environment paths ...`);
         self.fixExistingEnvironmentPaths();
+        console.log(`Fix environment versions ...`);
         self.fixEnvironmentVersions();
+        console.log(`Fix wrapper files ...`);
         self.fixWrapperFiles();
+        console.log(`Fixing finished!\n`);
+        console.log(`If you still have trouble, you might try to run ${Chalk.green("rvm init")} to reinit rvm-windows itself!`);
     }
 
     static fixConfig() {
