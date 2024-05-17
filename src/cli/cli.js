@@ -84,6 +84,13 @@ else if (tasks.system || tasks.command && (tasks.command[0] === 'system' || task
     RvmCliSystem.runSystem();
 }
 //
+// info
+//
+else if (tasks.info || tasks.command && (tasks.command[0] === 'info')) {
+    const RvmCliInfo = require('./tasks/_info');
+    RvmCliInfo.runInfo();
+}
+//
 // fix
 //
 else if (tasks.fix || tasks.command && (tasks.command[0] === 'fix' || tasks.command[0] === 'f')) {

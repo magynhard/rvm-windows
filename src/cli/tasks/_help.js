@@ -48,6 +48,7 @@ RvmCliHelp.SECTIONS.help = [
             {name: 'fix', alias: 'f', summary: 'Automatically fix paths and versions in RVM configuration'},
             {name: 'get', alias: 'g', summary: 'Upgrade RVM to its latest release version'},
             {name: 'help', alias: 'h', summary: 'Print this usage guide'},
+            {name: 'info', alias: '', summary: 'Show the environment information for current ruby'},
             {name: 'init', alias: '', summary: 'Initialize RVM by adding it to the PATH environment variable'},
             {name: 'install <version>', alias: 'i', summary: 'Install a specific ruby version'},
             {name: 'kick <version>', alias: '', summary: 'Only remove given ruby environment from the RVM list without deleting any ruby environment.'},
