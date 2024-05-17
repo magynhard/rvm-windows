@@ -70,7 +70,7 @@ class RvmCliConfig {
                     hostname = "http://" + hostname;
                 }
                 config.proxy.hostname = hostname;
-                console.log(`Set proxy ${Chalk.green(hostname)} ... (${config.proxy.enabled ? Chalk.green('enabled') : Chalk.red('disabled')})`)
+                console.log(`Set proxy ${Chalk.green(hostname)} ... [${config.proxy.enabled ? Chalk.green('enabled') : Chalk.red('disabled')}]`)
             }
             RvmCliTools.writeRvmConfig(config);
         } else {
@@ -78,7 +78,7 @@ class RvmCliConfig {
             if(!proxy.hostname) {
                 console.log(`No proxy configured!`);
             } else {
-                console.log(`${Chalk.green(proxy.hostname)} (${proxy.enabled ? Chalk.green('enabled') : Chalk.red('disabled')})`);
+                console.log(`${proxy.hostname} [${proxy.enabled ? Chalk.green('enabled') : Chalk.red('disabled')}]`);
             }
         }
     }
