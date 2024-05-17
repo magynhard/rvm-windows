@@ -78,8 +78,8 @@ class RvmCliInstall {
         console.log(`Installing at ${Chalk.green(File.expandPath(install_dir))} ... please wait, this task will take some minutes ...`);
         let proxy_command = '';
         const proxy = RvmCliTools.config().proxy;
-        if(proxy) {
-            proxy_command = `set HTTP_PROXY=${proxy} && set HTTPS_PROXY=${proxy} && `;
+        if(proxy?.enabled && proxy?.hostname) {
+            proxy_command = `set HTTP_PROXY=${proxy.hostname} && set HTTPS_PROXY=${proxy.hostname} && `;
         }
         const command = `${proxy_command}"${source}" /verysilent /currentuser /dir="${install_dir}" /tasks="noassocfiles,nomodpath`;
         const result = execSync(command, {encoding: 'utf-8'});

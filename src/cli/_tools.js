@@ -462,11 +462,11 @@ class RvmCliTools {
     static fetchWithProxy(url, opts) {
         const self = RvmCliTools;
         let final_opts = {};
-        if(RvmCliTools.config().proxy) {
+        if(RvmCliTools.config().proxy?.enabled && RvmCliTools.config().proxy?.hostname) {
             final_opts = {
                 ...opts,
                 dispatcher: new ProxyAgent({
-                    uri: process.env.HTTPS_PROXY || self.config().proxy,
+                    uri: process.env.HTTPS_PROXY || self.config().proxy.hostname,
                     keepAliveTimeout: 10,
                     keepAliveMaxTimeout: 10,
                 }),

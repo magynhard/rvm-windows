@@ -13,8 +13,8 @@ let version = Wrapper.getRubyVersionForPath(cwd);
 // proxy
 let proxy_var = "";
 const proxy = RvmCliTools.config().proxy;
-if(proxy) {
-    console.log(proxy)
+if(proxy.enabled) {
+    console.log(proxy.hostname)
 } else {
     console.log("");
 }

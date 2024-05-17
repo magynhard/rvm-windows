@@ -1,5 +1,8 @@
 {
-  "proxy": "",
+  "proxy": {
+    "hostname": "",
+    "enabled": false
+  },
   "default": "",
   "last_run_boot_time": "",
   "rvm_data_dir": "C:\\ProgramData\\rvm",

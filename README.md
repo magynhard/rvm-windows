@@ -20,11 +20,7 @@ Beneath you can switch your ruby version instantly.
 Ruby environment configuration are managed by RVM per user in `C:\Users\%USERNAME%\.rvm` but stored for all users in `C:\ProgramData\rvm` by default.
 
 ```diff
-- Beta. Release coming soon...
-
-Missing basic features or known bugs:
-- rvm upgrade 
-- rvm config proxy <host> / rvm config proxy (get) / rvm config proxy delete - official implicit, basic proxy (wrapper) support
+- Release candidate 0.9.9! Test and share feedback! Thank you!
 ```
 
 
@@ -34,11 +30,24 @@ Missing basic features or known bugs:
 
 # Table of contents
 
+* [Features & Limitations](#features)
+* [Commands](#commands)
 * [Usage](#usage)
 * [Installation](#installation)
 * [Troubleshooting](#troubleshooting)
 * [Contributing](#contributing)
 
+
+<a name="features"></a>
+### Features & Limitations
+* Support automatic installation only for rubies from rubyinstaller starting from 2.4.x and x64 architecture. But you may add older installed rubies manually by using the `rvm add <path>` command.
+* Windows 10 or later
+* Classic command line and Powershell
+* Automatic recognition of `.ruby-version` files with autoswitch
+* Experimental `rvm kit` command with recipes for several ruby versions to install common used native gems.
+* When setting a proxy, the HTTP_PROXY and HTTPS_PROXY env will be temporary set, when running any rvm oder ruby command
+
+<a name="commands"></a>
 ### Commands
 The following commands are available in rvm-windows:
 
@@ -61,7 +70,7 @@ info                       # Show the environment information for current ruby
 init                       # Initialize RVM by adding it to the PATH environment variable
 install <version>          # Install a specific ruby version
 kick <version>             # Only remove given ruby environment from the RVM list without deleting any ruby environment.
-kit                        # Install a bunch of widely used x64 dependencies automatically to the current ruby environment, which are needed to build native gems like postgresql, mysql2, ...
+kit                        # Experimental: Install a bunch of widely used x64 dependencies automatically to the current ruby environment, which are needed to build native gems like postgresql, mysql2, ... 
 list                       # List all installed ruby versions managed by RVM
 list verbose               # List all installed ruby versions managed by RVM with additional info
 list known                 # List all installable ruby versions with latest patch version

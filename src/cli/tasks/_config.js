@@ -48,8 +48,39 @@ class RvmCliConfig {
         }
     }
 
-    static runProxy() {
-        console.log("Proxy not implemented yet");
+    static runProxy(hostname) {
+        const self = RvmCliConfig;
+        hostname = (hostname || process.argv[4] || "").trim();
+        if(hostname) {
+            let config = RvmCliTools.config();
+            if(!config.proxy) {
+                config.proxy = {};
+            }
+            if(hostname === "delete") {
+                config.proxy.hostname = "";
+                console.log(`Removed proxy configuration!`);
+            } else if(hostname === "enable") {
+                config.proxy.enabled = true;
+                console.log(`Enabled proxy!`);
+            } else if(hostname === "disable") {
+                config.proxy.enabled = false;
+                console.log(`Disabled proxy!`);
+            } else {
+                if(!hostname.startsWith("http")) {
+                    hostname = "http://" + hostname;
+                }
+                config.proxy.hostname = hostname;
+                console.log(`Set proxy ${Chalk.green(hostname)} ... (${config.proxy.enabled ? Chalk.green('enabled') : Chalk.red('disabled')})`)
+            }
+            RvmCliTools.writeRvmConfig(config);
+        } else {
+            let proxy = RvmCliTools.config().proxy;
+            if(!proxy.hostname) {
+                console.log(`No proxy configured!`);
+            } else {
+                console.log(`${Chalk.green(proxy.hostname)} (${proxy.enabled ? Chalk.green('enabled') : Chalk.red('disabled')})`);
+            }
+        }
     }
 }
 
