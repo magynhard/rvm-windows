@@ -30,7 +30,7 @@ Missing basic features or known bugs:
 
 > The goal of this project is not to 100% reimplement all features of 
 > rvm.io, but the most important and common ones by preserving most of the
-> same command line interface. Some special Windows related stuff will be added as well.
+> same command line interface. Some special Windows related stuff is added as well.
 
 # Table of contents
 
