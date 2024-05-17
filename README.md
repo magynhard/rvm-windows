@@ -57,6 +57,7 @@ delete <version>           # Delete given ruby environment (alias: remove)
 fix                        # Automatically fix paths and versions in RVM configuration
 get                        # Upgrade RVM to its latest release version
 help                       # Print this usage guide
+info                       # Show the environment information for current ruby
 init                       # Initialize RVM by adding it to the PATH environment variable
 install <version>          # Install a specific ruby version
 kick <version>             # Only remove given ruby environment from the RVM list without deleting any ruby environment.
