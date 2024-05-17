@@ -22,6 +22,7 @@ const tasks = commandLineArgs(taskDefinitions, {partial: true});
 
 RvmCliInit.initAfterInstall();
 RvmCliInit.initSessionToRvmExes();
+RvmCliInit.ensureWrapperIsFirstInPath();
 
 function logo() {
     console.log(RvmCliTools.logo());
@@ -102,6 +103,13 @@ else if (tasks.fix || tasks.command && (tasks.command[0] === 'fix' || tasks.comm
 else if (tasks.install || tasks.command && (tasks.command[0] === 'install' || tasks.command[0] === 'i')) {
     const RvmCliInstall = require('./tasks/_install');
     RvmCliInstall.runInstall();
+}
+//
+// upgrade
+//
+else if (tasks.upgrade || tasks.command && (tasks.command[0] === 'upgrade' || tasks.command[0] === 'up')) {
+    const RvmCliUpgrade = require('./tasks/_upgrade');
+    RvmCliUpgrade.runUpgrade();
 }
 //
 // get

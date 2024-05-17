@@ -142,6 +142,19 @@ class RvmCliInit {
             console.log(`RVM has been initialized and is ready to use! (Open terminals will need to be restarted to reload PATH environment variable)`);
         }
     }
+
+    static ensureWrapperIsFirstInPath() {
+        const paths = execSync("where ruby").toString().split("\n").map(e => e.trim());
+        if(!File.expandPath(paths[0]).includes("\\rvm\\wrapper")) {
+            console.warn(`${Chalk.yellow("Warning: rvm-windows wrapper ruby is not the first ruby in path! Other ruby is configured before!")}`);
+            console.log(`To fix this, try ${Chalk.green("rvm init")} and restart your terminal!`);
+            console.log(`If this does not work, your system PATH may include rubies, that needs to be removed manually!`);
+            console.log();
+            console.log(`${Chalk.yellow("Ruby paths in following order found:")}`);
+            console.log(paths.filter(a => a).map(e => `- ${e}`).join("\n"));
+            console.log();
+        }
+    }
 }
 
 module.exports = RvmCliInit;

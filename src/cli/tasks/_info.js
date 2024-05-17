@@ -14,6 +14,7 @@ class RvmCliInfo {
         const ruby_version = RvmCliTools.getCurrentVersion();
         const rvm_version = RvmCliVersion.getVersion();
         const full_ruby_version = execSync(`"${File.expandPath(RvmCliTools.config().envs[RvmCliTools.getCurrentVersion()]+"/bin/ruby.exe")}" --version`, {encoding: 'utf-8'}).toString().trim();
+        const command_path = execSync(`where rvm`, {encoding: 'utf-8'}).toString().split("\n").map(e => e.trim()).filter(e => e).join(" - ").trim();
         console.log();
         console.log(ruby_version);
         console.log();
@@ -26,7 +27,9 @@ class RvmCliInfo {
         console.log();
         console.log("  rvm:");
         console.log("    version:     ", rvm_version);
-        console.log("    path:        ", RvmCliTools.getRvmDataDir());
+        console.log("    path:        ", RvmCliTools.rvmRootPath());
+        console.log("    command_path:", command_path);
+        console.log("    data_path:   ", RvmCliTools.getRvmDataDir());
         console.log();
         console.log("  ruby:");
         console.log("    interpreter: ", "ruby");

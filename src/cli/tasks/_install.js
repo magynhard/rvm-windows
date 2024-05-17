@@ -18,7 +18,7 @@ var RvmCliFix = require('./_fix');
 
 class RvmCliInstall {
 
-    static runInstall(version) {
+    static runInstall(version, install_dir) {
         const self = RvmCliInstall;
         version = version || process.argv[3];
         if (!version) {
@@ -29,7 +29,7 @@ class RvmCliInstall {
         if (RvmCliTools.startsWithNumber(version)) {
             version = "ruby-" + version;
         }
-        RvmCliList.runListKnown(true).then((releases) => {
+        RvmCliList.runListAll(true).then((releases) => {
             const version_match = RvmCliTools.matchingVersion(version, releases);
             if (version_match) {
                 if (self.isAlreadyInstalled(version_match)) {
@@ -45,12 +45,12 @@ class RvmCliInstall {
                         const destination = File.expandPath(RvmCliTools.getRvmDataDir() + '/downloads/' + file_name);
                         if(File.isExisting(destination)) {
                             console.log(`Found and use cached ${Chalk.green(destination)}`);
-                            self.runInstaller(destination, version_match);
+                            self.runInstaller(destination, version_match, install_dir);
                         } else {
                             console.log(`Downloading ${Chalk.green(final.url)} ... please wait ...`);
                             self.download(final.url, destination).then(() => {
                                 console.log("Download successful!");
-                                self.runInstaller(destination, version_match);
+                                self.runInstaller(destination, version_match, install_dir);
                             }).catch((e) => {
                                 console.error("Error downloading file!", e.message);
                             });
@@ -60,16 +60,22 @@ class RvmCliInstall {
                 }
             } else {
                 console.log(Chalk.red(`Version ${version} is not available.`));
-                console.log(Chalk.red(`To list available versions use:`));
-                console.log(Chalk.red(`\n\trvm list known`));
+                console.log(`To list available versions use:`);
+                console.log(Chalk.green(`\n\trvm list known`));
             }
         });
     }
 
-    static runInstaller(source, version) {
-        const install_dir = File.expandPath(`${RvmCliTools.getRvmDataDir()}/envs/${version}`);
+    /**
+     *
+     * @param source
+     * @param version
+     * @param {string} install_dir overwrite automatic directory detection
+     */
+    static runInstaller(source, version, install_dir) {
+        install_dir = install_dir || File.expandPath(`${RvmCliTools.getRvmDataDir()}/envs/${version}`);
         FileUtils.mkdirP(install_dir);
-        console.log(`Installing at ${Chalk.green(install_dir)} ... please wait, this task will take some minutes ...`);
+        console.log(`Installing at ${Chalk.green(File.expandPath(install_dir))} ... please wait, this task will take some minutes ...`);
         let proxy_command = '';
         const proxy = RvmCliTools.config().proxy;
         if(proxy) {
@@ -78,6 +84,12 @@ class RvmCliInstall {
         const command = `${proxy_command}"${source}" /verysilent /currentuser /dir="${install_dir}" /tasks="noassocfiles,nomodpath`;
         const result = execSync(command, {encoding: 'utf-8'});
         let new_config = RvmCliTools.config();
+        // remove existing installation with same dir (if upgrade)
+        new_config.envs.eachWithIndex((v, p, i) => {
+           if(p === install_dir) {
+               delete new_config.envs[v];
+           }
+        });
         new_config.envs[version] = install_dir;
         if(!new_config.default) {
             new_config.default = version;
