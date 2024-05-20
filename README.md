@@ -6,7 +6,7 @@
 
 <img src="doc/img/rvm_cmd_logo_square.png"/>
 
-> Unofficial reimplementation of most important [rvm.io](https://www.rvm.io) features for MS Windows
+> Reimplementation of most important [rvm.io](https://www.rvm.io) features for MS Windows
 
 As there is no rvm.io available for native windows, but only for POSIX by Cygwin, this is a reimplementation of basic [rvm.io](https://rvm.io/)
 features for native MS Windows on the classic command line. It is based on the packages shipped by [rubyinstaller.org](https://rubyinstaller.org/).
