@@ -45,7 +45,7 @@ Ruby environment configuration are managed by RVM per user in `C:\Users\%USERNAM
 * Classic command line and Powershell
 * Automatic recognition of `.ruby-version` files with autoswitch
 * Experimental `rvm kit` command with recipes for several ruby versions to install common used native gems.
-* When setting a proxy, the HTTP_PROXY and HTTPS_PROXY env will be temporary set, when running any rvm oder ruby command
+* When setting a proxy, the HTTP_PROXY and HTTPS_PROXY env will be temporary set, when running any rvm or ruby command
 
 <a name="commands"></a>
 ### Commands
