@@ -17,7 +17,7 @@ It automatically detects `.ruby-version` files or ruby version definitions in Ge
 
 Beneath you can switch your ruby version instantly.
 
-Ruby environment configuration are managed by RVM per user in `C:\Users\%USERNAME%\.rvm` but stored for all users in `C:\ProgramData\rvm` by default.
+Ruby environment configurations are managed by RVM per user in `C:\Users\%USERNAME%\.rvm` but stored for all users in `C:\ProgramData\rvm` by default.
 
 ```diff
 - Release candidate 0.9.x! Test and share feedback! Thank you!
