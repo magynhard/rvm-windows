@@ -144,8 +144,14 @@ class RvmCliInit {
     }
 
     static ensureWrapperIsFirstInPath() {
-        const paths = execSync("where ruby").toString().split("\n").map(e => e.trim());
-        if(!File.expandPath(paths[0]).includes("\\rvm\\wrapper")) {
+        let paths = [];
+        try {
+            const raw_paths = execSync(`chcp 65001 > NUL & where ruby`, { stdio: 'pipe'}).toString();
+            paths = raw_paths.split("\n").map(e => e.trim());
+        } catch (e) {
+            // no installed ruby in PATH available
+        }
+        if(paths.length > 0 && !File.expandPath(paths[0]).includes("\\rvm\\wrapper")) {
             console.warn(`${Chalk.yellow("Warning: rvm-windows wrapper ruby is not the first ruby in path! Other ruby is configured before!")}`);
             console.log(`To fix this, try ${Chalk.green("rvm init")} and restart your terminal!`);
             console.log(`If this does not work, your system PATH may include rubies, that needs to be removed manually!`);

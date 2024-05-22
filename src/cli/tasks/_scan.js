@@ -31,8 +31,7 @@ class RvmCliScan {
         let paths = [];
         try {
             let paths = execSync(`chcp 65001 > NUL & where ruby`, { stdio: 'pipe'}).toString();
-            paths = paths.split("\n");
-            paths = paths.concat(rvm_paths);
+            paths = paths.split("\n").map(e => e.trim());
         } catch (e) {
             // no installed ruby in PATH available
         }
