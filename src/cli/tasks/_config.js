@@ -53,7 +53,7 @@ class RvmCliConfig {
         hostname = (hostname || process.argv[4] || "").trim();
         if(hostname) {
             let config = RvmCliTools.config();
-            if(!config.proxy) {
+            if(!config.proxy || typeof config.proxy !== "object") {
                 config.proxy = {};
             }
             if(hostname === "delete") {
@@ -70,6 +70,7 @@ class RvmCliConfig {
                     hostname = "http://" + hostname;
                 }
                 config.proxy.hostname = hostname;
+                config.proxy.enabled = true;
                 console.log(`Set proxy ${Chalk.green(hostname)} ... [${config.proxy.enabled ? Chalk.green('enabled') : Chalk.red('disabled')}]`)
             }
             RvmCliTools.writeRvmConfig(config);
