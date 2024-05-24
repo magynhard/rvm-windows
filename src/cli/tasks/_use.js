@@ -8,6 +8,7 @@ var RvmCliTools = require('./../_tools');
 var RvmCliFix = require('./_fix');
 var RvmCliScan = require('./_scan');
 var RvmCliAdd = require('./_add');
+var RvmCliConfig = require('./_config');
 
 class RvmCliUse {
     static runUse(version) {
@@ -71,9 +72,9 @@ class RvmCliUse {
         }
         if(!RvmCliTools.config().envs[default_version]) {
             if (RvmCliTools.config().envs[current_version]) {
-                RvmCliDefault.runDefault(current_version);
+                RvmCliConfig.runDefault(current_version);
             } else if(new_version) {
-                RvmCliDefault.runDefault(new_version);
+                RvmCliConfig.runDefault(new_version);
             }
         }
     }

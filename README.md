@@ -35,6 +35,8 @@ Ruby environment configurations are managed by RVM per user in `C:\Users\%USERNA
 * [Usage](#usage)
 * [Installation](#installation)
 * [Troubleshooting](#troubleshooting)
+  * [Does not run the selected ruby](#trouble_selected_ruby) 
+  * [Using behind a proxy](#trouble_proxy)
 * [Contributing](#contributing)
 
 
@@ -215,9 +217,9 @@ After installing the command `rvm` is available on the command line.
 
 
 <a name="troubleshooting"></a>
-
 ## Troubleshooting
 
+<a name="trouble_selected_ruby"></a>
 ### Does not run the selected ruby
 Check if in your system wide PATH setting some ruby environment is listed and remove it from the system PATH variable.
 
@@ -232,8 +234,45 @@ rvm fix
 again.
 
 
-<a name="contributing"></a>
+<a name="trouble_proxy"></a>
+### Using behind a proxy
 
+rvm-windows has only support basic proxy support with Basic Authentication. For basic authentication, you can use the following format:
+```yaml
+http://<username>:<password>@<proxy-hostname>:<proxy-port>
+# example
+http://super:pwn123@myprox.local:1234
+```
+
+#### NTLM & other authentication methods
+If you need to authenticate with other methods such as NTLM, you will need a intermediate proxy like `px` or `CNTLM`.
+
+As CNTLM is only running very stable on *nix, we recommend using [px proxy](https://github.com/genotrance/px).
+
+To check if your intermediate proxy is running correctly, try a test request with curl:
+
+```bash
+curl -x http://127.0.0.1:3128 -X GET https://www.google.de
+```
+
+Then you should get the HTML document as response:
+```
+...
+sAttribute("data-ved")?f=a?F(a)||"":"":f=(f=a.closest("[data-ved]"))?F(f)||"":"";
+f=f||"";if(a.hasAttribute("jsname"))a=a.getAttribute("jsname");else{var E;a=null==
+(E=a.closest("[jsname]"))?void 0:E.getAttribute("jsname")}google.log("rcm","&ei="
++b+"&tgtved="+f+"&jsname="+(a||""))}}else H=a,G=[b]}window.document.addEventListe
+ner("DOMContentLoaded",function(){document.body.addEventListener("click",I)});}).
+call(this);</script></body></html>
+```
+
+After installing and configuring and testing px proxy, set your RVM config like this:
+```bash
+nvm config proxy http://127.0.0.1:3128
+```
+
+
+<a name="contributing"></a>
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/magynhard/rvm-windows. This project is

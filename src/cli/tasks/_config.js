@@ -14,7 +14,7 @@ class RvmCliConfig {
         const command = process.argv[3];
         if(["d", "default"].includes(command)) {
             self.runDefault();
-        } else if(["p", "pd", "proxy"].includes(command)) {
+        } else if(["p", "proxy"].includes(command)) {
             self.runProxy();
         } else {
             self.printConfig();
@@ -62,9 +62,13 @@ class RvmCliConfig {
             } else if(hostname === "enable") {
                 config.proxy.enabled = true;
                 console.log(`Enabled proxy!`);
+                let proxy = config.proxy;
+                console.log(`${proxy.hostname} [${proxy.enabled ? Chalk.green('enabled') : Chalk.red('disabled')}]`);
             } else if(hostname === "disable") {
                 config.proxy.enabled = false;
                 console.log(`Disabled proxy!`);
+                let proxy = config.proxy;
+                console.log(`${proxy.hostname} [${proxy.enabled ? Chalk.green('enabled') : Chalk.red('disabled')}]`);
             } else {
                 if(!hostname.startsWith("http")) {
                     hostname = "http://" + hostname;

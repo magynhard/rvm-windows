@@ -12,6 +12,7 @@ const Chalk = require('chalk');
 
 var RvmCliTools = require('./../_tools');
 var RvmCliUse = require('./../tasks/_use');
+var RvmCliConfig = require('./../tasks/_config');
 var RvmCliList = require('./../tasks/_list');
 var RvmCliFix = require('./_fix');
 
@@ -101,6 +102,10 @@ class RvmCliInstall {
         RvmCliFix.fixWrapperFiles();
         console.log(`Installation complete!\n`);
         RvmCliUse.runUse(version);
+        const default_exists = !!(RvmCliTools.config().envs[RvmCliTools.config().default]);
+        if(!default_exists) {
+            RvmCliConfig.runDefault(version);
+        }
         RvmCliTools.killRunningMsysProcesses();
         console.log(`\nRun ${Chalk.green("rvm kit")} to install development tools and a bunch of widely used x64 dependencies automatically.`);
     }

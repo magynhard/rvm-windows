@@ -18,6 +18,10 @@ class RvmCliUpgrade {
         const self = RvmCliUpgrade;
         from_version = from_version || process.argv[3];
         to_version = to_version || process.argv[4];
+        if (!from_version) {
+            console.error(`${Chalk.red("No version given.")} Run ${Chalk.green('rvm upgrade <version>')} or ${Chalk.green('rvm upgrade <from_version> <to_version>')} to upgrade an existing environment, for example: ${Chalk.green('rvm upgrade ruby-3.0')}`);
+            process.exit(1);
+        }
         RvmCliList.runListAll(true).then((releases) => {
             // prefix ruby- if it starts with number
             if (RvmCliTools.startsWithNumber(from_version)) {

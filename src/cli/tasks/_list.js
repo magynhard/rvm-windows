@@ -176,7 +176,9 @@ class RvmCliList {
                     resolve(releases);
                 });
             }).catch((e) => {
-                console.error(`Error retrieving releases from ${url}`);
+                console.error(Chalk.red(`Error retrieving releases from ${url}`));
+                console.log();
+                console.log(`Are you using a proxy? If yes, ensure you have configured a valid proxy with ${Chalk.green("rvm config")}. See more information by running ${Chalk.green("rvm help")}.`);
             });
         });
     }
