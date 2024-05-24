@@ -46,6 +46,7 @@ Ruby environment configurations are managed by RVM per user in `C:\Users\%USERNA
 * Windows 10 or later
 * Classic command line and Powershell
 * Automatic recognition of `.ruby-version` files with autoswitch
+* Only one exact ruby version at one time (e.g. you can install and mange 3.3.0 and 3.3.1 separately, but not 3.3.1 two times)
 * Experimental `rvm kit` command with recipes for several ruby versions to install common used native gems.
 * When setting a proxy, the HTTP_PROXY and HTTPS_PROXY env will be temporary set, when running any rvm or ruby command
 

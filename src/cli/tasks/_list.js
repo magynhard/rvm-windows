@@ -141,6 +141,27 @@ class RvmCliList {
         });
     }
 
+    static runListUpgrades() {
+        console.log(`Checking for available upgrades for installed ruby environments ...`);
+        console.log();
+        RvmCliList.runListKnown(true).then((list) => {
+            RvmCliTools.config().envs.eachWithIndex((version, path) => {
+                const minor_version = version.split(".").splice(0,2).join(".");
+                let upgrade = RvmCliTools.matchingVersion(minor_version, list);
+                if(upgrade === version) {
+                    upgrade = `(up to date)`;
+                    version = Chalk.green(version);
+                } else {
+                    version = Chalk.yellow(version);
+                }
+                if(upgrade.startsWith("ruby")) {
+                    upgrade = Chalk.green(upgrade);
+                }
+                console.log(`${version} >> ${upgrade}`);
+            });
+        });
+    }
+
     static githubReleasesList() {
         return new Promise((resolve, reject) => {
             octokit_rest.repos.listReleases({

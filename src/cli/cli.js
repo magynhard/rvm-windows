@@ -112,13 +112,6 @@ else if (tasks.upgrade || tasks.command && (tasks.command[0] === 'upgrade' || ta
     RvmCliUpgrade.runUpgrade();
 }
 //
-// upgrades
-//
-else if (tasks.upgrades || tasks.command && (tasks.command[0] === 'upgrades' || tasks.command[0] === 'ups')) {
-    const RvmCliUpgrade = require('./tasks/_upgrade');
-    RvmCliUpgrade.runUpgrades();
-}
-//
 // get
 //
 else if (tasks.get || tasks.command && (tasks.command[0] === 'get' || tasks.command[0] === 'g')) {
@@ -162,7 +155,7 @@ else if (tasks.kit || tasks.command && (tasks.command[0] === 'kit' || tasks.comm
 //
 // list
 //
-else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || ['l','lv','la','lk','ls'].includes(tasks.command[0]))) {
+else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || ['l','lv','la','lk','ls','lu'].includes(tasks.command[0]))) {
     const RvmCliList = require('./tasks/_list');
     const f = tasks.command[0];
     const c = tasks.command[1];
@@ -172,6 +165,8 @@ else if (tasks.list || tasks.command && (tasks.command[0] === 'list' || ['l','lv
         RvmCliList.runListAll();
     } else if(c === 'verbose' || c === 'v' || f === 'lv') {
         RvmCliList.runListVerbose();
+    } else if(c === 'upgrades' || c === 'u' || f === 'lu') {
+        RvmCliList.runListUpgrades();
     } else {
         RvmCliList.runList();
     }
