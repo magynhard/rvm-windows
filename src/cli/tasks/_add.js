@@ -12,6 +12,7 @@ const RvmCliFix = require("./_fix");
 class RvmCliAdd {
     static runAdd(path) {
         const self = RvmCliAdd;
+        path = path || process.argv[3];
         path = RvmCliTools.normalizePath(path) || File.normalizePath(process.argv.slice(3).join(' ')); // get paths with spaces as well - put all from position 3 together
         path = path.replace("/bin/ruby.exe","");
         if(Object.values(RvmCliTools.config().envs).includes(path)) {

@@ -112,6 +112,13 @@ else if (tasks.upgrade || tasks.command && (tasks.command[0] === 'upgrade' || ta
     RvmCliUpgrade.runUpgrade();
 }
 //
+// upgrades
+//
+else if (tasks.upgrades || tasks.command && (tasks.command[0] === 'upgrades' || tasks.command[0] === 'ups')) {
+    const RvmCliUpgrade = require('./tasks/_upgrade');
+    RvmCliUpgrade.runUpgrades();
+}
+//
 // get
 //
 else if (tasks.get || tasks.command && (tasks.command[0] === 'get' || tasks.command[0] === 'g')) {

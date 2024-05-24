@@ -67,6 +67,7 @@ RvmCliHelp.SECTIONS.help = [
             {name: 'uninstall <version>', alias: 'ui <version>', summary: 'Delete given ruby environment (alias: remove)'},
             {name: 'upgrade <version>', alias: 'up <version>', summary: 'Upgrade given version to its latest patch version'},
             {name: 'upgrade <from> <to>', alias: 'up <from> <to>', summary: 'Upgrade given from_version to given to_version'},
+            {name: 'upgrades', alias: 'ups', summary: 'List installed environments and available upgrades.'},
             {name: 'use <version>', alias: 'u', summary: 'Switch to specified ruby version'},
             {name: 'version', alias: 'v', summary: 'Display RVM build version'},
         ]

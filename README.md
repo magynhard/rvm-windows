@@ -62,6 +62,8 @@ config default <version>   # Set default version
 config proxy               # Get the configured proxy host.
 config proxy <host>        # Set the proxy server host. E.g. http://proxy:12345
 config proxy delete        # Remove the proxy server host from the configuration.
+config proxy enable        # Enable using the proxy server host from the configuration.
+config proxy disable       # Disable using the proxy server host from the configuration.
 current                    # Print current ruby environment version
 default                    # Use default ruby version (alias: rvm use default)
 delete <version>           # Delete given ruby environment (alias: remove)
@@ -85,6 +87,7 @@ system                     # Use the system ruby (alias: rvm use system)
 uninstall <version>        # Delete given ruby environment (alias: remove)
 upgrade <version>          # Upgrade given version to its latest patch version
 upgrade <from> <to>        # Upgrade given from_version to given to_version
+upgrades                   # List installed environments and available upgrades.
 use <version>              # Switch to specified ruby version
 version                    # Display RVM build version
 ```
