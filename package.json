@@ -1,6 +1,6 @@
 {
   "name": "rvm-windows",
-  "version": "0.9.12",
+  "version": "0.9.13",
   "description": "Ruby Version Manager 4 Windows",
   "author": "Matthäus J. N. Beyrle <rvm-windows.npm@mail.magynhard.de>",
   "license": "MIT",
