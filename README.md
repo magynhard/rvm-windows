@@ -241,7 +241,7 @@ again.
 <a name="trouble_proxy"></a>
 ### Using behind a proxy
 
-rvm-windows has only support basic proxy support with Basic Authentication. For basic authentication, you can use the following format:
+rvm-windows has only basic proxy support with Basic Authentication. For basic authentication, you can use the following format:
 ```yaml
 http://<username>:<password>@<proxy-hostname>:<proxy-port>
 # example
