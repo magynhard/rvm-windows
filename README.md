@@ -90,6 +90,7 @@ upgrade <version>          # Upgrade given version to its latest patch version
 upgrade <from> <to>        # Upgrade given from_version to given to_version
 upgrades                   # List installed environments and available upgrades.
 use <version>              # Switch to specified ruby version
+use --default <version>    # Switch to specified ruby version and set it as default
 version                    # Display RVM build version
 ```
 

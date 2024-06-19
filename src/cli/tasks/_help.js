@@ -69,6 +69,7 @@ RvmCliHelp.SECTIONS.help = [
             {name: 'upgrade <version>', alias: 'up <version>', summary: 'Upgrade given version to its latest patch version'},
             {name: 'upgrade <from> <to>', alias: 'up <from> <to>', summary: 'Upgrade given from_version to given to_version'},
             {name: 'use <version>', alias: 'u <version>', summary: 'Switch to specified ruby version'},
+            {name: 'use --default <version>', alias: 'u --default <version>', summary: 'Switch to specified ruby version and set it as default'},
             {name: 'version', alias: 'v', summary: 'Display RVM build version'},
         ]
     },
