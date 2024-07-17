@@ -1,6 +1,6 @@
 # rvm-windows
 
-[![npm package](https://img.shields.io/npm/v/rvm-windows?color=default&style=plastic&logo=npm)](https://www.npmjs.com/package/rvm-windows)
+[![npm package](https://img.shields.io/npm/v/rvm-windows?color=default&style=plastic&logo=npm&logoColor=red)](https://www.npmjs.com/package/rvm-windows)
 ![downloads](https://img.shields.io/npm/dt/rvm-windows?color=blue&style=plastic)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg?style=plastic&logo=mit)](LICENSE)
 
