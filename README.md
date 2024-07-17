@@ -273,7 +273,7 @@ call(this);</script></body></html>
 
 After installing and configuring and testing px proxy, set your RVM config like this:
 ```bash
-nvm config proxy http://127.0.0.1:3128
+rvm config proxy http://127.0.0.1:3128
 ```
 
 
