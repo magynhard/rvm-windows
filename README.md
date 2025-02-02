@@ -195,17 +195,11 @@ rvm-windows requires
 
 
 ### Setup
-You can either use npm or yarn to install *rvm-windows*.
+You have to use npm and <u>not yarn</u> to install *rvm-windows*, as yarn does not support creating powershell files automatically and differs from its way to handle character encodings. (See https://github.com/magynhard/rvm-windows/issues/5)
 
 Ensure that [NodeJS](https://nodejs.org/) >= 18.x is already installed.
 
 Then on your command line execute the following command:
-
-#### yarn
-
-```bash
-yarn global add rvm-windows
-```
 
 #### npm
 
