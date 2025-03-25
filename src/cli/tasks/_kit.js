@@ -81,10 +81,12 @@ RvmCliKit.dependencies = {
     'x64-mingw-ucrt': [
         'mingw-w64-ucrt-x86_64-postgresql',
         'mingw-w64-ucrt-x86_64-libmariadbclient',
+        'mingw-w64-ucrt-x86_64-libyaml', // for 'psych' gem
     ],
     'x64-mingw32': [
         'mingw-w64-x86_64-postgresql',
         'mingw-w64-x86_64-libmariadbclient',
+        'mingw-w64-x86_64-libyaml', // for 'psych' gem
     ]
 }
 
