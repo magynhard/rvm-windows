@@ -9,7 +9,10 @@ let version = Wrapper.getRubyVersionForPath(cwd);
 // add path to ensure "ruby -S" is working
 let path_var = "";
 if(Wrapper.getPathOfMatchingRubyVersion(version)) {
-    path_var = `set "RUBYPATH=${Wrapper.getPathOfMatchingRubyVersion(version)}/bin"`;
+    let ruby_path = Wrapper.getPathOfMatchingRubyVersion(version);
+    // ensure backslashes for windows, as in PATHs, slashes are not allowed
+    ruby_path = ruby_path.replaceAll(/\//g, '\\');
+    path_var = `set "RUBYPATH=${ruby_path}/bin"`;
 } else {
     path_var = `@echo off`;
 }
