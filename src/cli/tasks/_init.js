@@ -25,8 +25,16 @@ class RvmCliInit {
         const self = RvmCliInit;
         const rvm_wrapper_path = File.expandPath(`${RvmCliTools.getRvmDataDir()}/wrapper`);
         let user_path = self.getUserPath();
-        // add only if not already added
-        if (user_path && !user_path.startsWith(rvm_wrapper_path)) {
+        // add only if not already added to first position
+        let exists_at_first_position = false;
+        if (user_path && user_path.length > 0) {
+            if(user_path.includes(";") && user_path.startsWith(rvm_wrapper_path + ";")) {
+                exists_at_first_position = true;
+            } else if(!user_path.includes(";") && user_path.startsWith(rvm_wrapper_path)) {
+                exists_at_first_position = true;
+            }
+        }
+        if (!exists_at_first_position) {
             user_path = user_path.replace(";" + rvm_wrapper_path, ""); // remove existing path
             // add at the beginning of path env variable
             const add_path_cmd = `chcp 65001 > NUL && setx PATH "${rvm_wrapper_path};${user_path}"`;
