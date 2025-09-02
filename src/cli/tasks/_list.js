@@ -4,6 +4,7 @@ const Chalk = require('chalk');
 const {Octokit} = require('@octokit/rest');
 const CommandLineUsage = require('command-line-usage');
 const File = require('ruby-nice/file');
+require('ruby-nice/string');
 
 var RvmCliTools = require('./../_tools');
 var RvmCliCurrent = require('./_current');
