@@ -19,6 +19,19 @@ var RvmCliFix = require('./_fix');
 
 class RvmCliInstall {
 
+    /**
+     * Install a ruby version into the given directory.
+     * If no directory is given, the default directory will be used.
+     *
+     * @example
+     *
+     * RvmCliInstall.runInstall("ruby-3.2.2", "C:/Ruby-3.2.2x64");
+     * RvmCliInstall.runInstall("3.2.2"); // will be installed into default directory
+     * RvmCliInstall.runInstall(); // will use process.argv[3] as version if run from command line
+     *
+     * @param {string} version
+     * @param {string} install_dir
+     */
     static runInstall(version, install_dir) {
         const self = RvmCliInstall;
         version = version || process.argv[3];
@@ -68,9 +81,15 @@ class RvmCliInstall {
     }
 
     /**
+     * Run the installer with silent mode and add the new installation to the rvm config.
      *
-     * @param source
-     * @param version
+     * @example
+     *
+     * RvmCliInstall.runInstaller("C:/path/to/installer.exe", "ruby-3.2.2", "C:/Ruby-3.2.2x64");
+     * RvmCliInstall.runInstaller("C:/path/to/installer.exe", "ruby-3.2.2"); // will be installed into default directory
+     *
+     * @param {string} source installer file path
+     * @param {string} version ruby version (e.g. ruby-3.2.2)
      * @param {string} install_dir overwrite automatic directory detection
      */
     static runInstaller(source, version, install_dir) {
@@ -110,16 +129,44 @@ class RvmCliInstall {
         console.log(`\nRun ${Chalk.green("rvm kit")} to install development tools and a bunch of widely used x64 dependencies automatically.`);
     }
 
+    /**
+     * Check if the given version is already installed.
+     *
+     * @example
+     *
+     * RvmCliInstall.isAlreadyInstalled("ruby-3.2.2"); // true/false
+     * RvmCliInstall.isAlreadyInstalled("3"); // true/false
+     *
+     * @param {string} version
+     * @returns {boolean}
+     */
     static isAlreadyInstalled(version) {
         const self = RvmCliInstall;
         return !!RvmCliTools.matchingVersion(version, RvmCliTools.versions());
     }
 
+    /**
+     * Download a file from the given url to the given destination.
+     * If the destination directory does not exist, it will be created.
+     * The file will not be downloaded again if it already exists.
+     * If the download fails, an error will be thrown.
+     *
+     * @param {string} url
+     * @param {string} destination
+     * @returns {Promise<void>}
+     */
     static download(url, destination) {
         const self = RvmCliInstall;
         return self.downloadPromise(url, destination);
     }
 
+    /**
+     * Download a file from the given url to the given destination.
+     *
+     * @param url
+     * @param destination
+     * @returns {Promise<void>}
+     */
     static async downloadPromise(url, destination) {
         const file_name = url.split('/').slice(-1);
         FileUtils.mkdirP(File.getDirname(destination));
