@@ -23,6 +23,7 @@
   ],
   "scripts": {
     "cli": "node src/cli/cli.js",
+    "test-cli": "node -e \"require('./src/test-cli-loader.js')\"",
     "doc": "node scripts/doc.js",
     "link_dev": "sudo npm link",
     "link_dev_win": "npm link",
