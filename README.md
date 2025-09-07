@@ -26,6 +26,7 @@ Ruby environment configurations are managed by RVM per user in `C:\Users\%USERNA
 # Table of contents
 
 * [Features & Limitations](#features)
+  * [MSYS2_PATH](#msys2_path)
 * [Commands](#commands)
 * [Usage](#usage)
 * [Installation](#installation)
@@ -44,6 +45,18 @@ Ruby environment configurations are managed by RVM per user in `C:\Users\%USERNA
 * Only one exact ruby version at one time (e.g. you can install and mange 3.3.0 and 3.3.1 separately, but not 3.3.1 two times)
 * Experimental `rvm kit` command with recipes for several ruby versions to install common used native gems.
 * When setting a proxy, the HTTP_PROXY and HTTPS_PROXY env will be temporary set, when running any rvm or ruby command
+
+<a name="msys2_path"></a>
+#### MSYS2_PATH
+When installing a new ruby version, `rvm-windows` by default automatically installs a separate MSYS2 environment delivered by the devkit version.
+
+If you want to use a central MSYS2 installation instead, you can set the `MSYS2_PATH` environment variable to the path of your MSYS2 installation.
+Then `rvm-windows` will instead download the ruby installer without devkit and you can use your central MSYS2 installation for the installed ruby.
+
+[!WARNING]  
+> Be aware, that you have to ensure, that your central MSYS2 installation has all needed packages installed to build native gems for the ruby versions you want to use.
+> 
+> And there is a risk, that older ruby versions may not work with a newer MSYS2 installation.
 
 <a name="commands"></a>
 ### Commands
@@ -123,26 +136,13 @@ rvm list known
 <div style="background: black; color: white; border-radius: 16px;">
 <pre>
  - ruby-3.3.0
- - ruby-3.2.3
  - <span style="color: green">ruby-3.2.2</span>
  - ruby-3.2.1
- - ruby-3.2.0
- - ruby-3.1.4
 ...
- - ruby-3.0.2
  - ruby-3.0.1
  - ruby-3.0.0
  - <span style="color: green">ruby-2.7.8</span>
- - ruby-2.7.7
- - ruby-2.7.6
- - ruby-2.7.5
 ...
- - ruby-2.5.1
- - <span style="color: green">ruby-2.4.10</span>
- - ruby-2.4.9
-...
- - ruby-2.4.4
- - ruby-2.4.4
 </pre>
 </div>
 
@@ -170,18 +170,28 @@ Using <span style="color: green">ruby-2.7.8</span> ...
 </pre>
 </div>
 
-#### Install new version
-```bash
-rvm install 3.2
+#### Additional, undocumented shortcuts
+
+There a lots of other shortcuts available, e.g. you can use `rvm lv` instead of `rvm list verbose`.
+
+```js
+rvm list         -> rvm l
+rvm list         -> rvm ls
+rvm list verbose -> rvm lv
+rvm list known   -> rvm lk
+rvm list all     -> rvm la
+...
 ```
 
-<div style="background: black; color: white; border-radius: 16px;">
-<pre>
-<span style="color: green">Installing ruby-3.2.3 ...</span>
+#### Install new version
+You do not need to prefix `ruby-` or specify the exact version, it will automatically install the highest one available!
 
-...
-</pre>
-</div>
+```bash
+rvm install 3.2   # installs latest 3.2.x
+rvm install 3     # installs latest 3.x.x
+rvm install 2.7   # installs latest 2.7.x
+rvm install 2     # installs latest 2.x.x
+```
 
 
 <a name="installation"></a>
