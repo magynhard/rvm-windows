@@ -16,6 +16,8 @@ class RvmCliConfig {
             self.runDefault();
         } else if(["p", "proxy"].includes(command)) {
             self.runProxy();
+        } else if(["da", "data"].includes(command)) {
+            self.runDataPath();
         } else {
             self.printConfig();
         }
