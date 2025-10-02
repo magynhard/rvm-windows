@@ -47,6 +47,24 @@ class RvmCliConfig {
             console.log(`There is no default ruby version set. To set, run ${Chalk.green('rvm default <version>')}`);
         }
     }
+    
+    static printDataPath() {
+        const data_path = RvmCliTools.getRvmDataDir();
+        console.log(`RVM data directory at ${Chalk.green(data_path)}`);
+    }
+
+    static runDataPath() {
+        const self = RvmCliConfig;
+        let config = RvmCliTools.config();
+        const path = process.argv[4];
+        if(path) {
+            config.rvm_data_dir = File.expandPath(path);
+            RvmCliTools.writeRvmConfig(config);
+            self.printDataPath();
+        } else {
+            self.printDataPath();
+        }
+    }
 
     static runProxy(hostname) {
         const self = RvmCliConfig;
