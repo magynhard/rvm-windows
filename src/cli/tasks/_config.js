@@ -62,10 +62,8 @@ class RvmCliConfig {
         if(path) {
             config.rvm_data_dir = File.expandPath(path);
             RvmCliTools.writeRvmConfig(config);
-            self.printDataPath();
-        } else {
-            self.printDataPath();
         }
+        self.printDataPath();
     }
 
     static runProxy(hostname) {
