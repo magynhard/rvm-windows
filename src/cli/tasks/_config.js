@@ -17,7 +17,7 @@ class RvmCliConfig {
         } else if(["p", "proxy"].includes(command)) {
             self.runProxy();
         } else if(["dt", "data"].includes(command)) {
-            self.runDataPath();
+            self.runData();
         } else {
             self.printConfig();
         }
@@ -50,20 +50,25 @@ class RvmCliConfig {
         }
     }
 
-    static printDataPath() {
+    static printData() {
         const data_path = RvmCliTools.getRvmDataDir();
         console.log(`RVM data directory at ${Chalk.green(data_path)}`);
     }
 
-    static runDataPath() {
+    static runData(path) {
         const self = RvmCliConfig;
-        let config = RvmCliTools.config();
-        const path = process.argv[4];
+        path = (path || process.argv[4] || "").trim();
+        path = File.expandPath(path);
         if(path) {
-            config.rvm_data_dir = File.expandPath(path);
-            RvmCliTools.writeRvmConfig(config);
+            if(RvmCliTools.isDir(path)) {
+                let config = RvmCliTools.config();
+                config.rvm_data_dir = File.expandPath(path);
+                RvmCliTools.writeRvmConfig(config);
+            } else {
+                console.error(`Given path ${Chalk.red(path)} is not a valid directory!`);
+            }
         }
-        self.printDataPath();
+        self.printData();
     }
 
     static runProxy(hostname) {
