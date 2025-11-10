@@ -1,4 +1,4 @@
-# 1.0.3 - 2025-11-10
+# 1.0.4 - 2025-11-10
 - Add CLI support to set rvm data directory, via `rvm config set data <path>`, thanks to [paul-c-hartman](https://github.com/paul-c-hartman)
 - See pull request [#8](https://github.com/magynhard/rvm-windows/pull/8)
 
