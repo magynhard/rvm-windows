@@ -16,7 +16,7 @@ class RvmCliConfig {
             self.runDefault();
         } else if(["p", "proxy"].includes(command)) {
             self.runProxy();
-        } else if(["da", "data"].includes(command)) {
+        } else if(["dt", "data"].includes(command)) {
             self.runDataPath();
         } else {
             self.printConfig();
@@ -49,7 +49,7 @@ class RvmCliConfig {
             console.log(`There is no default ruby version set. To set, run ${Chalk.green('rvm default <version>')}`);
         }
     }
-    
+
     static printDataPath() {
         const data_path = RvmCliTools.getRvmDataDir();
         console.log(`RVM data directory at ${Chalk.green(data_path)}`);
