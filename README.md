@@ -66,6 +66,8 @@ The following commands are available in rvm-windows:
 add <path>                 # Add a installed ruby environment to the list (alias: mount)
 automount                  # Scan for ruby installations and add them to the RVM configuration (alias: scan)
 config                     # Print current RVM config
+config data                # Print RVM data directory
+config data <path>         # Set RVM data directory
 config default             # Print default version
 config default <version>   # Set default version
 config proxy               # Get the configured proxy host.
