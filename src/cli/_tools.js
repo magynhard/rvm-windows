@@ -16,6 +16,11 @@ const {fetch, ProxyAgent} = require("undici");
 
 class RvmCliTools {
 
+    /**
+     * Get the cool RVM logo string with version label
+     *
+     * @return {string}
+     */
     static logo() {
         const version_label = Chalk.reset.green(`  ${RvmCliVersion.getVersion()}  `);
         // ASCII-Font: Calvin S
@@ -120,6 +125,16 @@ class RvmCliTools {
         return input || '';
     }
 
+    /**
+     * Get RVM data dir
+     *
+     * @example
+     *
+     * getRvmDataDir()
+     * // => "C:/ProgramData/rvm"
+     *
+     * @return {string}
+     */
     static getRvmDataDir() {
         const self = RvmCliTools;
         let dir = self.config().rvm_data_dir || self.getDefaultRvmDataDir();
@@ -134,6 +149,21 @@ class RvmCliTools {
         return File.expandPath("C:/ProgramData/rvm");
     }
 
+    /**
+     * Check if first character of given string is a number.
+     *
+     * @example
+     *
+     * startsWithNumber("3.2.1")
+     * // => true
+     *
+     * startsWithNumber("ruby-3.2.1")
+     * // => false
+     *
+     * @param {string} content
+     * @return {boolean}
+     *
+     */
     static startsWithNumber(content) {
         if(content) {
             return `${parseInt(content[0])}` === content[0];
@@ -193,16 +223,45 @@ class RvmCliTools {
         }
     }
 
+    /**
+     * Get all installed ruby versions
+     *
+     * @example
+     *
+     * versions()
+     * // => ["ruby-2.7.6", "ruby-3.0.4", "ruby-3.1.2", "ruby-3.2.2"]
+     *
+     * @return {string[]}
+     */
     static versions() {
         const self = RvmCliTools;
         return Object.keys(self.config().envs).sort(self.versionSort);
     }
 
+    /**
+     * Get all installed ruby versions without ruby- prefix
+     *
+     * @example
+     *
+     * rawVersions()
+     * // => ["2.7.6", "3.0.4", "3.1.2", "3.2.2"]
+     *
+     * @return {string[]}
+     */
     static rawVersions() {
         const self = RvmCliTools;
         return self.versions().map(e => e.replace("ruby-", ""));
     }
 
+    /**
+     * Set current version for current session
+     *
+     * @example
+     *
+     * setCurrentVersion("ruby-3.2.2")
+     *
+     * @param {string} version
+     */
     static setCurrentVersion(version) {
         const self = RvmCliTools;
         if(version && process.env.RVM_SESSION) {
@@ -211,6 +270,9 @@ class RvmCliTools {
         }
     }
 
+    /**
+     * Kill all running msys2 processes to be able to update msys2 installation
+     */
     static killRunningMsysProcesses() {
         console.log(`Kill running msys processes ...`);
         const commands = [
@@ -233,6 +295,18 @@ class RvmCliTools {
         });
     }
 
+    /**
+     * Get current version for current session
+     *
+     * @example
+     *
+     * If current version is ruby-3.2.2
+     *
+     * getCurrentVersion()
+     * // => "ruby-3.2.2"
+     *
+     * @returns {string}
+     */
     static getCurrentVersion() {
         let rvm_session = process.env.RVM_SESSION;
         if(rvm_session) {
@@ -245,15 +319,35 @@ class RvmCliTools {
     }
 
     /**
-     * Get current version without ruby- prefix
+     * Get current version without ruby- prefix for current session
+     *
+     * @example
+     *
+     * If current version is ruby-3.2.2
+     *
+     * getCurrentRawVersion()
+     * // => "3.2.2"
+     *
+     * @returns {string}
      */
     static getCurrentRawVersion() {
         const self = RvmCliTools;
         return self.getCurrentVersion().replace("ruby-","");
     }
 
-
-
+    /**
+     * Set default version
+     *
+     * @example
+     *
+     * // Set default to ruby-3.2.2, when only this version is installed
+     * setDefaultVersion("ruby-3.2.2")
+     * setDefaultVersion("3.2.2")
+     * setDefaultVersion("3.2")
+     * setDefaultVersion("3")
+     *
+     * @param version
+     */
     static setDefaultVersion(version) {
         const self = RvmCliTools;
         if(!version) {
@@ -275,6 +369,18 @@ class RvmCliTools {
         }
     }
 
+    /**
+     * Get default version
+     *
+     * @example
+     *
+     * If default version is ruby-3.2.2
+     *
+     * getDefaultVersion()
+     * // => "ruby-3.2.2"
+     *
+     * @return {string}
+     */
     static getDefaultVersion() {
         return RvmCliTools.config().default;
     }
@@ -303,12 +409,40 @@ class RvmCliTools {
         process.stdout.write('  ' + text);
     }
 
+    /**
+     * Get unique values from array
+     *
+     * @example
+     *
+     * uniqArray([1,2,2,3,4,4,5])
+     * // => [1,2,3,4,5]
+     *
+     * @param {Array} array
+     * @return {Array<any>}
+     */
     static uniqArray(array) {
         return [...new Set(array)];
     }
 
     /**
      * Get only the deepest dirs, without dirs between
+     *
+     * @example
+     *
+     * filterDeepDirsOnly([
+     *   "a/b/c",
+     *   "a/b",
+     *   "a/b/c/d",
+     *   "e/f",
+     *   "e/f/g/h",
+     *   "i/j"
+     * ])
+     * // => [
+     * //      "a/b/c/d",
+     * //      "e/f/g/h",
+     * //      "i/j"
+     * //    ]
+     *
      * @param {Array<String>} dirs to filter
      */
     static filterDeepDirsOnly(dirs) {
@@ -321,27 +455,69 @@ class RvmCliTools {
         return filtered;
     }
 
+    /**
+     * Get RVM root path
+     *
+     * @example
+     *
+     * rvmRootPath()
+     * // => "C:/path/to/rvm-cli-windows"
+     *
+     * @return {string}
+     */
     static rvmRootPath() {
         const self = RvmCliTools;
         return File.expandPath(Path.resolve(__dirname + '/../../'));
     }
 
+    /**
+     * Get "project" root path (current working directory)
+     *
+     * @example
+     *
+     * projectRootPath()
+     * // => "C:/path/to/current/project"
+     *
+     * @return {string}
+     */
     static projectRootPath() {
         const self = RvmCliTools;
         return File.expandPath(process.cwd());
     }
 
+    /**
+     * Read RVM config file
+     *
+     * @example
+     *
+     * readRvmConfig()
+     * // => '{ "default": "ruby-3.2.2", "envs": { "ruby-3.2.2": "C:/Ruby32-x64" } }'
+     *
+     * @return {string}
+     */
     static readRvmConfig() {
         const self = RvmCliTools;
         return File.read(self.rvmConfigPath());
     }
 
+    /**
+     * Get parsed RVM config file
+     *
+     * @example
+     *
+     * config()
+     * // => { default: 'ruby-3.2.2', envs: { 'ruby-3.2.2': 'C:/Ruby32-x64' } }
+     *
+     * @return {Object}
+     */
     static config() {
         const self = RvmCliTools;
         return JSON.parse(self.readRvmConfig());
     }
 
     /**
+     * Write RVM config file
+     *
      * @param {string, Object} content as String or parsed JSON object
      */
     static writeRvmConfig(content) {
@@ -352,36 +528,108 @@ class RvmCliTools {
         File.write(self.rvmConfigPath(), content, { encoding: "utf8" });
     }
 
+    /**
+     * Get RVM config file path
+     *
+     * @example
+     *
+     * rvmConfigPath()
+     * // => "C:/Users/username/.rvm.json"
+     *
+     * @return {string}
+     */
     static rvmConfigPath() {
         const self = RvmCliTools;
         return File.expandPath(`${File.getHomePath()}/.rvm.json`);
     }
 
+    /**
+     * Get RVM sessions dir path
+     *
+     * @example
+     *
+     * rvmSessionsDir()
+     * // => "C:/Users/username/.rvm/sessions"
+     *
+     * @return {string}
+     */
     static rvmSessionsDir() {
         const self = RvmCliTools;
         return File.expandPath(`${File.getHomePath()}/.rvm/sessions`);
     }
 
+    /**
+     * Get RVM config template file path
+     *
+     * @example
+     *
+     * rvmConfigTemplatePath()
+     * // => "C:/path/to/rvm-cli-windows/src/templates/.rvm.json"
+     *
+     * @return {string}
+     */
     static rvmConfigTemplatePath() {
         const self = RvmCliTools;
         return self.rvmRootPath() + '/src/templates/.rvm.json';
     }
 
+    /**
+     * Get RVM batch wrapper template file path
+     *
+     * @example
+     *
+     * rvmBatchTemplatePath()
+     * // => "C:/path/to/rvm-cli-windows/src/templates/wrapper_template.bat"
+     *
+     * @return {string}
+     */
     static rvmBatchTemplatePath() {
         const self = RvmCliTools;
         return self.rvmRootPath() + '/src/templates/wrapper_template.bat';
     }
 
+    /**
+     * Make directory recursively
+     *
+     * @example
+     *
+     * makeDir("C:/path/to/some/dir/with/many/new/folders")
+     * // creates "C:/path/to/some/dir/with/many/new/folders"
+     *
+     * @param {string} dir
+     */
     static makeDir(dir) {
         Fs.mkdirSync(dir, { recursive: true });
     }
 
+    /**
+     * Make directory of file recursively
+     *
+     * @example
+     *
+     * makeDirOfFile("C:/path/to/some/file.txt")
+     * // creates "C:/path/to/some/"
+     *
+     * @param {string} file
+     */
     static makeDirOfFile(file) {
         const self = RvmCliTools;
         let final_dir = File.expandPath(Path.dirname(file));
         Fs.mkdirSync(final_dir, { recursive: true });
     }
 
+    /**
+     * Read file content
+     *
+     * @example
+     *
+     * readFile("C:/path/to/some/file.txt", "utf8")
+     * // => "file content ..."
+     *
+     * @param {string} path
+     * @param {string} encoding='utf8'
+     * @return {string}
+     */
     static readFile(path, encoding = 'utf8') {
         if(!encoding) {
             encoding = undefined;
@@ -389,23 +637,70 @@ class RvmCliTools {
         return Fs.readFileSync(path, encoding).toString();
     }
 
+    /**
+     * Write content to file
+     *
+     * @example
+     *
+     * writeFile("C:/path/to/some/file.txt", "file content ...")
+     * // creates file with content
+     *
+     * @param {string} path
+     * @param {string} content
+     * @return {void}
+     */
     static writeFile(path, content) {
         const self = RvmCliTools;
         self.makeDirOfFile(path);
         return Fs.writeFileSync(path, content);
     }
 
+    /**
+     * Copy file from source to destination
+     *
+     * @example
+     *
+     * copyFile("C:/path/to/source/file.txt", "C:/path/to/dest/file.txt")
+     * // copies file from source to dest
+     *
+     * @param {string} src
+     * @param {string} dest
+     */
     static copyFile(src, dest) {
         const self = RvmCliTools;
         self.makeDirOfFile(dest);
         Fs.copyFileSync(src, dest);
     }
 
+    /**
+     * Copy directory from source to destination
+     *
+     * @example
+     *
+     * copy("C:/path/to/source/dir", "C:/path/to/dest/dir")
+     * // copies directory from source to dest
+     *
+     * @param {string} src
+     * @param {string} dest
+     */
     static copy(src, dest) {
         const self = RvmCliTools;
         Fse.copySync(src, dest);
     }
 
+    /**
+     * Check if path is a directory
+     *
+     * @example
+     *
+     * isDir("C:/path/to/some/dir")
+     * // => true
+     * isDir("C:/path/to/some/file.txt")
+     * // => false
+     *
+     * @param {string} path
+     * @return {boolean}
+     */
     static isDir(path) {
         const self = RvmCliTools;
         try {
@@ -416,6 +711,19 @@ class RvmCliTools {
         }
     }
 
+    /**
+     * Check if path is a file
+     *
+     * @example
+     *
+     * isFile("C:/path/to/some/file.txt")
+     * // => true
+     * isFile("C:/path/to/some/dir")
+     * // => false
+     *
+     * @param {string} path
+     * @return {boolean}
+     */
     static isFile(path) {
         const self = RvmCliTools;
         try {
@@ -426,6 +734,19 @@ class RvmCliTools {
         }
     }
 
+    /**
+     * Check if path exists
+     *
+     * @example
+     *
+     * pathExists("C:/path/to/some/dir_or_file")
+     * // => true
+     * pathExists("C:/path/to/some/non_existing_dir_or_file")
+     * // => false
+     *
+     * @param {string} path
+     * @return {boolean}
+     */
     static pathExists(path) {
         const self = RvmCliTools;
         try {
@@ -440,7 +761,13 @@ class RvmCliTools {
      * Ensure path is divided by slashes / and not back slashes \
      * to ensure compatibility with MS Windows
      *
-     * @param {String} path
+     * @example
+     *
+     * normalizePath("C:\\path\\to\\some\\dir_or_file")
+     * // => "C:/path/to/some/dir_or_file"
+     *
+     * @param {string} path
+     * @return {string}
      */
     static normalizePath(path) {
         return path.replace(/\\/g,'/');
@@ -450,15 +777,34 @@ class RvmCliTools {
      * Delete file or directory
      *
      * @param {String} path
+     * @return {void}
      */
     static removePath(path) {
         Fs.rmSync(path, { recursive: true, force: true });
     }
 
+    /**
+     * Escape string for usage in regular expression
+     *
+     * @example
+     *
+     * escapeRegExp("ruby-3.2.2 (x64-mingw32)")
+     * // => "ruby\-3\.2\.2\ \(x64\-mingw32\)"
+     *
+     * @param {string} string
+     * @return {string}
+     */
     static escapeRegExp(string) {
         return string.replace(/[$+.*?^(){}|[\]\\]/g, '\\$&');
     }
 
+    /**
+     * Fetch with proxy support
+     *
+     * @param {string} url
+     * @param {Object} opts of fetch
+     * @return {Promise<Response>}
+     */
     static fetchWithProxy(url, opts) {
         const self = RvmCliTools;
         let final_opts = {};
