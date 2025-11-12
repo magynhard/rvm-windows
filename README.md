@@ -19,6 +19,7 @@ Beneath you can switch your ruby version instantly.
 
 Ruby environment configurations are managed by RVM per user in `C:\Users\%USERNAME%\.rvm` but stored for all users in `C:\ProgramData\rvm` by default.
 
+> [!NOTE]  
 > The goal of this project is not to 100% reimplement all features of 
 > rvm.io, but the most important and common ones by preserving most of the
 > same command line interface. Some special Windows related stuff is added as well.
