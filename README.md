@@ -53,8 +53,8 @@ When installing a new ruby version, `rvm-windows` by default automatically insta
 If you want to use a central MSYS2 installation instead, you can set the `MSYS2_PATH` environment variable to the path of your MSYS2 installation.
 Then `rvm-windows` will instead download the ruby installer without devkit and you can use your central MSYS2 installation for the installed ruby.
 
-[!WARNING]  
-> Be aware, that you have to ensure, that your central MSYS2 installation has all needed packages installed to build native gems for the ruby versions you want to use.
+> [!WARNING]  
+> Be aware, when `MSYS2_PATH` is set, that you have to ensure, that your central MSYS2 installation has all needed packages installed to build native gems for the ruby versions you want to use.
 > 
 > And there is a risk, that older ruby versions may not work with a newer MSYS2 installation.
 
