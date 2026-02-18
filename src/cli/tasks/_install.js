@@ -138,7 +138,8 @@ class RvmCliInstall {
     /**
      * Remove the RubyInstaller InnoSetup uninstall registry key for the given version's minor version.
      *
-     * RubyInstaller uses an AppId based on major.minor only (e.g. "RubyInstaller-3.3-x64"),
+     * RubyInstaller uses an AppId based on major.minor and platform
+     * (e.g. "RubyInstaller-3.3-x64-mingw-ucrt" or "RubyInstaller-3.1-x64-mingw32"),
      * which means its built-in upgrade logic will silently uninstall any existing installation
      * of the same minor version before installing the new one.
      *
@@ -148,24 +149,29 @@ class RvmCliInstall {
      * @example
      *
      * RvmCliInstall.removeRubyInstallerRegistryKey("ruby-3.3.9");
-     * // removes HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\RubyInstaller-3.3-x64_is1
+     * // removes HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\RubyInstaller-3.3-x64-mingw-ucrt_is1
      *
      * @param {string} version ruby version (e.g. ruby-3.3.9)
      */
     static removeRubyInstallerRegistryKey(version) {
         const minor_version = version.replace("ruby-", "").split(".").slice(0, 2).join(".");
-        const app_ids = [
-            `RubyInstaller-${minor_version}-x64`,
-            `RubyInstaller-${minor_version}-x86`,
-        ];
-        app_ids.forEach((app_id) => {
-            const reg_path = `HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\${app_id}_is1`;
-            try {
-                execSync(`reg delete "${reg_path}" /f`, {stdio: 'ignore'});
-            } catch (e) {
-                // key does not exist, nothing to do
-            }
-        });
+        const uninstall_path = `HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall`;
+        try {
+            const output = execSync(`reg query "${uninstall_path}" /f "RubyInstaller-${minor_version}" /k`, {encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore']});
+            const lines = output.split(/\r?\n/).filter(l => l.includes(`RubyInstaller-${minor_version}`));
+            lines.forEach((line) => {
+                const reg_key = line.trim();
+                if (reg_key) {
+                    try {
+                        execSync(`reg delete "${reg_key}" /f`, {stdio: 'ignore'});
+                    } catch (e) {
+                        // key could not be deleted, ignore
+                    }
+                }
+            });
+        } catch (e) {
+            // no matching registry keys found, nothing to do
+        }
     }
 
     /**
