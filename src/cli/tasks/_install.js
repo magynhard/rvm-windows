@@ -93,15 +93,21 @@ class RvmCliInstall {
      * @param {string} install_dir overwrite automatic directory detection
      */
     static runInstaller(source, version, install_dir) {
+        const self = RvmCliInstall;
         install_dir = install_dir || File.expandPath(`${RvmCliTools.getRvmDataDir()}/envs/${version}`);
         FileUtils.mkdirP(install_dir);
         console.log(`Installing at ${Chalk.green(File.expandPath(install_dir))} ... please wait, this task will take some minutes ...`);
+        // Remove RubyInstaller's InnoSetup uninstall registry key for the same minor version
+        // to prevent the installer from silently uninstalling a previously installed patch version.
+        // RubyInstaller uses an AppId based on major.minor (e.g. "RubyInstaller-3.3-x64"),
+        // so installing 3.3.9 would otherwise auto-uninstall an existing 3.3.8.
+        self.removeRubyInstallerRegistryKey(version);
         let proxy_command = '';
         const proxy = RvmCliTools.config().proxy;
         if(proxy?.enabled && proxy?.hostname) {
             proxy_command = `set HTTP_PROXY=${proxy.hostname} && set HTTPS_PROXY=${proxy.hostname} && `;
         }
-        const command = `${proxy_command}"${source}" /verysilent /currentuser /dir="${install_dir}" /tasks="noassocfiles,nomodpath`;
+        const command = `${proxy_command}"${source}" /verysilent /currentuser /dir="${install_dir}" /tasks="noassocfiles,nomodpath"`;
         const result = execSync(command, {encoding: 'utf-8'});
         let new_config = RvmCliTools.config();
         // remove existing installation with same dir (if upgrade)
@@ -127,6 +133,39 @@ class RvmCliInstall {
         }
         RvmCliTools.killRunningMsysProcesses();
         console.log(`\nRun ${Chalk.green("rvm kit")} to install development tools and a bunch of widely used x64 dependencies automatically.`);
+    }
+
+    /**
+     * Remove the RubyInstaller InnoSetup uninstall registry key for the given version's minor version.
+     *
+     * RubyInstaller uses an AppId based on major.minor only (e.g. "RubyInstaller-3.3-x64"),
+     * which means its built-in upgrade logic will silently uninstall any existing installation
+     * of the same minor version before installing the new one.
+     *
+     * By removing the registry key before running the installer, we prevent this auto-uninstall
+     * and allow multiple patch versions of the same minor to coexist side by side.
+     *
+     * @example
+     *
+     * RvmCliInstall.removeRubyInstallerRegistryKey("ruby-3.3.9");
+     * // removes HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\RubyInstaller-3.3-x64_is1
+     *
+     * @param {string} version ruby version (e.g. ruby-3.3.9)
+     */
+    static removeRubyInstallerRegistryKey(version) {
+        const minor_version = version.replace("ruby-", "").split(".").slice(0, 2).join(".");
+        const app_ids = [
+            `RubyInstaller-${minor_version}-x64`,
+            `RubyInstaller-${minor_version}-x86`,
+        ];
+        app_ids.forEach((app_id) => {
+            const reg_path = `HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\${app_id}_is1`;
+            try {
+                execSync(`reg delete "${reg_path}" /f`, {stdio: 'ignore'});
+            } catch (e) {
+                // key does not exist, nothing to do
+            }
+        });
     }
 
     /**
