@@ -114,9 +114,6 @@ class RvmCliInstall {
         if(!new_config.default) {
             new_config.default = version;
         }
-        if(!new_config.default) {
-            new_config.default = version;
-        }
         RvmCliTools.writeRvmConfig(new_config);
         RvmCliFix.fixWrapperFiles();
         console.log(`Installation complete!\n`);
