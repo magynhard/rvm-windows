@@ -108,7 +108,7 @@ class RvmCliFix {
     static fixWrapperFiles() {
         const self = RvmCliFix;
         let node_path = process.argv[0];
-        if(!node_path.endsWith('node.exe')) {
+        if(!node_path.endsWith('node.exe') && !node_path.endsWith('bun.exe')) {
             throw new Error(`Can not determine node js runtime!`);
         }
         // escape spaces in path segments

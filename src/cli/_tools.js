@@ -262,10 +262,27 @@ class RvmCliTools {
      *
      * @param {string} version
      */
+    /**
+     * Get the current session ID. Uses RVM_SESSION env var if set (npm install),
+     * otherwise falls back to the parent process PID (Bun link / non-npm install).
+     *
+     * @return {string|null}
+     */
+    static getSessionId() {
+        if (process.env.RVM_SESSION) {
+            return process.env.RVM_SESSION;
+        }
+        if (process.ppid) {
+            return process.ppid.toString();
+        }
+        return null;
+    }
+
     static setCurrentVersion(version) {
         const self = RvmCliTools;
-        if(version && process.env.RVM_SESSION) {
-            const file_name = File.expandPath(RvmCliTools.rvmSessionsDir() + '/' + process.env.RVM_SESSION);
+        const session_id = self.getSessionId();
+        if(version && session_id) {
+            const file_name = File.expandPath(RvmCliTools.rvmSessionsDir() + '/' + session_id);
             File.write(file_name, version);
         }
     }
@@ -308,9 +325,9 @@ class RvmCliTools {
      * @returns {string}
      */
     static getCurrentVersion() {
-        let rvm_session = process.env.RVM_SESSION;
-        if(rvm_session) {
-            const session_file = File.expandPath(RvmCliTools.rvmSessionsDir() + '/' + process.env.RVM_SESSION);
+        const session_id = RvmCliTools.getSessionId();
+        if(session_id) {
+            const session_file = File.expandPath(RvmCliTools.rvmSessionsDir() + '/' + session_id);
             if(File.isExisting(session_file)) {
                 return File.read(session_file);
             }
