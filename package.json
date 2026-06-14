@@ -1,6 +1,6 @@
 {
   "name": "rvm-windows",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Ruby Version Manager 4 Windows",
   "author": "Matthäus J. N. Beyrle <rvm-windows.npm@mail.magynhard.de>",
   "license": "MIT",
@@ -16,10 +16,12 @@
     "node": ">=18.0.0"
   },
   "os": [
-    "win32","win64"
+    "win32",
+    "win64"
   ],
   "cpu": [
-    "x64","!arm"
+    "x64",
+    "!arm"
   ],
   "scripts": {
     "cli": "node src/cli/cli.js",
