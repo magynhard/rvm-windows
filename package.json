@@ -31,7 +31,7 @@
     "unlink_dev": "sudo npm rm --global rvm-windows",
     "unlink_dev_win": "npm rm --global rvm-windows",
     "relink_win": "npm run unlink_dev_win && npm run link_dev_win",
-    "release_package": "npm push --access public"
+    "release": "node scripts/release.js"
   },
   "files": [
     "src/**/*",

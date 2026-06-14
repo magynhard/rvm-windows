@@ -1,3 +1,10 @@
+# 1.0.5 - 2026-06-14
+- Fix installing multiple patch versions of the same minor Ruby version (e.g. 3.3.8 and 3.3.9) side by side
+  - RubyInstaller's InnoSetup uses an AppId based on major.minor only, causing it to silently uninstall an existing same-minor installation before installing the new one. Removed the registry key before running the installer to prevent the auto-uninstall.
+- Fix missing closing quote on the `/tasks` flag in the installer command
+- See pull request [#10](https://github.com/magynhard/rvm-windows/pull/10)
+- Added `npm run release` script to automate version bumping, git tagging, and npm publishing
+
 # 1.0.4 - 2025-11-10
 - Add CLI support to set rvm data directory, via `rvm config set data <path>`, thanks to [paul-c-hartman](https://github.com/paul-c-hartman)
 - See pull request [#8](https://github.com/magynhard/rvm-windows/pull/8)
