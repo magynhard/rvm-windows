@@ -1,3 +1,6 @@
+# 1.0.6 - 2026-07-22
+- Fix [#12](https://github.com/magynhard/rvm-windows/issues/12), preserve wrapped command exit codes after environment cleanup and post-command processing
+
 # 1.0.5 - 2026-06-14
 - Fix installing multiple patch versions of the same minor Ruby version (e.g. 3.3.8 and 3.3.9) side by side
   - RubyInstaller's InnoSetup uses an AppId based on major.minor only, causing it to silently uninstall an existing same-minor installation before installing the new one. Removed the registry key before running the installer to prevent the auto-uninstall.

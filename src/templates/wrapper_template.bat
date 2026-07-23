@@ -34,6 +34,7 @@
  for /f "delims=" %%c in ('%NODE_JS_RUNTIME_PATH% "%RVM_ROOT_PATH%\src\wrapper\wrapper_runner.js" "%CD%" %~n0') do SET "return_value=%%c"
  REM echo Returned value: "%return_value%"
  CALL %return_value% %*
+ SET "RVM_WRAPPED_EXIT_CODE=%ERRORLEVEL%"
 
  REM reSET variables
  SET "HTTP_PROXY=%ORIGINAL_HTTP_PROXY%"
@@ -43,3 +44,4 @@
 
  REM AFTER COMMAND
  %NODE_JS_RUNTIME_PATH% "%RVM_ROOT_PATH%\src\wrapper\wrapper_after.js" "%CD%" %~n0
+ EXIT /B %RVM_WRAPPED_EXIT_CODE%
