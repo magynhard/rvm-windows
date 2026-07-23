@@ -1,4 +1,4 @@
-# 1.0.6 - 2026-07-22
+# 1.0.6 - 2026-07-23
 - Fix [#12](https://github.com/magynhard/rvm-windows/issues/12), preserve wrapped command exit codes after environment cleanup and post-command processing
 
 # 1.0.5 - 2026-06-14
