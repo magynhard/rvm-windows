@@ -76,23 +76,50 @@ class RvmCliInit {
     static initSessionToRvmExes(force = false) {
         const self = RvmCliInit;
         if (!Dir.isExisting(RvmCliTools.rvmSessionsDir()) || force) {
-            let paths = execSync(`chcp 65001 > NUL & where rvm`, {stdio: 'pipe'}).toString();
-            paths = paths.split("\n");
-            const cmd_path = paths[0];
-            let cmd_path_without_extension = null;
-            if (cmd_path && cmd_path.endsWith(".cmd") || cmd_path.endsWith(".ps1")) {
-                cmd_path_without_extension = File.getBasename(cmd_path, cmd_path.split(".").getLast());
-            } else {
-                cmd_path_without_extension = cmd_path;
+            let paths = [];
+            try {
+                paths = execSync(`chcp 65001 > NUL & where rvm`, {stdio: 'pipe'})
+                    .toString()
+                    .split(/\r?\n/)
+                    .map(e => e.trim())
+                    .filter(e => e);
+            } catch (e) {
+                // no global rvm shim available on PATH yet
             }
-            cmd_path_without_extension = cmd_path_without_extension.trim();
-            self._writeToSecondLine(cmd_path_without_extension, `echo "rvm-windows does only run on windows platforms!"; exit 1`);
-            self._writeToSecondLine(cmd_path_without_extension + '.ps1', `& "${File.expandPath(RvmCliTools.rvmRootPath() + '/src/tools/current/ps_rvm_prepend.ps1')}"`);
-            self._writeToSecondLine(cmd_path_without_extension + '.cmd', `call "${File.expandPath(RvmCliTools.rvmRootPath() + '/src/tools/current/cmd_rvm_prepend.bat')}"`);
+
+            // Bun's `bun link` can provide only an .exe shim. Look for editable wrappers or use .exe as base.
+            let cmd_path_without_extension = null;
+
+            const editable_wrapper = paths.find((p) => p.endsWith('.cmd') || p.endsWith('.ps1'));
+            if (editable_wrapper) {
+                const extension = editable_wrapper.split('.').getLast();
+                cmd_path_without_extension = File.getBasename(editable_wrapper, extension).trim();
+            } else if (paths.length > 0) {
+                // No .cmd or .ps1 found, but we have paths (e.g., .exe from Bun link).
+                // Use the .exe path as base to create/modify .cmd and .ps1 wrappers.
+                let base_path = paths[0];
+                if (base_path.endsWith('.exe')) {
+                    cmd_path_without_extension = base_path.slice(0, -4); // Remove .exe extension
+                } else {
+                    cmd_path_without_extension = base_path;
+                }
+            }
+
+            if (cmd_path_without_extension) {
+                self._writeToSecondLine(cmd_path_without_extension, `echo "rvm-windows does only run on windows platforms!"; exit 1`);
+                self._writeToSecondLine(cmd_path_without_extension + '.ps1', `& "${File.expandPath(RvmCliTools.rvmRootPath() + '/src/tools/current/ps_rvm_prepend.ps1')}"`);
+                self._writeToSecondLine(cmd_path_without_extension + '.cmd', `call "${File.expandPath(RvmCliTools.rvmRootPath() + '/src/tools/current/cmd_rvm_prepend.bat')}"`);
+            }
             FileUtils.mkdirP(RvmCliTools.rvmSessionsDir());
         }
-        if(!process.env.RVM_SESSION && process.argv[2] !== "init") {
+        const session_id = RvmCliTools.getSessionId();
+        // Only warn if no session mechanism is available at all.
+        if(!session_id && process.argv[2] !== "init") {
             console.log(`${Chalk.red("No rvm session found!")} Run ${Chalk.green("rvm init")} to recreate session wrappers. Otherwise ${Chalk.green("rvm use")} is not working.`);
+            console.log(``);
+        }
+        if(process.argv[2] === "init" && !process.env.RVM_SESSION && session_id) {
+            console.log(`${Chalk.yellow("Info:")} RVM_SESSION env var may stay empty depending on runtime/link setup. rvm uses a process-based session id per terminal instead.`);
             console.log(``);
         }
         self._cleanSessions();
@@ -132,13 +159,14 @@ class RvmCliInit {
         if (File.isExisting(file)) {
             const content = File.read(file);
             const lines = content.split('\n');
-            if (lines[1].trim() !== line.trim()) {
+            const second_line = lines[1] ? lines[1].trim() : '';
+            if (second_line !== line.trim()) {
                 lines.splice(1, 0, line);
                 File.write(file, lines.join('\n'));
             }
-        } else {
-            throw new Error(`Could not find file '${file}'`);
         }
+        // If file doesn't exist, silently skip it. This handles Bun link scenarios where
+        // wrapper files may not exist yet or are in different locations.
     }
 
     static initAfterInstall(force = false) {
@@ -172,5 +200,3 @@ class RvmCliInit {
 }
 
 module.exports = RvmCliInit;
-
-
