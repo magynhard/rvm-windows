@@ -68,6 +68,11 @@ class RvmCliFix
   end
 
   def self.render_wrapper(executable = Process.executable_path.not_nil!) : String
+    # CMD's nested FOR /F command parser strips a leading pair of quotes.
+    # Preserve the original segment-quoting strategy for executable paths.
+    executable = executable.tr("/", "\\").split('\\').map do |segment|
+      segment.includes?(' ') ? %Q("#{segment}") : segment
+    end.join('\\')
     File.read(RvmCliTools.rvm_batch_template_path)
       .sub("{{rvm_executable}}", executable)
       .sub("{{rvm_root_dir}}", RvmCliTools.rvm_root_path)

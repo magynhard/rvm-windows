@@ -262,8 +262,8 @@ class RvmCliTools
                  end
                  socket << "\r\n"
                  socket.flush
-                 status_line = socket.gets || raise "Proxy closed connection"
-                 until (line = socket.gets).nil? || line == "\r\n" || line == "\n"
+                 status_line = socket.gets(chomp: false) || raise "Proxy closed connection"
+                 until (line = socket.gets(chomp: false)).nil? || line == "\r\n" || line == "\n"
                  end
                  unless status_line.split[1]? == "200"
                    socket.close

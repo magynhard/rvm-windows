@@ -2,8 +2,23 @@ require "spec"
 require "../src/cli/cli"
 
 module Fixtures
+  TEMP_ROOT  = File.join(ENV["TEMP"]? || Dir.tempdir, "opencode")
+  BUILD_ROOT = File.join(TEMP_ROOT, "rvm-cr-build-#{Random.rand(1_000_000_000)}")
+  @@executables = {} of String => String
+
+  def self.executable(fixture = false) : String
+    name = fixture ? "wrapper-fixture" : "rvm"
+    @@executables[name] ||= begin
+      Dir.mkdir_p(BUILD_ROOT)
+      source = fixture ? File.expand_path("support/wrapper_fixture.cr", __DIR__) : File.expand_path("../src/rvm-windows.cr", __DIR__)
+      output = File.join(BUILD_ROOT, "#{name}.exe")
+      RvmCliTools.capture("crystal", ["build", source, "-o", output])
+      output
+    end
+  end
+
   def self.with_home(&)
-    root = File.join(ENV["TEMP"]? || Dir.tempdir, "rvm-cr-spec-#{Random.rand(1_000_000_000)}")
+    root = File.join(TEMP_ROOT, "rvm-cr-spec-#{Random.rand(1_000_000_000)}")
     keys = %w(RVM_HOME RVM_ROOT RVM_SESSION MSYS2_PATH)
     previous = keys.to_h { |key| {key, ENV[key]?} }
     begin
@@ -42,3 +57,5 @@ module Fixtures
     path
   end
 end
+
+Spec.after_suite { FileUtils.rm_rf(Fixtures::BUILD_ROOT) }
