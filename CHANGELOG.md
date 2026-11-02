@@ -1,3 +1,6 @@
+# 1.0.8 - 2026-11-02
+- Fix [#14](https://github.com/magynhard/rvm-windows/issues/14), allow initialization when the installation path contains spaces, thanks to [sk-ys](https://github.com/sk-ys)
+
 # 1.0.7 - 2026-07-23
 - Fix [#12](https://github.com/magynhard/rvm-windows/issues/12), preserve wrapped command exit codes after environment cleanup and post-command processing
 
