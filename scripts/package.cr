@@ -13,7 +13,7 @@ Dir.cd(root) do
   Dir.mkdir_p(File.join(stage, "bin"))
   Dir.mkdir_p(File.join(stage, "src"))
   FileUtils.cp("bin/rvm.exe", File.join(stage, "bin/rvm.exe"))
-  %w(rvm.cmd rvm.ps1 LICENSE README.md CHANGELOG.md).each { |file| FileUtils.cp(file, File.join(stage, file)) }
+  %w(rvm.cmd rvm.ps1 LICENSE README.md CONTRIBUTING.md CHANGELOG.md).each { |file| FileUtils.cp(file, File.join(stage, file)) }
   %w(tools templates).each { |dir| FileUtils.cp_r("src/#{dir}", File.join(stage, "src", dir)) }
   FileUtils.cp_r("doc", File.join(stage, "doc"))
   archive = File.join(root, "dist", "#{name}.zip")

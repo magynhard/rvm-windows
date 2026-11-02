@@ -20,5 +20,6 @@ Use `Fixtures.with_home` for configuration and session tests. Do not call `init`
 the real host. For a task that shells out, prefer pure command builders or a
 compiled executable fixture instead of interacting with a real Ruby installation.
 
-See README for live/differential test flags. The optional JavaScript reference
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for live/differential test flags and
+the complete build, packaging and release guide. The optional JavaScript reference
 test is the only development feature that needs Node and the old checkout.
