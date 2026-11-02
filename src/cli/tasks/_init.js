@@ -70,7 +70,7 @@ class RvmCliInit {
 
     static getUserPath() {
         const get_user_path_batch = RvmCliTools.rvmRootPath() + '/src/tools/path/get_user_path.bat';
-        return execSync(get_user_path_batch, {encoding: 'utf-8'});
+        return execSync(`"${get_user_path_batch}"`, {encoding: 'utf-8'});
     }
 
     static initSessionToRvmExes(force = false) {
