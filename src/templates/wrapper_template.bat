@@ -1,0 +1,47 @@
+ @echo off
+ REM use UTF8
+ chcp 65001 > NUL
+
+ SET "ORIGINAL_HTTP_PROXY=%HTTP_PROXY%"
+ SET "ORIGINAL_HTTPS_PROXY=%HTTPS_PROXY%"
+ SET "ORIGINAL_RUBYPATH=%RUBYPATH%"
+ SET "ORIGINAL_PATH=%PATH%"
+
+ SET "RVM_EXECUTABLE={{rvm_executable}}"
+ SET "RVM_ROOT_PATH={{rvm_root_dir}}"
+
+ REM PATH: prepend wrapper
+ for /f "delims=" %%p in ('"%RVM_EXECUTABLE%" --internal-wrapper path "%CD%" %~n0') do SET "return_path=%%p"
+ REM echo Returned path: "%return_path%"
+ call %return_path%
+
+ REM RUBYPATH
+ for /f "delims=" %%a in ('"%RVM_EXECUTABLE%" --internal-wrapper rubypath "%CD%" %~n0') do SET "return_rubypath=%%a"
+ REM echo Returned path: "%return_rubypath%"
+ call %return_rubypath%
+
+ REM PROXY
+ for /f "delims=" %%b in ('"%RVM_EXECUTABLE%" --internal-wrapper proxy "%CD%" %~n0') do SET "return_proxy=%%b"
+ REM echo Returned proxy: "%return_proxy%"
+ if not "%return_proxy%" == "" (
+ 	SET "HTTP_PROXY=%return_proxy%"
+ 	SET "HTTPS_PROXY=%return_proxy%"
+ 	SET "http_proxy=%return_proxy%"
+ 	SET "https_proxy=%return_proxy%"
+ )
+
+ REM FINAL COMMAND
+ for /f "delims=" %%c in ('"%RVM_EXECUTABLE%" --internal-wrapper runner "%CD%" %~n0') do SET "return_value=%%c"
+ REM echo Returned value: "%return_value%"
+ CALL %return_value% %*
+ SET "RVM_WRAPPED_EXIT_CODE=%ERRORLEVEL%"
+
+ REM reSET variables
+ SET "HTTP_PROXY=%ORIGINAL_HTTP_PROXY%"
+ SET "HTTPS_PROXY=%ORIGINAL_HTTPS_PROXY%"
+ SET "RUBYPATH=%ORIGINAL_RUBYPATH%"
+ SET "PATH=%ORIGINAL_PATH%"
+
+ REM AFTER COMMAND
+ "%RVM_EXECUTABLE%" --internal-wrapper after "%CD%" %~n0
+ EXIT /B %RVM_WRAPPED_EXIT_CODE%
