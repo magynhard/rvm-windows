@@ -1,0 +1,11 @@
+name: rvm-windows
+version: 1.0.8
+description: Ruby Version Manager 4 Windows — native Crystal port
+authors:
+  - Matthäus J. N. Beyrle <rvm-windows.npm@mail.magynhard.de>
+license: MIT
+crystal: ">= 1.20.2"
+repository: https://github.com/magynhard/rvm-windows.cr
+targets:
+  rvm:
+    main: src/rvm-windows.cr

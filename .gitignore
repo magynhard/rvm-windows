@@ -1,0 +1,7 @@
+/bin/
+/lib/
+/dist/
+/.crystal/
+*.pdb
+*.obj
+/.idea/
