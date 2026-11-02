@@ -211,11 +211,15 @@ class RvmCliTools
   end
 
   def self.shell(command : String) : String
-    capture(ENV["COMSPEC"]? || "cmd.exe", ["/d", "/s", "/c", command])
+    output = IO::Memory.new
+    error = IO::Memory.new
+    status = Process.run(command, shell: true, output: output, error: error)
+    raise "Command failed (#{status.exit_code}): #{command}\n#{error}" unless status.success?
+    output.to_s
   end
 
   def self.run_shell(command : String)
-    status = Process.run(ENV["COMSPEC"]? || "cmd.exe", ["/d", "/s", "/c", command],
+    status = Process.run(command, shell: true,
       input: Process::Redirect::Inherit, output: Process::Redirect::Inherit, error: Process::Redirect::Inherit)
     raise "Command failed (#{status.exit_code}): #{command}" unless status.success?
   end
@@ -279,10 +283,10 @@ class RvmCliTools
       client.get(resource, headers: headers) do |response|
         if response.status_code.in?(301, 302, 303, 307, 308)
           location = response.headers["Location"]? || raise "Redirect without Location"
-          fetch_with_proxy(uri.resolve(location).to_s, redirects - 1) { |next_response| yield next_response }
+          fetch_with_proxy(uri.resolve(location).to_s, redirects - 1, &block)
         else
           raise "HTTP #{response.status_code} retrieving #{url}" unless response.success?
-          yield response
+          block.call(response)
         end
       end
     ensure
