@@ -5,3 +5,5 @@
 *.pdb
 *.obj
 /.idea/
+/rvm.cmd
+/rvm.ps1

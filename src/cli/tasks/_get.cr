@@ -23,7 +23,8 @@ class RvmCliGet
     script = File.join(RvmCliTools.get_rvm_data_dir, "downloads", "update-#{Process.pid}.ps1")
     escaped = destination.gsub("'", "''")
     root = RvmCliTools.rvm_root_path.gsub("'", "''")
-    RvmCliTools.write_file(script, "Wait-Process -Id #{Process.pid} -ErrorAction SilentlyContinue\n& '#{escaped}' /S \"/D=#{root}\"\nexit $LASTEXITCODE\n")
+    # NSIS requires /D to be the last, unquoted portion of the raw command line.
+    RvmCliTools.write_file(script, "Wait-Process -Id #{Process.pid} -ErrorAction SilentlyContinue\n$setup = Start-Process -FilePath '#{escaped}' -ArgumentList '/S /D=#{root}' -Wait -PassThru\nRemove-Item -LiteralPath $PSCommandPath\nexit $setup.ExitCode\n")
     Process.new("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script],
       input: Process::Redirect::Close, output: Process::Redirect::Close, error: Process::Redirect::Close)
     io.puts "Update to #{new_version} scheduled. Setup will start after this command exits."

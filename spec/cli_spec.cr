@@ -27,6 +27,10 @@ describe RvmCli do
       RvmCli.run(%w(u 3.2 --default), false, io).should eq(0)
       RvmCliTools.get_current_version.should eq("ruby-3.2.6")
       RvmCliTools.get_default_version.should eq("ruby-3.2.6")
+      # Preserve the original prefixed-version/flag-order quirk.
+      RvmCli.run(%w(use --default ruby-3.1), false, io).should eq(0)
+      RvmCliTools.get_current_version.should eq("ruby-3.1.5")
+      RvmCliTools.get_default_version.should eq("ruby-3.2.6")
     end
   end
 

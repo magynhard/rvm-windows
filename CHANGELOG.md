@@ -1,3 +1,9 @@
+# Unreleased — Crystal port
+- Port JavaScript classes, CLI tasks, wrapper entrypoints and tests to Crystal.
+- Build one statically linked native Windows executable without Node.js.
+- Preserve shared configuration, session format, Ruby environments and batch methodology.
+- Prepare ZIP/NSIS distribution, GitHub Releases updates and Windows CI.
+
 # 1.0.8 - 2026-11-02
 - Fix [#14](https://github.com/magynhard/rvm-windows/issues/14), allow initialization when the installation path contains spaces, thanks to [sk-ys](https://github.com/sk-ys)
 

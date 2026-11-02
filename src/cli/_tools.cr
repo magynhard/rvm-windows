@@ -164,6 +164,10 @@ class RvmCliTools
     File.file?(path)
   end
 
+  def self.path_exists(path : String) : Bool
+    File.exists?(path)
+  end
+
   def self.remove_path(path : String)
     FileUtils.rm_rf(path)
   end
@@ -250,7 +254,10 @@ class RvmCliTools
     resource = uri.request_target
     client = if proxy_host = proxy_hostname
                proxy = URI.parse(ENV["HTTPS_PROXY"]? || proxy_host)
-               socket = TCPSocket.new(proxy.host.not_nil!, proxy.port || 80)
+               proxy_name = proxy.host || raise "Missing proxy host"
+               raise "Unsupported proxy scheme" unless proxy.scheme.in?("http", "https")
+               tcp = TCPSocket.new(proxy_name, proxy.port || (proxy.scheme == "https" ? 443 : 80))
+               socket = proxy.scheme == "https" ? OpenSSL::SSL::Socket::Client.new(tcp, hostname: proxy_name, sync_close: true) : tcp
                if user = proxy.user
                  auth = Base64.strict_encode("#{URI.decode(user)}:#{URI.decode(proxy.password || "")}")
                  headers["Proxy-Authorization"] = "Basic #{auth}"
