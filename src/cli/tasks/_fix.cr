@@ -12,7 +12,7 @@ class RvmCliFix
     fix_environment_versions
     io.puts "Fix wrapper files ..."
     fix_wrapper_files
-    io.puts "Fixing finished!\n\nIf you still have trouble, you might try to run rvm init to reinit rvm-windows itself!"
+    io.puts "Fixing finished!\n\nIf you still have trouble, you might try to run #{RvmCliColor.green("rvm init", io)} to reinit rvm-windows itself!"
   end
 
   def self.fix_config

@@ -6,7 +6,7 @@ class RvmCliGet
 
   def self.run_get(io : IO = STDOUT)
     old_version = RvmCliVersion.get_version
-    io.puts "Current version of rvm-windows is #{RvmCliVersion.get_full_version}."
+    io.puts "Current version of rvm-windows is #{RvmCliColor.green(RvmCliVersion.get_full_version, io)}."
     io.puts "Updating to its latest version ... please wait ..."
     release = JSON.parse(RvmCliTools.fetch_text("https://api.github.com/repos/#{REPOSITORY}/releases/latest"))
     new_version = release["tag_name"].as_s.lchop('v')
@@ -27,6 +27,6 @@ class RvmCliGet
     RvmCliTools.write_file(script, "Wait-Process -Id #{Process.pid} -ErrorAction SilentlyContinue\n$setup = Start-Process -FilePath '#{escaped}' -ArgumentList '/S /D=#{root}' -Wait -PassThru\nRemove-Item -LiteralPath $PSCommandPath\nexit $setup.ExitCode\n")
     Process.new("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script],
       input: Process::Redirect::Close, output: Process::Redirect::Close, error: Process::Redirect::Close)
-    io.puts "Update to #{new_version} scheduled. Setup will start after this command exits."
+    io.puts "Update to #{RvmCliColor.green(new_version, io)} scheduled. Setup will start after this command exits."
   end
 end

@@ -8,10 +8,10 @@ class RvmCliUpgrade
     raise "No upgrade available for #{from_version}" unless to_version
     to_version = RvmCliTools.normalize_version(to_version)
     if path = RvmCliTools.envs[from_version]?.try(&.as_s)
-      io.puts "Upgrading #{from_version} to #{to_version} ...\n"
+      io.puts "Upgrading #{RvmCliColor.green(from_version, io)} to #{RvmCliColor.green(to_version, io)} ...\n"
       RvmCliInstall.run_install(to_version, path, io)
     else
-      io.puts "Given version #{from_version} not found. To list all installed versions, run rvm list."
+      io.puts "Given version #{RvmCliColor.red(from_version, io)} not found. To list all installed versions, run #{RvmCliColor.green("rvm list", io)}."
     end
   end
 end

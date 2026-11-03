@@ -13,7 +13,7 @@ class RvmCliList
   end
 
   def self.run_list(io : IO = STDOUT)
-    RvmCliTools.versions.reverse_each { |version| io.puts "#{prefix(version)} #{version}" }
+    RvmCliTools.versions.reverse_each { |version| io.puts "#{prefix(version)} #{RvmCliColor.green(version, io)}" }
     legend(io)
   end
 
@@ -21,7 +21,7 @@ class RvmCliList
     RvmCliTools.versions.reverse_each do |version|
       path = RvmCliTools.envs[version].as_s
       description = RvmCliTools.capture(File.join(path, "bin", "ruby.exe"), ["--version"]).strip
-      io.puts "#{prefix(version)} #{version.ljust(14)} #{File.expand_path(path)}  #{description}"
+      io.puts "#{prefix(version)} #{RvmCliColor.green(version.ljust(14), io)} #{File.expand_path(path)}  #{description}"
     end
     legend(io)
   end
@@ -29,10 +29,10 @@ class RvmCliList
   def self.has_valid_msys2_path(silent = false, io : IO = STDOUT) : Bool
     return false unless path = ENV["MSYS2_PATH"]?
     if File.file?(File.join(path, "usr", "bin", "msys-2.0.dll"))
-      io.puts "\nMSYS2_PATH found: #{path} ...\nFilter for ruby version(s) without devkit ..." unless silent
+      io.puts "\nMSYS2_PATH found: #{RvmCliColor.green(path, io)} ...\nFilter for ruby version(s) without devkit ..." unless silent
       true
     else
-      io.puts "MSYS2_PATH is set, but seems to be invalid: #{path} ... ignoring path ..." unless silent
+      io.puts RvmCliColor.yellow("MSYS2_PATH is set, but seems to be invalid: #{path} ... ignoring path ...", io) unless silent
       false
     end
   end
@@ -46,7 +46,7 @@ class RvmCliList
     html = RvmCliTools.fetch_text(ARCHIVES_URL)
     parse_releases(html, has_valid_msys2_path(io: io))
   rescue ex
-    io.puts "Error retrieving releases from #{ARCHIVES_URL}\n\nAre you using a proxy? If yes, ensure you have configured a valid proxy with rvm config. See more information by running rvm help."
+    io.puts "#{RvmCliColor.red("Error retrieving releases from #{ARCHIVES_URL}", io)}\n\nAre you using a proxy? If yes, ensure you have configured a valid proxy with #{RvmCliColor.green("rvm config", io)}. See more information by running #{RvmCliColor.green("rvm help", io)}."
     raise ex
   end
 
@@ -73,15 +73,20 @@ class RvmCliList
   def self.run_list_all(silent = false, io : IO = STDOUT, releases : Array(Release)? = nil) : Array(String)
     io.puts "\nRetrieving all x64 devkit releases on\n#{ARCHIVES_URL}\n..." unless silent
     versions = release_versions(releases || ruby_installer_releases_list(io))
-    io.puts "\n - #{versions.join("\n - ")}" unless silent
+    print_releases(versions, io) unless silent
     versions
   end
 
   def self.run_list_known(silent = false, io : IO = STDOUT, releases : Array(Release)? = nil) : Array(String)
     io.puts "\nRetrieving latest minor x64 devkit releases on\n#{ARCHIVES_URL}\n..." unless silent
     versions = release_versions(releases || ruby_installer_releases_list(io), latest_minor: true)
-    io.puts "\n - #{versions.join("\n - ")}" unless silent
+    print_releases(versions, io) unless silent
     versions
+  end
+
+  def self.print_releases(versions : Array(String), io : IO = STDOUT)
+    installed = RvmCliTools.versions
+    io.puts "\n - #{versions.map { |version| installed.includes?(version) ? RvmCliColor.green(version, io) : version }.join("\n - ")}"
   end
 
   def self.run_list_upgrades(io : IO = STDOUT)
@@ -90,8 +95,14 @@ class RvmCliList
     RvmCliTools.envs.each_key do |version|
       minor = version.split('.')[0, 2].join('.')
       upgrade = RvmCliTools.matching_version(minor, releases)
-      io.puts "#{version} >> #{upgrade == version ? "(up to date)" : upgrade}"
+      print_upgrade(version, upgrade, io)
     end
+  end
+
+  def self.print_upgrade(version : String, upgrade : String?, io : IO = STDOUT)
+    current = upgrade == version ? RvmCliColor.green(version, io) : RvmCliColor.yellow(version, io)
+    target = upgrade == version ? "(up to date)" : RvmCliColor.green(upgrade || "", io)
+    io.puts "#{current} >> #{target}"
   end
 
   def self.legend(io : IO = STDOUT)

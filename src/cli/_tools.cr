@@ -3,6 +3,7 @@ require "file_utils"
 require "http/client"
 require "base64"
 require "./tasks/_version"
+require "./_color"
 
 class RvmCliTools
   # These overrides are also passed to subprocesses by the isolated test harness.
@@ -124,9 +125,9 @@ class RvmCliTools
       data = config
       data.as_h["default"] = JSON::Any.new(match)
       write_rvm_config(data)
-      io.puts "Set default #{match} from #{envs(data)[match].as_s} ..."
+      io.puts "Set default #{RvmCliColor.green(match, io)} from #{RvmCliColor.green(envs(data)[match].as_s, io)} ..."
     else
-      io.puts "No version for #{version} available! Run rvm list to show available versions."
+      io.puts "No version for #{RvmCliColor.red(version, io)} available! Run #{RvmCliColor.green("rvm list", io)} to show available versions."
     end
   end
 
@@ -196,13 +197,13 @@ class RvmCliTools
                         preselected_option : String? = nil, mandatory = false,
                         input : IO = STDIN, output : IO = STDOUT) : String
     loop do
-      output.print "  #{question}#{preselected_option ? " [#{preselected_option}]" : ""}: "
+      output.print "  #{question}#{preselected_option ? " [#{RvmCliColor.green(preselected_option, output)}]" : ""}: "
       answer = input.gets || raise "Input cancelled"
       answer = answer.chomp
       answer = preselected_option || "" if answer.empty?
       next if mandatory && answer.empty?
       return answer if options.nil? || options.empty? || options.includes?(answer)
-      output.puts "\n  Invalid input '#{answer}'.\n  Valid options are: #{options.join(" | ")}\n"
+      output.puts "\n  #{RvmCliColor.red("Invalid input '#{answer}'.", output)}\n  Valid options are: #{options.map { |option| RvmCliColor.green(option, output) }.join(" | ")}\n"
     end
   end
 
@@ -305,7 +306,10 @@ class RvmCliTools
     fetch_with_proxy(url) { |response| response.body_io?.try(&.gets_to_end) || response.body }
   end
 
-  def self.logo : String
-    "\n      ██████╗  ██╗   ██╗ ███╗   ███╗\n      ██╔══██╗ ██║   ██║ ████╗ ████║\n      ██████╔╝ ██║   ██║ ██╔████╔██║\n      ██╔══██╗ ╚██╗ ██╔╝ ██║╚██╔╝██║\n      ██║  ██║  ╚████╔╝  ██║ ╚═╝ ██║\n      ╚═╝  ╚═╝   ╚═══╝   ╚═╝     ╚═╝\n\n      Ruby Version Manager 4 Windows\n              #{RvmCliVersion.get_version}\n"
+  def self.logo(io : IO = STDOUT) : String
+    art = "\n      ██████╗  ██╗   ██╗ ███╗   ███╗\n      ██╔══██╗ ██║   ██║ ████╗ ████║\n      ██████╔╝ ██║   ██║ ██╔████╔██║\n      ██╔══██╗ ╚██╗ ██╔╝ ██║╚██╔╝██║\n      ██║  ██║  ╚████╔╝  ██║ ╚═╝ ██║\n      ╚═╝  ╚═╝   ╚═══╝   ╚═╝     ╚═╝\n\n"
+    RvmCliColor.style(art, :light_red, io, bold: true) +
+      RvmCliColor.style("      Ruby Version Manager 4 Windows", :light_gray, io, bold: true) +
+      "\n              #{RvmCliColor.green(RvmCliVersion.get_version, io)}\n"
   end
 end

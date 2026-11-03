@@ -2,6 +2,7 @@
 - Port JavaScript classes, CLI tasks, wrapper entrypoints and tests to Crystal.
 - Build one statically linked native Windows executable without Node.js.
 - Preserve shared configuration, session format, Ruby environments and batch methodology.
+- Restore the original CLI colors for the logo, help, versions, paths, warnings and errors; keep wrapper protocols uncolored.
 - Prepare ZIP/NSIS distribution, GitHub Releases updates and Windows CI.
 
 # 1.0.8 - 2026-11-02

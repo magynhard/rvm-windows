@@ -3,7 +3,7 @@
 ## Automated checks performed locally (Windows x64 / Crystal 1.20.2)
 
 * Original JavaScript suite: 9 Jasmine specs passed, including live archives.
-* Crystal suite: 38 offline examples, 41 with all three optional checks enabled;
+* Crystal suite: 52 offline examples, 57 with all three optional checks enabled;
   all passed locally. Equivalent original cases plus isolated configuration,
   sessions, numeric version matching, project inheritance, wrapper naming,
   subprocess protocol, CLI dispatch, HTTP redirects/cache errors and proxy tests.
@@ -14,7 +14,10 @@
   EXE calls. PATH-helper previews preserve long/unexpanded values without writes.
 * Opt-in live archive test: historical Ruby versions available over native TLS.
 * Opt-in differential test: actual JavaScript version resolution, list output
-  and wrapper selection compared to the Crystal results.
+  and wrapper selection compared to the Crystal results, plus byte-for-byte
+  Chalk color parity for installed-version lists, data paths and proxy status.
+* ANSI palette, terminal/pipe detection, NO_COLOR/FORCE_COLOR, help alignment,
+  color-free configuration/session writes and forced-color protocol safety tested.
 * Release/static executable built and package smoke-tested with a PATH containing
   only Windows directories (no Node/Crystal or third-party runtime DLLs).
 * PE imports inspected with dumpbin: Windows system DLLs only.

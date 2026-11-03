@@ -57,13 +57,13 @@ class RvmCli
       return 0
     end
     if args.any? { |arg| arg.in?("--help", "-h") }
-      io.puts RvmCliTools.logo
+      io.puts RvmCliTools.logo(io)
       RvmCliHelp.run_help(io)
       return 0
     end
     case command
     when "help", "h"
-      io.puts RvmCliTools.logo
+      io.puts RvmCliTools.logo(io)
       RvmCliHelp.run_help(io)
     when "init"
       RvmCliInit.init_after_install(true, io)
@@ -122,7 +122,9 @@ class RvmCli
     end
     0
   rescue ex
-    error.puts ex.message
+    message = ex.message || ex.class.name
+    # Internal stdout/stderr are a machine protocol, even with FORCE_COLOR=1.
+    error.puts args.first?.try(&.starts_with?("--internal-")) ? message : RvmCliColor.error(message, error)
     1
   end
 end

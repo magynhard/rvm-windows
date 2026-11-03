@@ -44,13 +44,14 @@ class RvmCliHelp
   ]
 
   def self.run_help(io : IO = STDOUT)
-    io.puts "\nRVM CLI\n\n  The RVM CLI (rvm) provides several interactive tasks to ensure programmers happyness when working with several ruby environments on windows. 😊"
-    io.puts "\nAvailable tasks\n\n  Use either the full length task name or its shortcut.\n"
-    TASKS.each { |name, shortcut, summary| io.puts "  #{name.ljust(27)} #{shortcut.ljust(22)} #{summary}" }
-    io.puts "\nExamples\n\n  rvm version  Full name task, its shortcut is v\n  rvm h        Shortcut task for help"
+    io.puts "\n#{RvmCliColor.style("RVM CLI", :default, io, bold: true)}\n\n  The RVM CLI (rvm) provides several interactive tasks to ensure programmers happyness when working with several ruby environments on windows. 😊"
+    io.puts "\n#{RvmCliColor.style("Available tasks", :default, io, bold: true)}\n\n  Use either the full length task name or its shortcut.\n"
+    # Pad before adding ANSI escapes so colored columns keep their alignment.
+    TASKS.each { |name, shortcut, summary| io.puts "  #{RvmCliColor.green(name.ljust(27), io)} #{RvmCliColor.green(shortcut.ljust(22), io)} #{summary}" }
+    io.puts "\n#{RvmCliColor.style("Examples", :default, io, bold: true)}\n\n  #{RvmCliColor.green("rvm version", io)}  Full name task, its shortcut is #{RvmCliColor.green("v", io)}\n  #{RvmCliColor.green("rvm h", io)}        Shortcut task for #{RvmCliColor.green("help", io)}"
   end
 
   def self.run_unknown_command(task : String, io : IO = STDOUT)
-    io.puts "\nInvalid task\n\n  The given task #{task} is invalid. Run the command with task help to get information about valid tasks."
+    io.puts "\n#{RvmCliColor.style("Invalid task", :default, io, bold: true)}\n\n  The given task #{RvmCliColor.red(task, io)} is invalid. Run the command with task #{RvmCliColor.green("help", io)} to get information about valid tasks."
   end
 end

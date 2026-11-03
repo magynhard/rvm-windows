@@ -65,6 +65,22 @@ Use `Fixtures.with_home` for configuration/session tests. `RVM_HOME` and
 original-compatible behavior. For tasks that shell out, prefer pure command
 builders or compiled fixtures over interacting with a real Ruby installation.
 
+### CLI colors
+
+`RvmCliColor` uses Crystal's standard-library `Colorize` with per-output-stream
+terminal detection. Crystal enables Windows virtual-terminal processing for
+console stdout/stderr. Match the original Chalk palette when changing messages;
+do not add escape sequences to configuration/session values or internal protocols.
+
+`NO_COLOR` (non-empty) disables colors, `FORCE_COLOR=1` forces them even in pipes,
+and `FORCE_COLOR=0` disables them. `NO_COLOR` takes precedence. By default, pipes,
+files and `TERM=dumb` output stay plain. Wrapper/setup protocols remain plain
+even with `FORCE_COLOR=1`.
+
+Color specs exercise simulated terminal streams, forced/disabled colors in the
+compiled executable, plain configuration/session writes, and protocol safety.
+The optional reference suite also compares actual ANSI-colored output to Chalk.
+
 ### Optional live and differential checks
 
 ```powershell

@@ -9,20 +9,20 @@ class RvmCliInstall
     releases = RvmCliList.ruby_installer_releases_list(io)
     match = RvmCliTools.matching_version(version, RvmCliList.release_versions(releases))
     unless match
-      io.puts "Version #{version} is not available.\nTo list available versions use:\n\n\trvm list known"
+      io.puts "#{RvmCliColor.red("Version #{version} is not available.", io)}\nTo list available versions use:\n#{RvmCliColor.green("\n\trvm list known", io)}"
       return
     end
     if is_already_installed(match)
-      io.puts "Already installed #{match}.\nTo reinstall use:\n\n\trvm reinstall #{match}"
+      io.puts "#{RvmCliColor.yellow("Already installed #{match}.", io)}\nTo reinstall use:\n#{RvmCliColor.green("\n\trvm reinstall #{match}", io)}"
       return
     end
-    io.puts "Installing #{match} ...\n"
+    io.puts "Installing #{RvmCliColor.green(match, io)} ...\n"
     release = releases.find { |entry| "ruby-#{entry.version}" == match }.not_nil!
     destination = File.join(RvmCliTools.get_rvm_data_dir, "downloads", release.url.split('/').last)
     if File.file?(destination)
-      io.puts "Found and use cached #{destination}"
+      io.puts "Found and use cached #{RvmCliColor.green(destination, io)}"
     else
-      io.puts "Downloading #{release.url} ... please wait ..."
+      io.puts "Downloading #{RvmCliColor.green(release.url, io)} ... please wait ..."
       download(release.url, destination)
       io.puts "Download successful!\n"
     end
@@ -36,7 +36,7 @@ class RvmCliInstall
   def self.run_installer(source : String, version : String, install_dir : String? = nil, io : IO = STDOUT)
     install_dir ||= File.join(RvmCliTools.get_rvm_data_dir, "envs", version)
     Dir.mkdir_p(install_dir)
-    io.puts "Installing at #{File.expand_path(install_dir)} ... please wait, this task will take some minutes ..."
+    io.puts "Installing at #{RvmCliColor.green(File.expand_path(install_dir), io)} ... please wait, this task will take some minutes ..."
     remove_ruby_installer_registry_key(version)
     env = {} of String => String
     if proxy = RvmCliTools.proxy_hostname
@@ -56,7 +56,7 @@ class RvmCliInstall
     RvmCliUse.run_use(version, io: io)
     RvmCliConfig.run_default(version, io) unless RvmCliTools.envs.has_key?(RvmCliTools.get_default_version)
     RvmCliTools.kill_running_msys_processes(io)
-    io.puts "\nRun rvm kit to install development tools and a bunch of widely used x64 dependencies automatically."
+    io.puts "\nRun #{RvmCliColor.green("rvm kit", io)} to install development tools and a bunch of widely used x64 dependencies automatically."
   end
 
   def self.registry_search_args(version : String) : Array(String)
