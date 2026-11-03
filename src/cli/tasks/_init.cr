@@ -45,7 +45,7 @@ class RvmCliInit
   end
 
   def self.init_session_to_rvm_exes(force = false, command = "", io : IO = STDOUT)
-    # Unlike npm, do not patch arbitrary launchers returned by `where rvm`.
+    # Do not patch arbitrary launchers returned by `where rvm`.
     # The package owns root/rvm.cmd and root/rvm.ps1; bin/rvm.exe stays private
     # so the parent shell can establish RVM_SESSION before calling the EXE.
     unless File.directory?(RvmCliTools.rvm_sessions_dir) && !force

@@ -17,7 +17,7 @@ RVM 4 Windows allows you to comfortably install and manage several versions of R
 
 It automatically detects `.ruby-version` files or Ruby version definitions in Gemfiles and runs your project with the specified Ruby version. You can also switch your Ruby version instantly.
 
-This is the native Crystal port of [rvm-windows](https://github.com/magynhard/rvm-windows). **No Node.js or Crystal installation is required to use it.** Existing Ruby environments, configuration and sessions are retained.
+RVM is a native Windows application written in Crystal. **No compiler or separate runtime installation is required to use it.** Existing Ruby environments, configuration and sessions are retained.
 
 Configuration is managed per user in `%USERPROFILE%\.rvm.json`, with terminal sessions in `%USERPROFILE%\.rvm\sessions`. Ruby environments are stored in `C:\ProgramData\rvm` by default.
 
@@ -32,7 +32,7 @@ Configuration is managed per user in `%USERPROFILE%\.rvm.json`, with terminal se
 * [Usage](#usage)
 * [Installation](#installation)
   * [Upgrading](#upgrading)
-  * [Switching from the Node.js version](#switching-from-the-nodejs-version)
+  * [Existing installations](#existing-installations)
 * [Troubleshooting](#troubleshooting)
   * [Does not run the selected Ruby](#trouble_selected_ruby)
   * [Using behind a proxy](#trouble_proxy)
@@ -48,7 +48,7 @@ Configuration is managed per user in `%USERPROFILE%\.rvm.json`, with terminal se
 * Only one environment per exact Ruby version: you can manage 3.3.0 and 3.3.1 separately, but not two installations of 3.3.1.
 * Experimental `rvm kit` command with recipes for several Ruby versions to install common dependencies for native gems.
 * Configurable proxy support; `HTTP_PROXY` and `HTTPS_PROXY` are temporarily set for wrapped Ruby commands.
-* Native executable: no Node.js runtime or separate Crystal installation needed.
+* Native executable: no compiler or separate runtime installation needed.
 
 <a name="msys2_path"></a>
 ### MSYS2_PATH
@@ -211,7 +211,7 @@ rvm use --default 3.2
 ### Requirements
 
 * Windows 10 or later, x64.
-* No Node.js, npm, Crystal compiler or separate runtime installation required.
+* No compiler or separate runtime installation required.
 
 ### Setup
 
@@ -239,12 +239,12 @@ rvm get
 
 This downloads the latest published release setup and starts the update after the command exits. Restart your terminal after upgrading.
 
-### Switching from the Node.js version
+### Existing installations
 
-The Crystal version uses the same configuration, session files and Ruby environments as the original `rvm-windows`; you do not need to reinstall your Rubies.
+Existing configuration, session files and Ruby environments remain compatible; you do not need to reinstall your Rubies.
 
 > [!IMPORTANT]
-> Setup regenerates the shared Ruby wrappers for the native executable. Do not use both implementations concurrently to change configuration or wrappers. To switch back to the Node.js version, restore its PATH priority and run its `rvm fix` command.
+> Setup regenerates the shared Ruby wrappers for this installation. Do not use multiple RVM installations concurrently to change configuration or wrappers. When switching installations, restore the desired installation's PATH priority and run its `rvm fix` command.
 
 ### ZIP alternative
 

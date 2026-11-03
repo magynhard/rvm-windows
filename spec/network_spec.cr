@@ -108,7 +108,7 @@ end
 
 if ENV["RVM_LIVE_TESTS"]? == "1"
   describe "live RubyInstaller archive (opt-in)" do
-    it "retrieves the same historical versions as the original Jasmine tests" do
+    it "retrieves the expected historical versions" do
       Fixtures.with_home do
         releases = RvmCliList.ruby_installer_releases_list
         releases.size.should be > 10

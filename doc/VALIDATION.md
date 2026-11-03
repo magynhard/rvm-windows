@@ -2,8 +2,7 @@
 
 ## Automated checks performed locally (Windows x64 / Crystal 1.20.2)
 
-* Original JavaScript suite: 9 Jasmine specs passed, including live archives.
-* Crystal suite: 64 offline examples, 73 with all three optional checks enabled;
+* Crystal suite: 67 offline examples, 73 with both optional checks enabled;
   all passed locally. Equivalent original cases plus isolated configuration,
   sessions, numeric version matching, project inheritance, wrapper naming,
   subprocess protocol, CLI dispatch, HTTP redirects/cache errors and proxy tests.
@@ -20,18 +19,17 @@
   `info` tested in-process and through development/static packaged executables,
   using a compiled Ruby-version fixture rather than a real Ruby installation.
 * Opt-in live archive test: historical Ruby versions available over native TLS.
-* Opt-in differential test: actual JavaScript version resolution, list output
-  and wrapper selection compared to the Crystal results, plus Chalk color
-  comparisons with the intentional green-to-blue primary-color replacement.
-  Semantic green/red status colors are retained.
+* Offline compatibility checks: version resolution, list output, wrapper
+  selection and ANSI colors compared against fixed reference data. Primary
+  highlights are Windows blue; semantic green/red status colors are retained.
 * Missing-version explanations for install, upgrade, kick, reinstall, uninstall
-  and use, plus every help task description, compared verbatim with the original.
+  and use, plus every help task description, compared verbatim with reference data.
   Aliases, empty arguments, separately colored upgrade alternatives and the
   complete upgrade explanation in development/static executables are covered.
 * ANSI palette, terminal/pipe detection, NO_COLOR/FORCE_COLOR, help alignment,
   color-free configuration/session writes and forced-color protocol safety tested.
 * Release/static executable built and package smoke-tested with a PATH containing
-  only Windows directories (no Node/Crystal or third-party runtime DLLs).
+  only Windows directories (no compiler or third-party runtime DLLs).
 * PE imports inspected with dumpbin: Windows system DLLs only.
 * ZIP package and NSIS 3.13 setup successfully compiled locally. The setup
   executable was not installed or executed against the host.
@@ -55,7 +53,7 @@ or touched the real RVM configuration. Original support-file hashes are preserve
       refusal; they do not certify every real-world proxy implementation.
 - [ ] Publish test assets in a controlled release and exercise the complete
       `rvm get` wait/download/replace/reinitialize path on a disposable machine.
-- [ ] Test uninstall and switching back to the Node implementation (`rvm fix`).
+- [ ] Test uninstall and switching between installations (`rvm fix`).
 - [ ] Audit and bundle all third-party static-link licenses/notices for the exact
       Crystal toolchain: Crystal, Boehm GC, PCRE2, OpenSSL, zlib, iconv and platform
       runtime components. The source project's MIT license alone is insufficient.

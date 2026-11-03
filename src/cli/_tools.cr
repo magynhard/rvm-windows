@@ -7,7 +7,7 @@ require "./_color"
 
 class RvmCliTools
   # These overrides are also passed to subprocesses by the isolated test harness.
-  # Without them, all paths are exactly those of the JavaScript implementation.
+  # Without them, all paths use the established installation layout.
   def self.home_path : String
     ENV["RVM_HOME"]? || Path.home.to_s
   end

@@ -32,7 +32,7 @@ jobs:
           $env:MAKENSIS = "${env:ProgramFiles(x86)}\NSIS\makensis.exe"
           crystal run scripts/package.cr
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-      - name: Smoke-test the packaged executable without Crystal or Node on PATH
+      - name: Smoke-test the packaged executable with only Windows system directories on PATH
         run: |
           $stage = Get-ChildItem dist -Directory | Select-Object -First 1
           $env:RVM_PACKAGE_ROOT = $stage.FullName

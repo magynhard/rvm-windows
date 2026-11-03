@@ -1,7 +1,7 @@
 # Developer documentation
 
 Use native Windows x64 with Crystal 1.20.2+ and Visual Studio C++ build tools.
-No Node.js, npm, yarn, or external shards are required for the Crystal project.
+No external shards or additional test runtimes are required.
 
 ```powershell
 shards build
@@ -20,6 +20,5 @@ Use `Fixtures.with_home` for configuration and session tests. Do not call `init`
 the real host. For a task that shells out, prefer pure command builders or a
 compiled executable fixture instead of interacting with a real Ruby installation.
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for live/differential test flags and
-the complete build, packaging and release guide. The optional JavaScript reference
-test is the only development feature that needs Node and the old checkout.
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for optional live checks, offline
+compatibility coverage and the complete build, packaging and release guide.

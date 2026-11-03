@@ -52,7 +52,7 @@ describe Wrapper do
     end
   end
 
-  it "creates all original wrapper filename variants without Node calls" do
+  it "creates all supported wrapper filename variants using the native executable" do
     Fixtures.with_home do
       Fixtures.add_command("ruby-3.2.6", "ruby.exe")
       Fixtures.add_command("ruby-3.2.6", "gem.cmd")
@@ -61,7 +61,7 @@ describe Wrapper do
       dir = File.join(RvmCliTools.get_rvm_data_dir, "wrapper")
       Dir.children(dir).sort.should eq(%w(bundle.bat gem.bat gem.cmd.bat ruby.bat ruby.exe.bat))
       File.read(File.join(dir, "ruby.bat")).should contain("--internal-wrapper runner")
-      File.read(File.join(dir, "ruby.bat")).should_not contain("node")
+      File.read(File.join(dir, "ruby.bat")).should contain("SET \"RVM_EXECUTABLE=")
     end
   end
 end

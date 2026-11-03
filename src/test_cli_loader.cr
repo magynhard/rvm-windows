@@ -1,8 +1,8 @@
 require "./cli/cli"
 require "process/shell"
 
-# Crystal has no JavaScript-style runtime eval. Keep an interactive task console
-# with all classes compiled in, without pretending arbitrary Crystal can be eval'd.
+# Interactive task console with all classes compiled in; accepts CLI commands,
+# not arbitrary source expressions.
 puts RvmCliTools.logo
 puts RvmCliColor.primary("RVM Windows test CLI — enter tasks, or exit to quit.")
 loop do

@@ -12,7 +12,7 @@ RubyInstaller x64 environments, `~/.rvm.json`, `~/.rvm/sessions`, `RVM_SESSION`,
 and `C:\ProgramData\rvm`. Unknown configuration fields must survive writes.
 
 Batch files still perform environment save/restore, argument forwarding and
-exit-code propagation; the five former JavaScript scripts are internal commands
+exit-code propagation; the five wrapper operations are internal commands
 of one executable. Source files and classes follow the original tree, with
 idiomatic `snake_case` methods and Crystal `*_spec.cr` naming.
 
@@ -23,8 +23,7 @@ while porting; document and discuss them separately.
 ## Development setup and build
 
 Use Windows 10+ x64, Crystal 1.20.2+ and the Visual Studio C++ build tools.
-There are no third-party shards. Node.js is only needed for the optional
-differential tests against the original checkout.
+There are no third-party shards or external reference-test dependencies.
 
 ```powershell
 crystal run scripts/build.cr
@@ -34,7 +33,7 @@ crystal spec
 
 The build creates `bin/rvm.exe` (release, statically linked) and CMD/PowerShell
 launchers in the project root. Keep `src/templates` and `src/tools` alongside
-it. End users need neither Crystal nor Node nor separate runtime DLLs.
+it. End users need neither a compiler nor separate runtime DLLs.
 
 `shards build` produces a faster, dynamically linked developer build instead.
 
@@ -90,25 +89,23 @@ even with `FORCE_COLOR=1`.
 
 Color specs exercise simulated terminal streams, forced/disabled colors in the
 compiled executable, plain configuration/session writes, and protocol safety.
-The optional reference suite compares actual ANSI-colored output to Chalk,
-accounting for the intentional green-to-blue primary-color replacement.
+Compatibility specs compare ANSI-colored output against checked-in reference
+data, including Windows-blue primary highlights and semantic status colors.
 
-### Optional live and differential checks
+### Compatibility and optional live checks
 
 ```powershell
 $env:RVM_LIVE_TESTS = '1'
-$env:RVM_JS_REFERENCE = '..\rvm-windows'
 crystal spec
 ```
 
-The live check retrieves the RubyInstaller archive. The differential check
-requires Node.js and the original repository with its dependencies installed;
-it compares the original version resolution, list output, wrapper selection,
-missing-parameter explanations and all help task descriptions with the Crystal
-implementation. Preserve complete explanations and examples; only adapt content
-where the Crystal distribution or a deliberately changed behavior requires it.
+The live check retrieves the RubyInstaller archive. Offline compatibility tests
+use fixed reference data for version resolution, list output, wrapper selection,
+missing-parameter explanations and all help task descriptions. Preserve complete
+explanations and examples; only adapt content where the distribution or a
+deliberately changed behavior requires it.
 
-Remove these environment variables to return to the default offline suite.
+Remove `RVM_LIVE_TESTS` to return to the default offline suite.
 
 ### Packaged executable smoke test
 
@@ -120,7 +117,7 @@ crystal spec spec/package_spec.cr
 ```
 
 This checks the staged executable with only Windows system directories on PATH,
-without Node, Crystal or third-party runtime DLLs available through PATH.
+without a compiler or third-party runtime DLLs available through PATH.
 Adjust the version in the directory name for the package being tested.
 
 ### Interactive task console
@@ -129,8 +126,8 @@ Adjust the version in the directory name for the package being tested.
 crystal run src/test_cli_loader.cr
 ```
 
-Crystal does not have JavaScript's runtime eval. The console accepts CLI tasks;
-use a scratch `.cr` file to call classes directly.
+The console accepts CLI tasks, not arbitrary source expressions; use a scratch
+`.cr` file to call classes directly.
 
 ## Packaging and installer development
 
@@ -149,10 +146,10 @@ It regenerates shared Ruby wrappers for the new executable and updates the user
 PATH without truncating it. Existing JSON configuration, sessions, Ruby installs
 and download caches must be retained. Close running RVM commands before upgrading.
 
-Installing takes over the shared wrapper directory from the Node version.
-Do not operate both implementations concurrently while changing configuration
-or wrappers. To return to the Node implementation, restore its PATH priority
-and run its `rvm fix` to regenerate wrappers. Uninstalling this port removes only
+Installing takes over the shared wrapper directory from any previous installation.
+Do not operate multiple installations concurrently while changing configuration
+or wrappers. When switching installations, restore the desired PATH priority
+and run its `rvm fix` to regenerate wrappers. Uninstalling removes only
 its own wrappers and package files, not installed Rubies or user configuration.
 
 Use a disposable Windows VM for installer, upgrade and uninstall acceptance tests.
@@ -163,7 +160,7 @@ coverage and outstanding manual acceptance checks before a public release.
 
 `rvm get` uses GitHub Releases in `magynhard/rvm-windows.cr`: it fetches the
 latest published `*-setup.exe` and schedules silent installation after the
-current process exits. This requires published assets; there is no npm fallback.
+current process exits. This requires published setup assets.
 Validate the full wait/download/replace/reinitialize flow on a disposable machine.
 
 Add and commit a dated changelog entry, then run:

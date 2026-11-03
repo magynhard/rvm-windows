@@ -1,0 +1,1 @@
+{"matches":["ruby-3.10.1","ruby-3.2.10","ruby-3.2.9",null,"ruby-2.4.10",null],"list":"=* ruby-3.2.6\n   ruby-3.1.5\n   ruby-3.0.7\n   ruby-2.4.10\n\n# => - current\n# =* - current && default\n#  * - default\n","pathVersion":"ruby-3.2.6","commandPath":"{{HOME}}\\ruby-3.2.6/bin/ruby.exe"}

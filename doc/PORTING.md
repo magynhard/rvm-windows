@@ -7,7 +7,7 @@ Source: `magynhard/rvm-windows` at `ecf0758c6027977c89f4306e1933b871ebda4c41`.
 * Preserve ~/.rvm.json (including unknown JSON keys), ~/.rvm/sessions,
   RVM_SESSION, C:/ProgramData/rvm and existing installed Ruby environments.
 * Preserve batch environment save/restore, command forwarding and exit status.
-* No npm/Node runtime dependency. Updates will use GitHub Releases and NSIS.
+* No separate runtime dependency. Updates use GitHub Releases and NSIS.
 * Specs must isolate configuration, sessions, downloads and wrappers. Never run
   installers, kill MSYS processes, change the registry or user PATH in tests.
 * Commit compilable milestones. Native installation/update validation is separate
@@ -22,13 +22,13 @@ Source: `magynhard/rvm-windows` at `ecf0758c6027977c89f4306e1933b871ebda4c41`.
 
 ## File mapping
 
-`src/cli/cli.js`, `_tools.js`, `_wrapper.js`, all 21 `src/cli/tasks/_*.js`
-and all five `src/wrapper/wrapper_*.js` map to same-directory `.cr` files and
-the same task class names. Crystal's entrypoint is `src/rvm-windows.cr`.
-`src/test-cli-loader.js` maps to `src/test_cli_loader.cr` (task console instead
-of runtime JavaScript eval). `scripts/release.js` maps to `scripts/release.cr`.
-Jasmine `*-spec.js` maps to Crystal `*_spec.cr` under the same logical directories.
-Node's package.json/yarn files are replaced by shard.yml and no external shards.
+`src/cli/cli.cr`, `_tools.cr`, `_wrapper.cr`, the task files in `src/cli/tasks`
+and all five `src/wrapper/wrapper_*.cr` retain the established class boundaries.
+The executable entrypoint is `src/rvm-windows.cr`; `src/test_cli_loader.cr`
+provides an interactive task console. Release tooling is in `scripts/release.cr`.
+Tests use Crystal `*_spec.cr` files under the same logical directories, with
+checked-in reference data for compatibility checks. Project metadata lives in
+`shard.yml`; no external shards are needed.
 Existing image assets and LICENSE are retained. Existing batch/PowerShell
 helpers are copied verbatim; only the wrapper template's runtime calls change.
 
@@ -48,9 +48,9 @@ helpers are copied verbatim; only the wrapper template's runtime calls change.
 
 ## Necessary platform adaptations and explicit differences
 
-* Owned root launchers call private `bin/rvm.exe` instead of patching npm shims
-  found through `where rvm`. Session prepends remain unchanged.
-* Output uses simple tables rather than Node's command-line-usage renderer.
+* Owned root launchers call private `bin/rvm.exe` rather than patching arbitrary
+  launchers found through `where rvm`. Session prepends remain unchanged.
+* Output uses simple tables rather than an external table renderer.
   Fields and command behavior are preserved; layout is not byte-identical.
 * Neutral primary highlights use Windows blue instead of the original green.
   Green is retained for positive statuses; errors remain red and warnings yellow.
@@ -59,7 +59,7 @@ helpers are copied verbatim; only the wrapper template's runtime calls change.
 * The original legacy `init` PATH operation remains; NSIS uses a separate helper
   that preserves long/unexpanded PATH values. Installer hooks do not scan or kill
   processes, and uninstallation removes only wrappers owned by this executable.
-* `get` uses GitHub Release setup assets rather than npm. Self-update and actual
+* `get` uses GitHub Release setup assets. Self-update and actual
   installation still require disposable-machine acceptance testing.
-* Release preparation commits/tags locally, but does not push or publish npm.
+* Release preparation commits/tags locally, but does not push or publish assets.
   Tag CI creates a draft GitHub release, never an automatically published release.
