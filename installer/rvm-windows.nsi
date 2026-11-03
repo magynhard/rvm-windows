@@ -4,7 +4,7 @@ Unicode true
 !include "x64.nsh"
 
 !ifndef VERSION
-  !define VERSION "1.0.8"
+  !define VERSION "1.1.0"
 !endif
 !ifndef PACKAGE_DIR
   !define PACKAGE_DIR "..\dist\rvm-windows-${VERSION}-windows-x64"

@@ -85,7 +85,7 @@ Remove these environment variables to return to the default offline suite.
 After building a package:
 
 ```powershell
-$env:RVM_PACKAGE_ROOT = (Resolve-Path dist/rvm-windows-1.0.8-windows-x64).Path
+$env:RVM_PACKAGE_ROOT = (Resolve-Path dist/rvm-windows-1.1.0-windows-x64).Path
 crystal spec spec/package_spec.cr
 ```
 
@@ -110,9 +110,9 @@ $env:MAKENSIS = 'C:\Program Files (x86)\NSIS\makensis.exe'
 crystal run scripts/package.cr
 ```
 
-For version 1.0.8, output is
-`dist/rvm-windows-1.0.8-windows-x64.zip` and, with NSIS installed,
-`dist/rvm-windows-1.0.8-windows-x64-setup.exe`.
+For version 1.1.0, output is
+`dist/rvm-windows-1.1.0-windows-x64.zip` and, with NSIS installed,
+`dist/rvm-windows-1.1.0-windows-x64-setup.exe`.
 
 The per-user NSIS setup supports installing over the same application directory.
 It regenerates shared Ruby wrappers for the new executable and updates the user
@@ -139,7 +139,7 @@ Validate the full wait/download/replace/reinitialize flow on a disposable machin
 Add and commit a dated changelog entry, then run:
 
 ```powershell
-crystal run scripts/release.cr -- 1.0.9
+crystal run scripts/release.cr -- 1.1.1
 ```
 
 This tests, bumps the manifest, commits and tags **locally only**. After review,

@@ -1,4 +1,4 @@
-# Unreleased — Crystal port
+# 1.1.0 - 2026-11-03
 - Port JavaScript classes, CLI tasks, wrapper entrypoints and tests to Crystal.
 - Build one statically linked native Windows executable without Node.js.
 - Preserve shared configuration, session format, Ruby environments and batch methodology.
