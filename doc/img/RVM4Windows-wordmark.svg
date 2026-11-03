@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1430" height="220" viewBox="0 0 1430 220" role="img" aria-labelledby="title desc">
+  <title id="title">RVM4Windows</title>
+  <desc id="desc">RVM in red, 4 in white and Windows in blue, on a black background.</desc>
+  <defs>
+    <linearGradient id="wordRed" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#ff343d"/>
+      <stop offset="1" stop-color="#ed0713"/>
+    </linearGradient>
+    <linearGradient id="wordBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#08c9ff"/>
+      <stop offset="1" stop-color="#0088f8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1430" height="220" rx="24" fill="#000000"/>
+  <g font-family="DejaVu Sans,Arial,sans-serif" font-weight="800" font-style="normal" font-size="160" letter-spacing="-8">
+    <text x="32" y="170" textLength="424" lengthAdjust="spacingAndGlyphs" fill="url(#wordRed)">RVM</text>
+    <text x="466" y="170" textLength="120" lengthAdjust="spacingAndGlyphs" fill="#ffffff">4</text>
+    <text x="594" y="170" textLength="809" lengthAdjust="spacingAndGlyphs" fill="url(#wordBlue)">Windows</text>
+  </g>
+</svg>
