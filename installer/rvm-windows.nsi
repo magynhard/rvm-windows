@@ -4,7 +4,7 @@ Unicode true
 !include "x64.nsh"
 
 !ifndef VERSION
-  !define VERSION "1.1.0"
+  !define VERSION "1.1.1"
 !endif
 !ifndef PACKAGE_DIR
   !define PACKAGE_DIR "..\dist\rvm-windows-${VERSION}-windows-x64"
@@ -53,10 +53,19 @@ Section "rvm-windows" Main
   # Bypass normal startup: preserve config and installed Ruby paths, regenerate
   # wrappers for this executable, but do not scan, kill MSYS or run installers.
   System::Call 'kernel32::SetEnvironmentVariable(t "RVM_ROOT", t "$INSTDIR")'
+  nsExec::ExecToStack '"$INSTDIR\bin\rvm.exe" --internal-migration prepare'
+  Pop $0
+  Pop $1
+  ${If} $0 != 0
+    MessageBox MB_ICONSTOP "Could not prepare installation migration: $1"
+    SetErrorLevel 1
+    Abort
+  ${EndIf}
   nsExec::ExecToStack '"$INSTDIR\bin\rvm.exe" --internal-install'
   Pop $0
   Pop $1
   ${If} $0 != 0
+    nsExec::Exec '"$INSTDIR\bin\rvm.exe" --internal-migration rollback'
     MessageBox MB_ICONSTOP "Could not initialize RVM wrappers: $1"
     SetErrorLevel 1
     Abort
@@ -65,6 +74,7 @@ Section "rvm-windows" Main
   # through the NSIS process-output code page.
   ExecWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$INSTDIR\src\tools\path\package_path.ps1" -InstallRoot "$INSTDIR"' $0
   ${If} $0 != 0
+    nsExec::Exec '"$INSTDIR\bin\rvm.exe" --internal-migration rollback'
     MessageBox MB_ICONSTOP "Could not update user PATH. Run rvm init manually."
     SetErrorLevel 1
     Abort
@@ -79,6 +89,14 @@ Section "rvm-windows" Main
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "QuietUninstallString" '$\"$INSTDIR\uninstall.exe$\" /S'
   WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "NoModify" 1
   WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "NoRepair" 1
+  # Cleanup is deferred until active legacy/npm operations have exited. The
+  # migration class never uninstalls the current npm installation bridge.
+  nsExec::ExecToStack '"$INSTDIR\bin\rvm.exe" --internal-migration commit'
+  Pop $0
+  Pop $1
+  ${If} $0 != 0
+    DetailPrint "Native RVM installed; legacy cleanup needs attention: $1"
+  ${EndIf}
 SectionEnd
 
 Section "Uninstall"
@@ -94,6 +112,7 @@ Section "Uninstall"
   Delete "$INSTDIR\README.md"
   Delete "$INSTDIR\CONTRIBUTING.md"
   Delete "$INSTDIR\CHANGELOG.md"
+  Delete "$INSTDIR\.legacy-migration.json"
   Delete "$INSTDIR\src\templates\.rvm.json"
   Delete "$INSTDIR\src\templates\wrapper_template.bat"
   Delete "$INSTDIR\src\templates\rvm.cmd"

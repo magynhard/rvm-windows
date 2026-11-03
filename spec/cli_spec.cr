@@ -1,6 +1,18 @@
 require "./spec_helper"
 
 describe RvmCli do
+  it "reports the internal version without initialising or rewriting user state" do
+    Fixtures.with_home do
+      File.delete(RvmCliTools.rvm_config_path)
+      output = IO::Memory.new
+      error = IO::Memory.new
+      RvmCli.run(["--internal-version"], true, output, error).should eq(0)
+      output.to_s.should eq("#{RvmCliVersion.get_version}\n")
+      error.to_s.should eq("")
+      File.exists?(RvmCliTools.rvm_config_path).should be_false
+    end
+  end
+
   it "preserves complete missing-version explanations for commands and aliases" do
     aliases = {
       "install"   => %w(install i),

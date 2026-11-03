@@ -34,9 +34,14 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Smoke-test the packaged executable with only Windows system directories on PATH
         run: |
-          $stage = Get-ChildItem dist -Directory | Select-Object -First 1
+          $stage = Get-ChildItem dist -Directory -Filter 'rvm-windows-*-windows-x64' | Select-Object -First 1
           $env:RVM_PACKAGE_ROOT = $stage.FullName
           crystal spec spec/package_spec.cr
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Test npm bridge in an isolated prefix with a harmless setup fixture
+        run: |
+          $env:RVM_NPM_TESTS = '1'
+          crystal spec spec/npm_bridge_spec.cr
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - uses: actions/upload-artifact@v4
         with:
@@ -44,6 +49,7 @@ jobs:
           path: |
             dist/*.zip
             dist/*-setup.exe
+            dist/*.tgz
           if-no-files-found: error
 
   draft-release:

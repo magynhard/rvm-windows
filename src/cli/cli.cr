@@ -1,5 +1,6 @@
 require "./tasks/*"
 require "../wrapper/*"
+require "../migration/legacy_installation_migration"
 
 class RvmCli
   def self.required(args : Array(String), command : String) : String
@@ -9,6 +10,25 @@ class RvmCli
   end
 
   def self.run(args = ARGV, initialize = true, io : IO = STDOUT, error : IO = STDERR) : Int32
+    if args.first? == "--internal-version"
+      io.puts RvmCliVersion.get_version
+      return 0
+    end
+    if args.first? == "--internal-migration"
+      migration = LegacyInstallationMigration.new
+      case args[1]?
+      when "preview" then io.puts migration.discover.to_json
+      when "prepare"
+        migration.ensure_no_active_ruby
+        migration.prepare
+      when "rollback" then migration.rollback
+      when "commit"   then migration.commit
+      when "retry"    then migration.retry(io)
+      when "cleanup"  then return migration.cleanup(args[2]? || raise("Missing migration job"), io) ? 0 : 1
+      else                 raise "Unknown migration operation"
+      end
+      return 0
+    end
     if args.first? == "--internal-install"
       Dir.mkdir_p(RvmCliTools.rvm_sessions_dir)
       if File.file?(RvmCliTools.rvm_config_path)
@@ -68,6 +88,7 @@ class RvmCli
     when "init"
       RvmCliInit.init_after_install(true, io)
       RvmCliInit.init_session_to_rvm_exes(true, command, io)
+      LegacyInstallationMigration.new.retry(io)
     when "config", "cfg"
       RvmCliConfig.run_config(params, io)
     when "current", "c"

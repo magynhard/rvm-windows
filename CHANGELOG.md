@@ -1,3 +1,8 @@
+# 1.1.1 - 2026-11-03
+- Add an npm installation bridge for native setup and updates.
+- Isolate legacy installation discovery, wrapper rollback and deferred package cleanup in a removable migration class.
+- Preserve configuration, sessions, Ruby installations and caches during migration.
+
 # 1.1.0 - 2026-11-03
 - Implement CLI tasks, wrapper entrypoints and tests in Crystal.
 - Build one statically linked native Windows executable without a separate runtime.

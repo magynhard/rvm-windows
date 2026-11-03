@@ -1,5 +1,6 @@
 require "file_utils"
 require "yaml"
+require "./package_npm"
 
 root = File.expand_path("..", __DIR__)
 Dir.cd(root) do
@@ -27,6 +28,7 @@ Dir.cd(root) do
     status = Process.run(makensis, ["/INPUTCHARSET", "UTF8", "/DVERSION=#{version}", "/DPACKAGE_DIR=#{stage}", "installer/rvm-windows.nsi"],
       output: Process::Redirect::Inherit, error: Process::Redirect::Inherit)
     exit status.exit_code unless status.success?
+    NpmPackageBuilder.run(root, version)
   else
     puts "NSIS not compiled: set MAKENSIS to makensis.exe to include setup."
   end

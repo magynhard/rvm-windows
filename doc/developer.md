@@ -1,7 +1,8 @@
 # Developer documentation
 
 Use native Windows x64 with Crystal 1.20.2+ and Visual Studio C++ build tools.
-No external shards or additional test runtimes are required.
+Offline specs need no external shards or additional test runtimes. Packaging
+the npm bridge and running its optional integration checks also require npm.
 
 ```powershell
 shards build

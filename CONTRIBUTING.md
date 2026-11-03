@@ -111,7 +111,7 @@ Remove `RVM_LIVE_TESTS` to return to the default offline suite.
 After building a package:
 
 ```powershell
-$env:RVM_PACKAGE_ROOT = (Resolve-Path dist/rvm-windows-1.1.0-windows-x64).Path
+$env:RVM_PACKAGE_ROOT = (Resolve-Path dist/rvm-windows-1.1.1-windows-x64).Path
 crystal spec spec/package_spec.cr
 ```
 
@@ -136,9 +136,11 @@ $env:MAKENSIS = 'C:\Program Files (x86)\NSIS\makensis.exe'
 crystal run scripts/package.cr
 ```
 
-For version 1.1.0, output is
-`dist/rvm-windows-1.1.0-windows-x64.zip` and, with NSIS installed,
-`dist/rvm-windows-1.1.0-windows-x64-setup.exe`.
+For version 1.1.1, output is
+`dist/rvm-windows-1.1.1-windows-x64.zip` and, with NSIS installed,
+`dist/rvm-windows-1.1.1-windows-x64-setup.exe` plus the npm bridge
+`dist/rvm-windows-1.1.1.tgz`. Building the latter also requires npm on PATH;
+`npm pack` never publishes anything.
 
 The per-user NSIS setup supports installing over the same application directory.
 It regenerates shared Ruby wrappers for the new executable and updates the user
@@ -170,6 +172,47 @@ This tests, bumps the manifest, commits and tags **locally only**. After review,
 push explicitly. The [Windows workflow](.github/workflows/windows.yml) builds
 ZIP/setup assets and creates a **draft** GitHub Release for version tags.
 Publication remains a maintainer action.
+
+### npm distribution and legacy migration
+
+`npm/` is a minimal installer bridge with no application dependencies. Its version
+must match `shard.yml`; release tooling bumps both. The packaged bridge bundles
+the exact setup built above, not an executable downloaded at install time.
+`postinstall` invokes setup, records its separate install root, and prepends the
+session helper to this package's own npm CMD/PowerShell shims. Keeping those
+helpers at their established paths also supports the old updater's finalisation.
+
+Run integration checks explicitly (requires npm, uses temporary prefixes/caches):
+
+```powershell
+$env:RVM_NPM_TESTS = '1'
+crystal spec spec/npm_bridge_spec.cr
+```
+
+These tests use a harmless compiled setup stand-in, never the real installer.
+They cover a legacy npm update and its finalisation, shell sessions, skipped
+scripts, installer failure, repeated installation, downgrade prevention and
+targeted uninstall. Normal tests cover migration plans and rollback without
+running npm. Real installer/registry acceptance still needs a disposable VM.
+
+`LegacyInstallationMigration` in `src/migration/legacy_installation_migration.cr`
+is the temporary compatibility boundary. Setup calls prepare/commit/rollback;
+cleanup runs in a separate worker after active npm/legacy processes finish.
+Before replacing shared wrappers, setup checks for active managed Ruby tools
+and asks the user to close them rather than killing processes.
+Only verified pre-1.1.0 packages from PATH, the configured npm prefix or the
+standard per-user prefix are eligible. Current bridges, links/junctions, changed
+manifests and packages containing protected paths are never uninstalled.
+Cleanup uses npm with an explicit global prefix and disabled lifecycle scripts.
+Backups/logs live in `~/.rvm/migration`; explicit `rvm init` retries pending jobs.
+If setup was interrupted before commit, run the installed `bin/rvm.exe
+--internal-migration rollback` with `RVM_ROOT` set to that installation before
+retrying setup. This restores owned wrappers, not arbitrary configuration edits.
+
+For an npm release, review the `.tgz` and test with a temporary prefix first.
+Publish explicitly using `npm publish dist/rvm-windows-1.1.1.tgz --access public`
+with an authorised npm account. Neither packaging nor tag CI publishes to npm.
+Do not replace existing tags or published package versions; publish a new version.
 
 ### Windows publisher identity and signing
 

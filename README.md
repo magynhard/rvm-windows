@@ -227,6 +227,26 @@ rvm use --default 3.2
 
 All published versions are available on the [Releases page](https://github.com/magynhard/rvm-windows.cr/releases).
 
+### npm alternative
+
+Starting with version 1.1.1, the npm package installs the same native application:
+
+```powershell
+npm install -g rvm-windows@latest
+```
+
+Open a new terminal after installation. Subsequent updates can use
+`npm update -g rvm-windows`, `rvm get`, or setup. npm is required only for this
+distribution route, not for running the native application. The small npm bridge
+remains installed so npm can deliver future updates; it does not contain a second
+RVM implementation. A newer native installation is not downgraded by an older bridge.
+
+Installation scripts must be permitted for this package. If your npm version
+requires explicit approval, add `--allow-scripts=rvm-windows`. If scripts were
+blocked, use setup or run the installed package's `install.ps1` with PowerShell
+and `-Manual`. Do not disable script protections globally. Uninstalling the npm
+bridge does not uninstall the native application; use Windows Installed Apps.
+
 ### Upgrading
 
 Download the newer setup from [GitHub Releases](https://github.com/magynhard/rvm-windows.cr/releases/latest) and install it over the same application directory. Close running RVM commands first. Your configuration, installed Ruby environments and download cache are retained.
@@ -242,6 +262,18 @@ This downloads the latest published release setup and starts the update after th
 ### Existing installations
 
 Existing configuration, session files and Ruby environments remain compatible; you do not need to reinstall your Rubies.
+
+Close managed Ruby tools (including IRB and Ruby servers) before updating; setup
+refuses to replace shared wrappers while a detected managed Ruby is running.
+Setup recognises older global npm installations and removes their package after
+the native installation succeeds and active package-manager processes finish.
+Node.js, npm, other packages, `.rvm.json`, sessions and installed Rubies are not
+removed. Current npm bridges are retained. Linked development checkouts and
+unrecognised installations are left untouched; insufficient permissions likewise
+leave the old package in place rather than requesting broader access.
+
+Migration backups and cleanup logs are kept under `%USERPROFILE%\.rvm\migration`.
+If cleanup was postponed, close the old processes and run `rvm init` to retry.
 
 > [!IMPORTANT]
 > Setup regenerates the shared Ruby wrappers for this installation. Do not use multiple RVM installations concurrently to change configuration or wrappers. When switching installations, restore the desired installation's PATH priority and run its `rvm fix` command.
