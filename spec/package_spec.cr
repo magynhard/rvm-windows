@@ -3,6 +3,13 @@ require "./support/info_fixture"
 
 if package_root = ENV["RVM_PACKAGE_ROOT"]?
   describe "static release package" do
+    it "ships an explicitly UTF-8 license with the correct copyright holder" do
+      license = File.read(File.join(package_root, "LICENSE"))
+      license.starts_with?("\uFEFFMIT License").should be_true
+      license.should contain("Copyright (c) 2024 Matthäus J. N. Beyrle")
+      license.should_not contain("MatthÃ¤us")
+    end
+
     it "ships the README and installer artwork in src/assets/img without legacy PNG logos" do
       %w(rvm-windows-icon.svg rvm-windows-icon.png rvm-windows.ico).each do |name|
         File.file?(File.join(package_root, "src/assets/img", name)).should be_true

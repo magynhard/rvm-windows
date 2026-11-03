@@ -9,6 +9,7 @@
 - Generate CRLF batch wrappers to prevent truncated commands (`ET` instead of `SET`) with UTF-8 installation paths in CMD and PowerShell.
 - Prepare ZIP/NSIS distribution, GitHub Releases updates and Windows CI.
 - Add a custom ruby/Windows icon for setup, uninstall and the installed-apps entry.
+- Fix Unicode license text in setup and add publisher/version metadata.
 
 ---
 

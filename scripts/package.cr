@@ -24,7 +24,7 @@ Dir.cd(root) do
   status = Process.run("powershell.exe", ["-NoProfile", "-Command", command], output: Process::Redirect::Inherit, error: Process::Redirect::Inherit)
   exit status.exit_code unless status.success?
   if makensis = ENV["MAKENSIS"]?
-    status = Process.run(makensis, ["/DVERSION=#{version}", "/DPACKAGE_DIR=#{stage}", "installer/rvm-windows.nsi"],
+    status = Process.run(makensis, ["/INPUTCHARSET", "UTF8", "/DVERSION=#{version}", "/DPACKAGE_DIR=#{stage}", "installer/rvm-windows.nsi"],
       output: Process::Redirect::Inherit, error: Process::Redirect::Inherit)
     exit status.exit_code unless status.success?
   else

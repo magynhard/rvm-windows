@@ -10,6 +10,15 @@ Unicode true
   !define PACKAGE_DIR "..\dist\rvm-windows-${VERSION}-windows-x64"
 !endif
 
+!define PUBLISHER "Matth${U+00E4}us J. N. Beyrle"
+VIProductVersion "${VERSION}.0"
+VIAddVersionKey /LANG=0 "ProductName" "rvm-windows"
+VIAddVersionKey /LANG=0 "ProductVersion" "${VERSION}"
+VIAddVersionKey /LANG=0 "FileVersion" "${VERSION}.0"
+VIAddVersionKey /LANG=0 "FileDescription" "Ruby Version Manager for Windows Setup"
+VIAddVersionKey /LANG=0 "CompanyName" "${PUBLISHER}"
+VIAddVersionKey /LANG=0 "LegalCopyright" "Copyright (c) 2024 ${PUBLISHER}"
+
 Name "rvm-windows ${VERSION} (Crystal)"
 OutFile "..\dist\rvm-windows-${VERSION}-windows-x64-setup.exe"
 InstallDir "$LOCALAPPDATA\Programs\rvm-windows"
@@ -20,6 +29,7 @@ SetCompressor /SOLID lzma
 !define MUI_ICON "..\src\assets\img\rvm-windows.ico"
 !define MUI_UNICON "..\src\assets\img\rvm-windows.ico"
 !insertmacro MUI_PAGE_WELCOME
+# LICENSE carries a UTF-8 BOM so NSIS does not interpret its text as ANSI.
 !insertmacro MUI_PAGE_LICENSE "..\LICENSE"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
@@ -63,6 +73,7 @@ Section "rvm-windows" Main
   WriteUninstaller "$INSTDIR\uninstall.exe"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "DisplayName" "rvm-windows (Crystal)"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "DisplayVersion" "${VERSION}"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "Publisher" "${PUBLISHER}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "DisplayIcon" '$\"$INSTDIR\uninstall.exe$\",0'
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "UninstallString" '$\"$INSTDIR\uninstall.exe$\"'
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "QuietUninstallString" '$\"$INSTDIR\uninstall.exe$\" /S'

@@ -171,6 +171,23 @@ push explicitly. The [Windows workflow](.github/workflows/windows.yml) builds
 ZIP/setup assets and creates a **draft** GitHub Release for version tags.
 Publication remains a maintainer action.
 
+### Windows publisher identity and signing
+
+Setup includes publisher/version metadata, but metadata does not authenticate
+the publisher. Public releases need Authenticode signatures from a trusted
+code-signing provider. Sign `bin/rvm.exe` before packaging, sign the uninstaller
+during NSIS compilation (`!uninstfinalize`), then sign the final setup; include
+SHA-256 digests and an RFC 3161 timestamp, and verify signatures before upload.
+Keep the signing identity consistent across releases and signing credentials
+outside the repository. A trusted signature identifies the publisher but does
+not guarantee immediate SmartScreen reputation or eliminate every warning.
+
+Options include [SignPath Foundation](https://signpath.org/) for qualifying
+open-source projects, a commercial code-signing certificate, or
+[Azure Artifact Signing](https://learn.microsoft.com/en-us/azure/artifact-signing/)
+where identity/region eligibility permits. Self-signed certificates are suitable
+only for testing or environments with explicitly managed certificate trust.
+
 ## License and third-party notices
 
 MIT, retaining the original author and license. Static binaries also contain
