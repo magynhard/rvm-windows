@@ -1,8 +1,8 @@
-<p align="center">
+<div align="center">
   <img src="doc/img/RVM4Windows.svg" alt="RVM — Ruby Version Manager 4 Windows" width="480"/>
-</p>
+</div>
 
-# <img src="doc/img/RVM4Windows-wordmark.svg" alt="RVM4Windows" width="360"/>
+# rvm-windows
 
 [![GitHub release](https://img.shields.io/github/v/release/magynhard/rvm-windows.cr?color=default&style=plastic&logo=github)](https://github.com/magynhard/rvm-windows.cr/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/magynhard/rvm-windows.cr/total?color=blue&style=plastic)](https://github.com/magynhard/rvm-windows.cr/releases)
