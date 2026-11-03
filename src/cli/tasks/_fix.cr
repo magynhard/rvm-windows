@@ -76,6 +76,9 @@ class RvmCliFix
     File.read(RvmCliTools.rvm_batch_template_path)
       .sub("{{rvm_executable}}", executable)
       .sub("{{rvm_root_dir}}", RvmCliTools.rvm_root_path)
+      # CMD can resume at the wrong byte after CALL/FOR with UTF-8 paths in
+      # LF-only scripts, truncating SET to ET. Never depend on checkout EOLs.
+      .gsub("\r\n", "\n").gsub("\n", "\r\n")
   end
 
   def self.fix_wrapper_files

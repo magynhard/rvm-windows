@@ -1,23 +1,39 @@
 require "../spec_helper"
 
 describe "wrapper_template.bat" do
-  [{42, 0}, {0, 17}].each do |exit_code, after_code|
-    it "preserves wrapped exit code #{exit_code} after cleanup and hook status #{after_code}" do
-      Fixtures.with_home do |home|
-        directory = File.join(home, "Author Software")
-        Dir.mkdir_p(directory)
-        executable = File.join(directory, "rvm.exe")
-        FileUtils.cp(Fixtures.executable(true), executable)
-        batch = File.join(home, "wrapper.bat")
-        File.write(batch, RvmCliFix.render_wrapper(executable))
-        output = IO::Memory.new
-        error = IO::Memory.new
-        status = Process.run(%Q("#{batch}"), shell: true,
-          env: {"RUBYPATH" => "original-rubypath", "RVM_TEST_EXIT_CODE" => exit_code.to_s,
-                "RVM_TEST_AFTER_EXIT_CODE" => after_code.to_s}, output: output, error: error)
-        error.to_s.should eq("")
-        output.to_s.should contain("AFTER_COMMAND_RAN|RUBYPATH=original-rubypath")
-        status.exit_code.should eq(exit_code)
+  it "always renders CRLF batch lines, independently of checkout line endings" do
+    Fixtures.with_home do
+      rendered = RvmCliFix.render_wrapper("C:/Matthäus Software/rvm.exe")
+      rendered.should contain("\r\n")
+      rendered.gsub("\r\n", "").should_not contain("\n")
+      rendered.should_not contain("\r\r\n")
+    end
+  end
+
+  %w(cmd powershell).each do |shell|
+    [{42, 0}, {0, 17}].each do |exit_code, after_code|
+      it "preserves wrapped exit code #{exit_code} after cleanup and hook status #{after_code} in #{shell} with a UTF-8 executable path" do
+        Fixtures.with_home do |home|
+          directory = File.join(home, "Matthäus Software")
+          Dir.mkdir_p(directory)
+          executable = File.join(directory, "rvm.exe")
+          FileUtils.cp(Fixtures.executable(true), executable)
+          batch = File.join(home, "wrapper.bat")
+          File.write(batch, RvmCliFix.render_wrapper(executable))
+          output = IO::Memory.new
+          error = IO::Memory.new
+          command, args = if shell == "powershell"
+                            {"powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", "& '#{batch.gsub("'", "''")}'; exit $LASTEXITCODE"]}
+                          else
+                            {"cmd.exe", ["/d", "/c", batch]}
+                          end
+          status = Process.run(command, args,
+            env: {"RUBYPATH" => "original-rubypath", "RVM_TEST_EXIT_CODE" => exit_code.to_s,
+                  "RVM_TEST_AFTER_EXIT_CODE" => after_code.to_s}, output: output, error: error)
+          error.to_s.should eq("")
+          output.to_s.should contain("AFTER_COMMAND_RAN|RUBYPATH=original-rubypath")
+          status.exit_code.should eq(exit_code)
+        end
       end
     end
   end

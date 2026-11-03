@@ -3,12 +3,15 @@
 ## Automated checks performed locally (Windows x64 / Crystal 1.20.2)
 
 * Original JavaScript suite: 9 Jasmine specs passed, including live archives.
-* Crystal suite: 61 offline examples, 69 with all three optional checks enabled;
+* Crystal suite: 64 offline examples, 72 with all three optional checks enabled;
   all passed locally. Equivalent original cases plus isolated configuration,
   sessions, numeric version matching, project inheritance, wrapper naming,
   subprocess protocol, CLI dispatch, HTTP redirects/cache errors and proxy tests.
 * Original regression cases retained: installation paths with spaces; wrapped
   exit code 42 after cleanup; success preserved despite post-hook exit code 17.
+  Wrapper tests also use an executable path containing `Matthäus` and spaces in
+  CMD and PowerShell, require empty stderr, and verify CRLF output independent
+  of source checkout line endings (LF-only UTF-8 wrappers truncate commands).
 * Real native wrapper: argument forwarding, command fallback and status 9009.
 * Parent CMD and PowerShell session creation and persistence across consecutive
   EXE calls. PATH-helper previews preserve long/unexpanded values without writes.

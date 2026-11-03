@@ -6,6 +6,7 @@
 - Use Windows blue for primary CLI highlights, preserve semantic status colors, and align the white logo version.
 - Explicitly invoke CMD for Windows shell commands, fixing `rvm info` (`ver`) and command chaining.
 - Preserve full original missing-parameter explanations and help descriptions, including both upgrade forms and their example.
+- Generate CRLF batch wrappers to prevent truncated commands (`ET` instead of `SET`) with UTF-8 installation paths in CMD and PowerShell.
 - Prepare ZIP/NSIS distribution, GitHub Releases updates and Windows CI.
 
 # 1.0.8 - 2026-11-02
