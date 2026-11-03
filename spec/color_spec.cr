@@ -65,9 +65,10 @@ describe RvmCliColor do
     end
   end
 
-  it "colors the logo and Ruby title red, 4/version white and Windows blue" do
+  it "leaves ASCII art plain and colors the Ruby title red, 4/version white and Windows blue" do
     ColorFixtures.with_environment do
       logo = RvmCliTools.logo(ColorFixtures::Terminal.new)
+      logo.split("\n\n", 2).first.should_not contain("\e[")
       logo.should match(/\e\[[0-9;]*91[0-9;]*m/)
       logo.should contain("\e[91;1mRuby Version Manager\e[39;22m")
       logo.should contain("\e[37;1m 4 \e[39;22m")

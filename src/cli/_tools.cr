@@ -308,7 +308,7 @@ class RvmCliTools
 
   def self.logo(io : IO = STDOUT) : String
     art = "\n      ██████╗  ██╗   ██╗ ███╗   ███╗\n      ██╔══██╗ ██║   ██║ ████╗ ████║\n      ██████╔╝ ██║   ██║ ██╔████╔██║\n      ██╔══██╗ ╚██╗ ██╔╝ ██║╚██╔╝██║\n      ██║  ██║  ╚████╔╝  ██║ ╚═╝ ██║\n      ╚═╝  ╚═╝   ╚═══╝   ╚═╝     ╚═╝\n\n"
-    RvmCliColor.style(art, :light_red, io, bold: true) +
+    art +
       "      " + RvmCliColor.style("Ruby Version Manager", :light_red, io, bold: true) +
       RvmCliColor.style(" 4 ", :light_gray, io, bold: true) +
       RvmCliColor.primary("Windows", io, bold: true) +

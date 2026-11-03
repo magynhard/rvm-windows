@@ -16,6 +16,7 @@ if package_root = ENV["RVM_PACKAGE_ROOT"]?
           status.success?.should be_true, error.to_s
         end
         colored.to_s.should match(/\e\[[0-9;]*91[0-9;]*m/)
+        colored.to_s.split("\n\n", 2).first.should_not contain("\e[")
         colored.to_s.should contain("\e[94mrvm version\e[39m")
         colored.to_s.should contain("\n                \e[37m#{RvmCliVersion.get_version}\e[39m\n")
         plain.to_s.should_not contain("\e[")
