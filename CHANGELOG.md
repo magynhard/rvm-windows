@@ -10,6 +10,11 @@
 - Prepare ZIP/NSIS distribution, GitHub Releases updates and Windows CI.
 - Add a custom ruby/Windows icon for setup, uninstall and the installed-apps entry.
 
+---
+
+The entries below document the previous Node.js version. Starting with 1.1.0,
+rvm-windows has been reimplemented in Crystal.
+
 # 1.0.8 - 2026-11-02
 - Fix [#14](https://github.com/magynhard/rvm-windows/issues/14), allow initialization when the installation path contains spaces, thanks to [sk-ys](https://github.com/sk-ys)
 

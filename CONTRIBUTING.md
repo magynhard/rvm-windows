@@ -16,9 +16,8 @@ exit-code propagation; the five wrapper operations are internal commands
 of one executable. Source files and classes follow the original tree, with
 idiomatic `snake_case` methods and Crystal `*_spec.cr` naming.
 
-See [porting notes](doc/PORTING.md) for the file mapping, original dispatch quirks
-and necessary platform adaptations. Do not silently fix behavior differences
-while porting; document and discuss them separately.
+Do not silently change established command behavior; document and discuss
+compatibility changes separately.
 
 ## Development setup and build
 
@@ -153,8 +152,6 @@ and run its `rvm fix` to regenerate wrappers. Uninstalling removes only
 its own wrappers and package files, not installed Rubies or user configuration.
 
 Use a disposable Windows VM for installer, upgrade and uninstall acceptance tests.
-See [validation status and release checklist](doc/VALIDATION.md) for automated
-coverage and outstanding manual acceptance checks before a public release.
 
 ## Releases and self-update
 
@@ -179,7 +176,7 @@ Publication remains a maintainer action.
 MIT, retaining the original author and license. Static binaries also contain
 the Crystal runtime and its dependencies. Before publishing, audit and include
 all required third-party licenses/notices for the exact toolchain; the project's
-MIT license alone is insufficient. See the [release checklist](doc/VALIDATION.md).
+MIT license alone is insufficient.
 
 ## Community
 
