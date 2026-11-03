@@ -1,7 +1,7 @@
 # Optional artwork tool; pre-generated assets are checked in for normal builds.
 # Requires ImageMagick with SVG support on PATH.
 $ErrorActionPreference = 'Stop'
-$images = Join-Path $PSScriptRoot '../doc/img'
+$images = Join-Path $PSScriptRoot '../src/assets/img'
 $source = Join-Path $images 'rvm-windows-icon.svg'
 $preview = Join-Path $images 'rvm-windows-icon.png'
 $icon = Join-Path $images 'rvm-windows.ico'

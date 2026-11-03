@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="doc/img/RVM4Windows.svg" alt="RVM — Ruby Version Manager 4 Windows" width="480"/>
+  <img src="src/assets/img/rvm-windows-icon.svg" alt="RVM — Ruby Version Manager 4 Windows" width="256"/>
 </div>
 
 # rvm-windows

@@ -17,8 +17,8 @@ InstallDirRegKey HKCU "Software\rvm-windows.cr" "InstallDir"
 RequestExecutionLevel user
 SetCompressor /SOLID lzma
 !define MUI_ABORTWARNING
-!define MUI_ICON "..\doc\img\rvm-windows.ico"
-!define MUI_UNICON "..\doc\img\rvm-windows.ico"
+!define MUI_ICON "..\src\assets\img\rvm-windows.ico"
+!define MUI_UNICON "..\src\assets\img\rvm-windows.ico"
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "..\LICENSE"
 !insertmacro MUI_PAGE_DIRECTORY
@@ -104,11 +104,16 @@ Section "Uninstall"
   Delete "$INSTDIR\doc\img\rvm-windows-icon.svg"
   Delete "$INSTDIR\doc\img\rvm-windows-icon.png"
   Delete "$INSTDIR\doc\img\rvm-windows.ico"
+  Delete "$INSTDIR\src\assets\img\rvm-windows-icon.svg"
+  Delete "$INSTDIR\src\assets\img\rvm-windows-icon.png"
+  Delete "$INSTDIR\src\assets\img\rvm-windows.ico"
   Delete "$INSTDIR\uninstall.exe"
   RMDir "$INSTDIR\src\templates"
   RMDir "$INSTDIR\src\tools\current"
   RMDir "$INSTDIR\src\tools\path"
   RMDir "$INSTDIR\src\tools"
+  RMDir "$INSTDIR\src\assets\img"
+  RMDir "$INSTDIR\src\assets"
   RMDir "$INSTDIR\src"
   RMDir "$INSTDIR\bin"
   RMDir "$INSTDIR\doc\img"

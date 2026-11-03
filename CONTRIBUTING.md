@@ -40,7 +40,7 @@ it. End users need neither Crystal nor Node nor separate runtime DLLs.
 
 ### Installer artwork
 
-`doc/img/rvm-windows-icon.svg` is the editable square icon source. With
+`src/assets/img/rvm-windows-icon.svg` is the editable square icon source. With
 ImageMagick on PATH, run `./scripts/generate-icon.ps1` to regenerate its PNG
 preview and the multi-resolution `rvm-windows.ico` (16–256 pixels). Generated
 assets are committed; normal builds do not need ImageMagick. NSIS uses this

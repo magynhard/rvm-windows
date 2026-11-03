@@ -3,7 +3,7 @@
 ## Automated checks performed locally (Windows x64 / Crystal 1.20.2)
 
 * Original JavaScript suite: 9 Jasmine specs passed, including live archives.
-* Crystal suite: 64 offline examples, 72 with all three optional checks enabled;
+* Crystal suite: 64 offline examples, 73 with all three optional checks enabled;
   all passed locally. Equivalent original cases plus isolated configuration,
   sessions, numeric version matching, project inheritance, wrapper naming,
   subprocess protocol, CLI dispatch, HTTP redirects/cache errors and proxy tests.
@@ -35,6 +35,8 @@
 * PE imports inspected with dumpbin: Windows system DLLs only.
 * ZIP package and NSIS 3.13 setup successfully compiled locally. The setup
   executable was not installed or executed against the host.
+  Package artwork lives in `src/assets/img`; the README points to the new SVG,
+  and obsolete `rvm_cmd*.png` logos are excluded.
 
 No tests installed Rubies/gems, killed MSYS, modified the user's registry/PATH,
 or touched the real RVM configuration. Original support-file hashes are preserved.

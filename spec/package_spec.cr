@@ -3,6 +3,15 @@ require "./support/info_fixture"
 
 if package_root = ENV["RVM_PACKAGE_ROOT"]?
   describe "static release package" do
+    it "ships the README and installer artwork in src/assets/img without legacy PNG logos" do
+      %w(rvm-windows-icon.svg rvm-windows-icon.png rvm-windows.ico).each do |name|
+        File.file?(File.join(package_root, "src/assets/img", name)).should be_true
+        File.exists?(File.join(package_root, "doc/img", name)).should be_false
+      end
+      Dir.glob(File.join(package_root, "doc/img/rvm_cmd*.png")).should be_empty
+      File.read(File.join(package_root, "README.md")).should contain("src/assets/img/rvm-windows-icon.svg")
+    end
+
     it "preserves the complete missing-parameter explanation for upgrade" do
       Fixtures.with_home do
         output = IO::Memory.new
