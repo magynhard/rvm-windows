@@ -1,11 +1,13 @@
+<p align="center">
+  <img src="doc/img/RVM4Windows.svg" alt="RVM — Ruby Version Manager 4 Windows" width="480"/>
+</p>
+
 # rvm-windows.cr
 
 [![GitHub release](https://img.shields.io/github/v/release/magynhard/rvm-windows.cr?color=default&style=plastic&logo=github)](https://github.com/magynhard/rvm-windows.cr/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/magynhard/rvm-windows.cr/total?color=blue&style=plastic)](https://github.com/magynhard/rvm-windows.cr/releases)
 [![Windows build](https://img.shields.io/github/actions/workflow/status/magynhard/rvm-windows.cr/windows.yml?branch=master&style=plastic&label=Windows)](https://github.com/magynhard/rvm-windows.cr/actions/workflows/windows.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg?style=plastic&logo=mit)](LICENSE)
-
-<img src="doc/img/rvm_cmd_logo_square.png" alt="RVM — Ruby Version Manager 4 Windows"/>
 
 > Reimplementation of the most important [rvm.io](https://www.rvm.io) features for native Windows, written in [Crystal](https://crystal-lang.org/).
 
