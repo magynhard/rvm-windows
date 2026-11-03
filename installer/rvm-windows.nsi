@@ -17,6 +17,8 @@ InstallDirRegKey HKCU "Software\rvm-windows.cr" "InstallDir"
 RequestExecutionLevel user
 SetCompressor /SOLID lzma
 !define MUI_ABORTWARNING
+!define MUI_ICON "..\doc\img\rvm-windows.ico"
+!define MUI_UNICON "..\doc\img\rvm-windows.ico"
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "..\LICENSE"
 !insertmacro MUI_PAGE_DIRECTORY
@@ -61,6 +63,7 @@ Section "rvm-windows" Main
   WriteUninstaller "$INSTDIR\uninstall.exe"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "DisplayName" "rvm-windows (Crystal)"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "DisplayVersion" "${VERSION}"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "DisplayIcon" '$\"$INSTDIR\uninstall.exe$\",0'
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "UninstallString" '$\"$INSTDIR\uninstall.exe$\"'
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "QuietUninstallString" '$\"$INSTDIR\uninstall.exe$\" /S'
   WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "NoModify" 1
@@ -98,6 +101,9 @@ Section "Uninstall"
   Delete "$INSTDIR\doc\img\rvm_cmd_logo_square.png"
   Delete "$INSTDIR\doc\img\RVM4Windows.svg"
   Delete "$INSTDIR\doc\img\RVM4Windows-wordmark.svg"
+  Delete "$INSTDIR\doc\img\rvm-windows-icon.svg"
+  Delete "$INSTDIR\doc\img\rvm-windows-icon.png"
+  Delete "$INSTDIR\doc\img\rvm-windows.ico"
   Delete "$INSTDIR\uninstall.exe"
   RMDir "$INSTDIR\src\templates"
   RMDir "$INSTDIR\src\tools\current"

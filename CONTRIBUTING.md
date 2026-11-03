@@ -38,6 +38,14 @@ it. End users need neither Crystal nor Node nor separate runtime DLLs.
 
 `shards build` produces a faster, dynamically linked developer build instead.
 
+### Installer artwork
+
+`doc/img/rvm-windows-icon.svg` is the editable square icon source. With
+ImageMagick on PATH, run `./scripts/generate-icon.ps1` to regenerate its PNG
+preview and the multi-resolution `rvm-windows.ico` (16–256 pixels). Generated
+assets are committed; normal builds do not need ImageMagick. NSIS uses this
+icon for setup, uninstall and the installed-apps entry.
+
 **Use the root launchers, not `bin/rvm.exe` directly**, for session-sensitive
 commands: only the parent CMD/PowerShell process can establish the persistent
 `RVM_SESSION`. Put the package root on PATH, not its private `bin` directory.

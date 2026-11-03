@@ -8,6 +8,7 @@
 - Preserve full original missing-parameter explanations and help descriptions, including both upgrade forms and their example.
 - Generate CRLF batch wrappers to prevent truncated commands (`ET` instead of `SET`) with UTF-8 installation paths in CMD and PowerShell.
 - Prepare ZIP/NSIS distribution, GitHub Releases updates and Windows CI.
+- Add a custom ruby/Windows icon for setup, uninstall and the installed-apps entry.
 
 # 1.0.8 - 2026-11-02
 - Fix [#14](https://github.com/magynhard/rvm-windows/issues/14), allow initialization when the installation path contains spaces, thanks to [sk-ys](https://github.com/sk-ys)
