@@ -8,9 +8,17 @@ module Fixtures
 
   def self.executable(fixture = false) : String
     name = fixture ? "wrapper-fixture" : "rvm"
+    source = fixture ? File.expand_path("support/wrapper_fixture.cr", __DIR__) : File.expand_path("../src/rvm-windows.cr", __DIR__)
+    build_executable(name, source)
+  end
+
+  def self.ruby_executable : String
+    build_executable("ruby-fixture", File.expand_path("support/ruby_fixture.cr", __DIR__))
+  end
+
+  def self.build_executable(name : String, source : String) : String
     @@executables[name] ||= begin
       Dir.mkdir_p(BUILD_ROOT)
-      source = fixture ? File.expand_path("support/wrapper_fixture.cr", __DIR__) : File.expand_path("../src/rvm-windows.cr", __DIR__)
       output = File.join(BUILD_ROOT, "#{name}.exe")
       RvmCliTools.capture("crystal", ["build", source, "-o", output])
       output

@@ -1,7 +1,21 @@
 require "./spec_helper"
+require "./support/info_fixture"
 
 if package_root = ENV["RVM_PACKAGE_ROOT"]?
   describe "static release package" do
+    it "runs info using CMD built-ins and a quoted Ruby installation path" do
+      InfoFixtures.with_installation do
+        output = IO::Memory.new
+        error = IO::Memory.new
+        executable = File.join(package_root, "bin/rvm.exe")
+        status = Process.run(executable, ["info"], env: {"RVM_ROOT" => package_root}, output: output, error: error)
+        status.success?.should be_true, error.to_s
+        output.to_s.should match(/Windows.*\d+\.\d+\.\d+/)
+        output.to_s.should contain("version:      #{RvmCliVersion.get_version}")
+        output.to_s.should contain("full_version: ruby 3.2.6")
+      end
+    end
+
     it "supports colored and plain help with no external runtime on PATH" do
       Fixtures.with_home do
         windows = ENV["SystemRoot"]

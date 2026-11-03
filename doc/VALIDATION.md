@@ -3,7 +3,7 @@
 ## Automated checks performed locally (Windows x64 / Crystal 1.20.2)
 
 * Original JavaScript suite: 9 Jasmine specs passed, including live archives.
-* Crystal suite: 52 offline examples, 57 with all three optional checks enabled;
+* Crystal suite: 58 offline examples, 64 with all three optional checks enabled;
   all passed locally. Equivalent original cases plus isolated configuration,
   sessions, numeric version matching, project inheritance, wrapper naming,
   subprocess protocol, CLI dispatch, HTTP redirects/cache errors and proxy tests.
@@ -12,6 +12,10 @@
 * Real native wrapper: argument forwarding, command fallback and status 9009.
 * Parent CMD and PowerShell session creation and persistence across consecutive
   EXE calls. PATH-helper previews preserve long/unexpanded values without writes.
+* CMD built-ins (`ver`, `echo`, `exit`), quoted batch paths/arguments, command
+  chaining, redirection and failure statuses covered by shell regression tests.
+  `info` tested in-process and through development/static packaged executables,
+  using a compiled Ruby-version fixture rather than a real Ruby installation.
 * Opt-in live archive test: historical Ruby versions available over native TLS.
 * Opt-in differential test: actual JavaScript version resolution, list output
   and wrapper selection compared to the Crystal results, plus Chalk color

@@ -4,6 +4,7 @@
 - Preserve shared configuration, session format, Ruby environments and batch methodology.
 - Restore the original CLI colors for the logo, help, versions, paths, warnings and errors; keep wrapper protocols uncolored.
 - Use Windows blue for primary CLI highlights, preserve semantic status colors, and align the white logo version.
+- Explicitly invoke CMD for Windows shell commands, fixing `rvm info` (`ver`) and command chaining.
 - Prepare ZIP/NSIS distribution, GitHub Releases updates and Windows CI.
 
 # 1.0.8 - 2026-11-02

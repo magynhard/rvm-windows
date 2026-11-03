@@ -218,15 +218,28 @@ class RvmCliTools
   def self.shell(command : String) : String
     output = IO::Memory.new
     error = IO::Memory.new
-    status = Process.run(command, shell: true, output: output, error: error)
+    status = Process.run(shell_command(command), shell: true, output: output, error: error)
     raise "Command failed (#{status.exit_code}): #{command}\n#{error}" unless status.success?
     output.to_s
   end
 
   def self.run_shell(command : String)
-    status = Process.run(command, shell: true,
+    status = Process.run(shell_command(command), shell: true,
       input: Process::Redirect::Inherit, output: Process::Redirect::Inherit, error: Process::Redirect::Inherit)
     raise "Command failed (#{status.exit_code}): #{command}" unless status.success?
+  end
+
+  def self.shell_command(command : String) : String
+    {% if flag?(:win32) %}
+      # Crystal's Windows shell:true passes a raw command line to CreateProcessW;
+      # it does not launch CMD for built-ins such as ver, echo, or exit. Wrap the
+      # whole script explicitly. An argv array would apply C-runtime escaping,
+      # not CMD quoting, and break quoted paths/arguments inside the script.
+      interpreter = ENV["COMSPEC"]? || "cmd.exe"
+      %Q("#{interpreter}" /d /s /c "#{command}")
+    {% else %}
+      command
+    {% end %}
   end
 
   def self.kill_running_msys_processes(io : IO = STDOUT)
