@@ -52,6 +52,8 @@ helpers are copied verbatim; only the wrapper template's runtime calls change.
   found through `where rvm`. Session prepends remain unchanged.
 * Output uses simple tables rather than Node's command-line-usage renderer.
   Fields and command behavior are preserved; layout is not byte-identical.
+* Neutral primary highlights use Windows blue instead of the original green.
+  Green is retained for positive statuses; errors remain red and warnings yellow.
 * Network errors fail explicitly instead of leaving an unresolved Promise.
   Incomplete downloads never become usable cache entries.
 * The original legacy `init` PATH operation remains; NSIS uses a separate helper

@@ -125,9 +125,9 @@ class RvmCliTools
       data = config
       data.as_h["default"] = JSON::Any.new(match)
       write_rvm_config(data)
-      io.puts "Set default #{RvmCliColor.green(match, io)} from #{RvmCliColor.green(envs(data)[match].as_s, io)} ..."
+      io.puts "Set default #{RvmCliColor.primary(match, io)} from #{RvmCliColor.primary(envs(data)[match].as_s, io)} ..."
     else
-      io.puts "No version for #{RvmCliColor.red(version, io)} available! Run #{RvmCliColor.green("rvm list", io)} to show available versions."
+      io.puts "No version for #{RvmCliColor.red(version, io)} available! Run #{RvmCliColor.primary("rvm list", io)} to show available versions."
     end
   end
 
@@ -197,13 +197,13 @@ class RvmCliTools
                         preselected_option : String? = nil, mandatory = false,
                         input : IO = STDIN, output : IO = STDOUT) : String
     loop do
-      output.print "  #{question}#{preselected_option ? " [#{RvmCliColor.green(preselected_option, output)}]" : ""}: "
+      output.print "  #{question}#{preselected_option ? " [#{RvmCliColor.primary(preselected_option, output)}]" : ""}: "
       answer = input.gets || raise "Input cancelled"
       answer = answer.chomp
       answer = preselected_option || "" if answer.empty?
       next if mandatory && answer.empty?
       return answer if options.nil? || options.empty? || options.includes?(answer)
-      output.puts "\n  #{RvmCliColor.red("Invalid input '#{answer}'.", output)}\n  Valid options are: #{options.map { |option| RvmCliColor.green(option, output) }.join(" | ")}\n"
+      output.puts "\n  #{RvmCliColor.red("Invalid input '#{answer}'.", output)}\n  Valid options are: #{options.map { |option| RvmCliColor.primary(option, output) }.join(" | ")}\n"
     end
   end
 
@@ -311,7 +311,7 @@ class RvmCliTools
     RvmCliColor.style(art, :light_red, io, bold: true) +
       "      " + RvmCliColor.style("Ruby Version Manager", :light_red, io, bold: true) +
       RvmCliColor.style(" 4 ", :light_gray, io, bold: true) +
-      RvmCliColor.style("Windows", :light_blue, io, bold: true) +
-      "\n              #{RvmCliColor.green(RvmCliVersion.get_version, io)}\n"
+      RvmCliColor.primary("Windows", io, bold: true) +
+      "\n                #{RvmCliColor.style(RvmCliVersion.get_version, :light_gray, io)}\n"
   end
 end

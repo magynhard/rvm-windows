@@ -14,8 +14,9 @@
   EXE calls. PATH-helper previews preserve long/unexpanded values without writes.
 * Opt-in live archive test: historical Ruby versions available over native TLS.
 * Opt-in differential test: actual JavaScript version resolution, list output
-  and wrapper selection compared to the Crystal results, plus byte-for-byte
-  Chalk color parity for installed-version lists, data paths and proxy status.
+  and wrapper selection compared to the Crystal results, plus Chalk color
+  comparisons with the intentional green-to-blue primary-color replacement.
+  Semantic green/red status colors are retained.
 * ANSI palette, terminal/pipe detection, NO_COLOR/FORCE_COLOR, help alignment,
   color-free configuration/session writes and forced-color protocol safety tested.
 * Release/static executable built and package smoke-tested with a PATH containing

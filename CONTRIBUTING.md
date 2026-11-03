@@ -69,8 +69,11 @@ builders or compiled fixtures over interacting with a real Ruby installation.
 
 `RvmCliColor` uses Crystal's standard-library `Colorize` with per-output-stream
 terminal detection. Crystal enables Windows virtual-terminal processing for
-console stdout/stderr. Match the original Chalk palette when changing messages;
-do not add escape sequences to configuration/session values or internal protocols.
+console stdout/stderr. Use `primary` (light blue, shared with the Windows logo)
+for neutral highlights such as commands, version names, paths and options. Keep
+green for positive status (enabled, installed archive releases, up-to-date), red
+for errors and yellow for warnings. The logo version is white. Do not add escape
+sequences to configuration/session values or internal protocols.
 
 `NO_COLOR` (non-empty) disables colors, `FORCE_COLOR=1` forces them even in pipes,
 and `FORCE_COLOR=0` disables them. `NO_COLOR` takes precedence. By default, pipes,
@@ -79,7 +82,8 @@ even with `FORCE_COLOR=1`.
 
 Color specs exercise simulated terminal streams, forced/disabled colors in the
 compiled executable, plain configuration/session writes, and protocol safety.
-The optional reference suite also compares actual ANSI-colored output to Chalk.
+The optional reference suite compares actual ANSI-colored output to Chalk,
+accounting for the intentional green-to-blue primary-color replacement.
 
 ### Optional live and differential checks
 

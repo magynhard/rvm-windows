@@ -118,9 +118,9 @@ rvm list
 
 <div style="background: black; color: white; border-radius: 16px;">
 <pre>
- * <span style="color: green">ruby-3.2.2</span>
-=> <span style="color: green">ruby-2.7.8</span>
-   <span style="color: green">ruby-2.4.10</span>
+ * <span style="color: #0088f8">ruby-3.2.2</span>
+=> <span style="color: #0088f8">ruby-2.7.8</span>
+   <span style="color: #0088f8">ruby-2.4.10</span>
 <br/>
 &#35; => - current
 &#35; =* - current &amp;&amp; default
@@ -157,7 +157,7 @@ rvm use 2.4.10
 
 <div style="background: black; color: white; border-radius: 16px;">
 <pre>
-Using <span style="color: green">ruby-2.4.10</span> ...
+Using <span style="color: #0088f8">ruby-2.4.10</span> ...
 </pre>
 </div>
 
@@ -169,7 +169,7 @@ rvm use 2
 
 <div style="background: black; color: white; border-radius: 16px;">
 <pre>
-Using <span style="color: green">ruby-2.7.8</span> ...
+Using <span style="color: #0088f8">ruby-2.7.8</span> ...
 </pre>
 </div>
 

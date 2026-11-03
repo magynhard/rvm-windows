@@ -4,7 +4,7 @@ require "process/shell"
 # Crystal has no JavaScript-style runtime eval. Keep an interactive task console
 # with all classes compiled in, without pretending arbitrary Crystal can be eval'd.
 puts RvmCliTools.logo
-puts RvmCliColor.green("RVM Windows test CLI — enter tasks, or exit to quit.")
+puts RvmCliColor.primary("RVM Windows test CLI — enter tasks, or exit to quit.")
 loop do
   print RvmCliColor.style("rvm-test> ", :magenta)
   line = STDIN.gets

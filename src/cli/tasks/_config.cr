@@ -11,7 +11,7 @@ class RvmCliConfig
   end
 
   def self.print_config(io : IO = STDOUT)
-    io.puts "RVM configuration at #{RvmCliColor.green(RvmCliTools.rvm_config_path, io)}\n\n#{RvmCliTools.config.to_pretty_json}"
+    io.puts "RVM configuration at #{RvmCliColor.primary(RvmCliTools.rvm_config_path, io)}\n\n#{RvmCliTools.config.to_pretty_json}"
   end
 
   def self.run_default(version : String? = nil, io : IO = STDOUT)
@@ -20,11 +20,11 @@ class RvmCliConfig
 
   def self.print_default(io : IO = STDOUT)
     version = RvmCliTools.get_default_version
-    io.puts version.empty? ? "There is no default ruby version set. To set, run #{RvmCliColor.green("rvm default <version>", io)}" : version
+    io.puts version.empty? ? "There is no default ruby version set. To set, run #{RvmCliColor.primary("rvm default <version>", io)}" : version
   end
 
   def self.print_data(io : IO = STDOUT)
-    io.puts "RVM data directory at #{RvmCliColor.green(RvmCliTools.get_rvm_data_dir, io)}"
+    io.puts "RVM data directory at #{RvmCliColor.primary(RvmCliTools.get_rvm_data_dir, io)}"
   end
 
   def self.run_data(path : String? = nil, io : IO = STDOUT)
@@ -59,7 +59,7 @@ class RvmCliConfig
         hostname = "http://#{hostname}" unless hostname.starts_with?("http")
         proxy["hostname"] = JSON::Any.new(hostname)
         proxy["enabled"] = JSON::Any.new(true)
-        io.puts "Set proxy #{RvmCliColor.green(hostname, io)} ... [#{proxy_status(true, io)}]"
+        io.puts "Set proxy #{RvmCliColor.primary(hostname, io)} ... [#{proxy_status(true, io)}]"
       end
       data.as_h["proxy"] = JSON::Any.new(proxy)
       RvmCliTools.write_rvm_config(data)

@@ -3,6 +3,8 @@ require "colorize"
 # Per-stream styling, rather than Colorize's global STDOUT/STDERR switch.
 # Crystal enables Windows virtual-terminal processing for console stdio itself.
 module RvmCliColor
+  PRIMARY = :light_blue
+
   def self.enabled?(io : IO) : Bool
     return false if ENV["NO_COLOR"]?.try { |value| !value.empty? }
     if force = ENV["FORCE_COLOR"]?
@@ -22,6 +24,10 @@ module RvmCliColor
     style(text, :green, io)
   end
 
+  def self.primary(text : String, io : IO = STDOUT, bold = false) : String
+    style(text, PRIMARY, io, bold)
+  end
+
   def self.red(text : String, io : IO = STDOUT) : String
     style(text, :red, io)
   end
@@ -32,11 +38,11 @@ module RvmCliColor
 
   def self.error(message : String, io : IO = STDERR) : String
     if match = message.match(/\A(No version given\.) Run (.+), for example: (.+)\z/)
-      "#{red(match[1], io)} Run #{green(match[2], io)}, for example: #{green(match[3], io)}"
+      "#{red(match[1], io)} Run #{primary(match[2], io)}, for example: #{primary(match[3], io)}"
     elsif message.starts_with?("No system ruby found!")
       message.sub("No system ruby found!", red("No system ruby found!", io))
-        .sub("rvm add <path>", green("rvm add <path>", io))
-        .sub("rvm add C:\\Ruby-3.2.2x64", green("rvm add C:\\Ruby-3.2.2x64", io))
+        .sub("rvm add <path>", primary("rvm add <path>", io))
+        .sub("rvm add C:\\Ruby-3.2.2x64", primary("rvm add C:\\Ruby-3.2.2x64", io))
     else
       red(message, io)
     end

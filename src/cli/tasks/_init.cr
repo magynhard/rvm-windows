@@ -55,7 +55,7 @@ class RvmCliInit
       Dir.mkdir_p(RvmCliTools.rvm_sessions_dir)
     end
     unless ENV["RVM_SESSION"]? || command == "init"
-      io.puts "#{RvmCliColor.red("No rvm session found!", io)} Run #{RvmCliColor.green("rvm init", io)} to recreate session wrappers. Otherwise #{RvmCliColor.green("rvm use", io)} is not working.\n"
+      io.puts "#{RvmCliColor.red("No rvm session found!", io)} Run #{RvmCliColor.primary("rvm init", io)} to recreate session wrappers. Otherwise #{RvmCliColor.primary("rvm use", io)} is not working.\n"
     end
     clean_sessions
   end
@@ -92,7 +92,7 @@ class RvmCliInit
     end
     if !paths.empty? && !File.expand_path(paths.first).includes?("\\rvm\\wrapper")
       io.puts RvmCliColor.yellow("Warning: rvm-windows wrapper ruby is not the first ruby in path! Other ruby is configured before!", io)
-      io.puts "To fix this, try #{RvmCliColor.green("rvm init", io)} and restart your terminal!"
+      io.puts "To fix this, try #{RvmCliColor.primary("rvm init", io)} and restart your terminal!"
       io.puts "If this does not work, your system PATH may include rubies, that needs to be removed manually!\n"
       io.puts RvmCliColor.yellow("Ruby paths in following order found:", io)
       io.puts paths.map { |path| "- #{path}" }.join('\n')

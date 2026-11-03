@@ -16,11 +16,11 @@ class RvmCliUse
     version = RvmCliTools.normalize_version(version)
     if match = RvmCliTools.matching_version(version)
       RvmCliTools.set_current_version(match)
-      io.puts "Using #{RvmCliColor.green(match, io)} from #{RvmCliColor.green(File.expand_path(RvmCliTools.envs[match].as_s), io)} ..."
+      io.puts "Using #{RvmCliColor.primary(match, io)} from #{RvmCliColor.primary(File.expand_path(RvmCliTools.envs[match].as_s), io)} ..."
       RvmCliFix.fix_wrapper_files
       RvmCliTools.set_default_version(version, io) if set_default
     else
-      io.puts "No version for #{RvmCliColor.red(version, io)} available! Run #{RvmCliColor.green("rvm list", io)} to show available versions."
+      io.puts "No version for #{RvmCliColor.red(version, io)} available! Run #{RvmCliColor.primary("rvm list", io)} to show available versions."
     end
   end
 
@@ -46,7 +46,7 @@ class RvmCliUse
     paths = paths.reject { |path| path.includes?("ProgramData\\rvm") || path.includes?("ProgramData/rvm") }
     unless paths.empty?
       io.puts "Found the following system rubies:"
-      io.puts paths.map { |path| " - #{RvmCliColor.green(path, io)}" }.join('\n')
+      io.puts paths.map { |path| " - #{RvmCliColor.primary(path, io)}" }.join('\n')
       io.puts
     end
     if path = paths.first?

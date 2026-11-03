@@ -29,9 +29,10 @@ module ColorFixtures
 end
 
 describe RvmCliColor do
-  it "uses the original ANSI green, red and yellow on terminals" do
+  it "uses Windows blue for primary highlights and green/red/yellow for status" do
     ColorFixtures.with_environment do
       io = ColorFixtures::Terminal.new
+      RvmCliColor.primary("version", io).should eq("\e[94mversion\e[39m")
       RvmCliColor.green("version", io).should eq("\e[32mversion\e[39m")
       RvmCliColor.red("error", io).should eq("\e[31merror\e[39m")
       RvmCliColor.yellow("warning", io).should eq("\e[33mwarning\e[39m")
@@ -40,8 +41,8 @@ describe RvmCliColor do
 
   it "detects the destination stream instead of global stdout/stderr" do
     ColorFixtures.with_environment do
-      RvmCliColor.green("version", IO::Memory.new).should eq("version")
-      RvmCliColor.green("version", ColorFixtures::Terminal.new).should contain("\e[32m")
+      RvmCliColor.primary("version", IO::Memory.new).should eq("version")
+      RvmCliColor.primary("version", ColorFixtures::Terminal.new).should contain("\e[94m")
     end
   end
 
@@ -64,24 +65,25 @@ describe RvmCliColor do
     end
   end
 
-  it "colors the logo and Ruby title red, 4 white, Windows blue and version green" do
+  it "colors the logo and Ruby title red, 4/version white and Windows blue" do
     ColorFixtures.with_environment do
       logo = RvmCliTools.logo(ColorFixtures::Terminal.new)
       logo.should match(/\e\[[0-9;]*91[0-9;]*m/)
       logo.should contain("\e[91;1mRuby Version Manager\e[39;22m")
       logo.should contain("\e[37;1m 4 \e[39;22m")
       logo.should contain("\e[94;1mWindows\e[39;22m")
-      logo.should contain("\e[32m#{RvmCliVersion.get_version}\e[39m")
+      logo.should contain("\n                \e[37m#{RvmCliVersion.get_version}\e[39m\n")
+      ColorFixtures.plain(logo).lines.last.should eq("                #{RvmCliVersion.get_version}")
       ColorFixtures.plain(logo).should eq(RvmCliTools.logo(IO::Memory.new))
     end
   end
 
-  it "keeps list markers and legends plain while coloring installed versions green" do
+  it "keeps list markers and legends plain while highlighting version names blue" do
     ColorFixtures.with_environment do
       Fixtures.with_home do
         io = ColorFixtures::Terminal.new
         RvmCliList.run_list(io)
-        io.to_s.should contain("=* \e[32mruby-3.2.6\e[39m")
+        io.to_s.should contain("=* \e[94mruby-3.2.6\e[39m")
         io.to_s.should contain("# => - current\n# =* - current && default")
         plain = IO::Memory.new
         RvmCliList.run_list(plain)
@@ -106,7 +108,7 @@ describe RvmCliColor do
     ColorFixtures.with_environment do
       io = ColorFixtures::Terminal.new
       RvmCliList.print_upgrade("ruby-3.2.6", "ruby-3.2.9", io)
-      io.to_s.should eq("\e[33mruby-3.2.6\e[39m >> \e[32mruby-3.2.9\e[39m\n")
+      io.to_s.should eq("\e[33mruby-3.2.6\e[39m >> \e[94mruby-3.2.9\e[39m\n")
       io.clear
       RvmCliList.print_upgrade("ruby-3.2.9", "ruby-3.2.9", io)
       io.to_s.should eq("\e[32mruby-3.2.9\e[39m >> (up to date)\n")
@@ -117,8 +119,8 @@ describe RvmCliColor do
     ColorFixtures.with_environment do
       io = ColorFixtures::Terminal.new
       RvmCliHelp.run_help(io)
-      io.to_s.should contain("\e[32madd <path>")
-      io.to_s.should contain("\e[32mrvm version\e[39m")
+      io.to_s.should contain("\e[94madd <path>")
+      io.to_s.should contain("\e[94mrvm version\e[39m")
       plain = IO::Memory.new
       RvmCliHelp.run_help(plain)
       ColorFixtures.plain(io.to_s).should eq(plain.to_s)
@@ -130,12 +132,12 @@ describe RvmCliColor do
       Fixtures.with_home do
         io = ColorFixtures::Terminal.new
         RvmCliConfig.run_proxy("proxy.example:1234", io)
-        io.to_s.should contain("\e[32mhttp://proxy.example:1234\e[39m")
+        io.to_s.should contain("\e[94mhttp://proxy.example:1234\e[39m")
         io.to_s.should contain("[\e[32menabled\e[39m]")
         RvmCliConfig.run_proxy("disable", io)
         io.to_s.should contain("[\e[31mdisabled\e[39m]")
         RvmCliConfig.print_config(io)
-        io.to_s.should contain("\e[32m#{RvmCliTools.rvm_config_path}\e[39m")
+        io.to_s.should contain("\e[94m#{RvmCliTools.rvm_config_path}\e[39m")
         RvmCliTools.read_rvm_config.should_not contain("\e[")
         RvmCliTools.config["proxy"]["hostname"].as_s.should eq("http://proxy.example:1234")
       end
@@ -148,14 +150,14 @@ describe RvmCliColor do
         io = ColorFixtures::Terminal.new
         Fixtures.add_command("ruby-3.1.5", "ruby.exe")
         RvmCliUse.run_use("3.1", true, io)
-        io.to_s.should contain("Using \e[32mruby-3.1.5\e[39m from \e[32m")
-        io.to_s.should contain("Set default \e[32mruby-3.1.5\e[39m")
+        io.to_s.should contain("Using \e[94mruby-3.1.5\e[39m from \e[94m")
+        io.to_s.should contain("Set default \e[94mruby-3.1.5\e[39m")
         RvmCliTools.get_current_version.should eq("ruby-3.1.5")
         RvmCliTools.get_default_version.should eq("ruby-3.1.5")
         io.clear
         RvmCliUse.run_use("99", io: io)
         io.to_s.should contain("\e[31mruby-99\e[39m")
-        io.to_s.should contain("\e[32mrvm list\e[39m")
+        io.to_s.should contain("\e[94mrvm list\e[39m")
       end
     end
   end
@@ -166,14 +168,14 @@ describe RvmCliColor do
       error = ColorFixtures::Terminal.new
       RvmCli.run(["use"], false, output, error).should eq(1)
       error.to_s.should contain("\e[31mNo version given.\e[39m")
-      error.to_s.should contain("\e[32mrvm use <version>\e[39m")
+      error.to_s.should contain("\e[94mrvm use <version>\e[39m")
       RvmCli.run(["unknown"], false, output, error).should eq(0)
       output.to_s.should contain("\e[31munknown\e[39m")
-      output.to_s.should contain("\e[32mhelp\e[39m")
+      output.to_s.should contain("\e[94mhelp\e[39m")
     end
   end
 
-  it "renders MSYS warnings yellow and installation removal details green/red" do
+  it "renders MSYS warnings yellow and installation removal details blue/red" do
     ColorFixtures.with_environment do
       Fixtures.with_home do |home|
         io = ColorFixtures::Terminal.new
@@ -183,7 +185,7 @@ describe RvmCliColor do
         path = RvmCliTools.envs["ruby-3.1.5"].as_s
         Dir.mkdir_p(path)
         RvmCliUninstall.run_uninstall("3.1.5", false, io)
-        io.to_s.should contain("Uninstalling \e[32mruby-3.1.5\e[39m from \e[31m")
+        io.to_s.should contain("Uninstalling \e[94mruby-3.1.5\e[39m from \e[31m")
         io.to_s.should contain("The environment \e[31mruby-3.1.5\e[39m")
       end
     end
@@ -199,7 +201,7 @@ describe RvmCliColor do
           status = Process.run(executable, ["list"], env: {"FORCE_COLOR" => force, "NO_COLOR" => no_color}, output: output, error: error)
           status.success?.should be_true, error.to_s
           output.to_s.includes?("\e[").should eq(colored)
-          output.to_s.should contain("\e[32mruby-3.2.6\e[39m") if colored
+          output.to_s.should contain("\e[94mruby-3.2.6\e[39m") if colored
         end
       end
     end

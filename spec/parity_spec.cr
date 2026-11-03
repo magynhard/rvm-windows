@@ -4,7 +4,7 @@ require "./spec_helper"
 # Node is a development-only dependency for this opt-in compatibility check.
 if reference = ENV["RVM_JS_REFERENCE"]?
   describe "JavaScript reference parity" do
-    it "matches the original Chalk colors for installed versions, data paths and proxy status" do
+    it "preserves original text/status colors while replacing primary Chalk green with Windows blue" do
       previous = %w(FORCE_COLOR NO_COLOR).to_h { |key| {key, ENV[key]?} }
       begin
         ENV["FORCE_COLOR"] = "1"
@@ -45,11 +45,11 @@ if reference = ENV["RVM_JS_REFERENCE"]?
           result = JSON.parse(output.to_s)
           io = IO::Memory.new
           RvmCliList.run_list(io)
-          io.to_s.should eq(result["list"].as_s)
-          io.to_s.should contain("\e[32m")
+          io.to_s.should eq(result["list"].as_s.gsub("\e[32m", "\e[94m"))
+          io.to_s.should contain("\e[94m")
           io.clear
           RvmCliConfig.print_data(io)
-          io.to_s.should eq(result["data"].as_s)
+          io.to_s.should eq(result["data"].as_s.gsub("\e[32m", "\e[94m"))
           io.clear
           RvmCliConfig.run_proxy(io: io)
           io.to_s.should eq(result["proxy"].as_s)

@@ -13,7 +13,7 @@ class RvmCliList
   end
 
   def self.run_list(io : IO = STDOUT)
-    RvmCliTools.versions.reverse_each { |version| io.puts "#{prefix(version)} #{RvmCliColor.green(version, io)}" }
+    RvmCliTools.versions.reverse_each { |version| io.puts "#{prefix(version)} #{RvmCliColor.primary(version, io)}" }
     legend(io)
   end
 
@@ -21,7 +21,7 @@ class RvmCliList
     RvmCliTools.versions.reverse_each do |version|
       path = RvmCliTools.envs[version].as_s
       description = RvmCliTools.capture(File.join(path, "bin", "ruby.exe"), ["--version"]).strip
-      io.puts "#{prefix(version)} #{RvmCliColor.green(version.ljust(14), io)} #{File.expand_path(path)}  #{description}"
+      io.puts "#{prefix(version)} #{RvmCliColor.primary(version.ljust(14), io)} #{File.expand_path(path)}  #{description}"
     end
     legend(io)
   end
@@ -29,7 +29,7 @@ class RvmCliList
   def self.has_valid_msys2_path(silent = false, io : IO = STDOUT) : Bool
     return false unless path = ENV["MSYS2_PATH"]?
     if File.file?(File.join(path, "usr", "bin", "msys-2.0.dll"))
-      io.puts "\nMSYS2_PATH found: #{RvmCliColor.green(path, io)} ...\nFilter for ruby version(s) without devkit ..." unless silent
+      io.puts "\nMSYS2_PATH found: #{RvmCliColor.primary(path, io)} ...\nFilter for ruby version(s) without devkit ..." unless silent
       true
     else
       io.puts RvmCliColor.yellow("MSYS2_PATH is set, but seems to be invalid: #{path} ... ignoring path ...", io) unless silent
@@ -46,7 +46,7 @@ class RvmCliList
     html = RvmCliTools.fetch_text(ARCHIVES_URL)
     parse_releases(html, has_valid_msys2_path(io: io))
   rescue ex
-    io.puts "#{RvmCliColor.red("Error retrieving releases from #{ARCHIVES_URL}", io)}\n\nAre you using a proxy? If yes, ensure you have configured a valid proxy with #{RvmCliColor.green("rvm config", io)}. See more information by running #{RvmCliColor.green("rvm help", io)}."
+    io.puts "#{RvmCliColor.red("Error retrieving releases from #{ARCHIVES_URL}", io)}\n\nAre you using a proxy? If yes, ensure you have configured a valid proxy with #{RvmCliColor.primary("rvm config", io)}. See more information by running #{RvmCliColor.primary("rvm help", io)}."
     raise ex
   end
 
@@ -101,7 +101,7 @@ class RvmCliList
 
   def self.print_upgrade(version : String, upgrade : String?, io : IO = STDOUT)
     current = upgrade == version ? RvmCliColor.green(version, io) : RvmCliColor.yellow(version, io)
-    target = upgrade == version ? "(up to date)" : RvmCliColor.green(upgrade || "", io)
+    target = upgrade == version ? "(up to date)" : RvmCliColor.primary(upgrade || "", io)
     io.puts "#{current} >> #{target}"
   end
 

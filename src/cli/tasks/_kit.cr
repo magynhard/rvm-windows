@@ -27,11 +27,11 @@ class RvmCliKit
     platform = RvmCliFix.get_ruby_platform_from_ruby_path(ruby_env_path)
     if dependencies = DEPENDENCIES[platform]?
       dependencies.each do |dependency|
-        io.puts "Installing pacman dependency #{RvmCliColor.green(dependency, io)} ..."
+        io.puts "Installing pacman dependency #{RvmCliColor.primary(dependency, io)} ..."
         install_pacman_dependency(dependency)
       end
       after_commands(platform, ruby_env_path, RvmCliTools.get_current_raw_version).each do |command|
-        io.puts "Running fix command #{RvmCliColor.green(command, io)} ..."
+        io.puts "Running fix command #{RvmCliColor.primary(command, io)} ..."
         RvmCliTools.run_shell(command)
       end
       io.puts "\nInstallation complete!"
@@ -52,12 +52,12 @@ class RvmCliKit
     if version.starts_with?("2.4.") || version.starts_with?("2.5.")
       old_version = RvmCliTools.get_current_version
       unless RvmCliTools.matching_version("ruby-2.6")
-        io.puts "Installing #{RvmCliColor.green("ruby-2.6.x", io)} to patch current #{RvmCliColor.green(old_version, io)} with its msys64 ... please wait ..."
+        io.puts "Installing #{RvmCliColor.primary("ruby-2.6.x", io)} to patch current #{RvmCliColor.primary(old_version, io)} with its msys64 ... please wait ..."
         RvmCliInstall.run_install("2.6", io: io)
         RvmCliUse.run_use(old_version, io: io)
       end
       matching = RvmCliTools.matching_version("ruby-2.6") || raise "Ruby 2.6 required for MSYS patch"
-      io.puts "Patch current version #{RvmCliColor.green(old_version, io)} with msys from #{RvmCliColor.green(matching, io)} ... please wait ..."
+      io.puts "Patch current version #{RvmCliColor.primary(old_version, io)} with msys from #{RvmCliColor.primary(matching, io)} ... please wait ..."
       source = File.join(RvmCliTools.envs[matching].as_s, "msys64")
       target = File.join(RvmCliTools.envs[old_version].as_s, "msys64")
       FileUtils.rm_rf(target)
