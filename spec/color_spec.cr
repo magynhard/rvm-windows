@@ -29,6 +29,15 @@ module ColorFixtures
 end
 
 describe RvmCliColor do
+  it "colors each upgrade usage form separately without coloring explanatory prose" do
+    ColorFixtures.with_environment do
+      output = IO::Memory.new
+      error = ColorFixtures::Terminal.new
+      RvmCli.run(["upgrade"], false, output, error).should eq(1)
+      error.to_s.should eq("\e[31mNo version given.\e[39m Run \e[94mrvm upgrade <version>\e[39m or \e[94mrvm upgrade <from_version> <to_version>\e[39m to upgrade an existing environment, for example: \e[94mrvm upgrade ruby-3.0\e[39m\n")
+    end
+  end
+
   it "uses Windows blue for primary highlights and green/red/yellow for status" do
     ColorFixtures.with_environment do
       io = ColorFixtures::Terminal.new

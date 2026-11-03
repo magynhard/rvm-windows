@@ -4,6 +4,52 @@ require "./spec_helper"
 # Node is a development-only dependency for this opt-in compatibility check.
 if reference = ENV["RVM_JS_REFERENCE"]?
   describe "JavaScript reference parity" do
+    it "matches original missing-version explanations and every help task description" do
+      source = <<-'JS'
+        const path = require('path');
+        const root = process.argv[1];
+        require(path.join(root, 'node_modules/chalk')).level = 0;
+        const definitions = {
+          install: ['_install', 'runInstall'],
+          upgrade: ['_upgrade', 'runUpgrade'],
+          kick: ['_kick', 'runKick'],
+          reinstall: ['_reinstall', 'runReinstall'],
+          uninstall: ['_uninstall', 'runUninstall'],
+          use: ['_use', 'runUse']
+        };
+        const originalError = console.error;
+        const originalExit = process.exit;
+        const messages = {};
+        for (const [command, [file, method]] of Object.entries(definitions)) {
+          const task = require(path.join(root, 'src/cli/tasks', file));
+          process.argv = ['node', 'rvm', command];
+          const lines = [];
+          const stopped = {code: null};
+          console.error = value => lines.push(String(value));
+          process.exit = code => { stopped.code = code; throw stopped; };
+          try { task[method](); }
+          catch (error) { if (error !== stopped) throw error; }
+          messages[command] = {status: stopped.code, error: lines.join('\n') + '\n'};
+        }
+        console.error = originalError;
+        process.exit = originalExit;
+        const Help = require(path.join(root, 'src/cli/tasks/_help'));
+        const tasks = Help.SECTIONS.help.flatMap(section =>
+          Array.isArray(section.content) ? section.content.filter(entry => entry.name) : []
+        ).map(entry => [entry.name, entry.alias, entry.summary]);
+        console.log(JSON.stringify({messages, tasks}));
+        JS
+      result = JSON.parse(RvmCliTools.capture("node", ["-e", source, File.expand_path(reference)]))
+      result["messages"].as_h.each do |command, expected|
+        output = IO::Memory.new
+        error = IO::Memory.new
+        RvmCli.run([command], false, output, error).should eq(expected["status"].as_i)
+        error.to_s.gsub(/\e\[[0-9;]*m/, "").should eq(expected["error"].as_s)
+        output.to_s.should eq("")
+      end
+      RvmCliHelp::TASKS.to_json.should eq(result["tasks"].to_json)
+    end
+
     it "preserves original text/status colors while replacing primary Chalk green with Windows blue" do
       previous = %w(FORCE_COLOR NO_COLOR).to_h { |key| {key, ENV[key]?} }
       begin

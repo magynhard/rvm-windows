@@ -4,7 +4,7 @@ require "../wrapper/*"
 class RvmCli
   def self.required(args : Array(String), command : String) : String
     value = args.first?
-    raise "No version given. Run rvm #{command} <version>, for example: rvm #{command} ruby-3.2.2" if value.nil? || value.empty?
+    raise RvmCliHelp.missing_version_message(command) if value.nil? || value.empty?
     value
   end
 
@@ -118,7 +118,7 @@ class RvmCli
       parameter = first.starts_with?("--") && RvmCliTools.starts_with_number(second) ? first : second
       RvmCliUse.run_use(version, parameter == "--default", io)
     else
-      RvmCliHelp.run_unknown_command(command.gsub("-", ""), io)
+      RvmCliHelp.run_unknown_command(command.starts_with?("-") ? command.gsub("-", "") : command, io)
     end
     0
   rescue ex

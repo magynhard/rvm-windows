@@ -3,7 +3,7 @@
 ## Automated checks performed locally (Windows x64 / Crystal 1.20.2)
 
 * Original JavaScript suite: 9 Jasmine specs passed, including live archives.
-* Crystal suite: 58 offline examples, 64 with all three optional checks enabled;
+* Crystal suite: 61 offline examples, 69 with all three optional checks enabled;
   all passed locally. Equivalent original cases plus isolated configuration,
   sessions, numeric version matching, project inheritance, wrapper naming,
   subprocess protocol, CLI dispatch, HTTP redirects/cache errors and proxy tests.
@@ -21,6 +21,10 @@
   and wrapper selection compared to the Crystal results, plus Chalk color
   comparisons with the intentional green-to-blue primary-color replacement.
   Semantic green/red status colors are retained.
+* Missing-version explanations for install, upgrade, kick, reinstall, uninstall
+  and use, plus every help task description, compared verbatim with the original.
+  Aliases, empty arguments, separately colored upgrade alternatives and the
+  complete upgrade explanation in development/static executables are covered.
 * ANSI palette, terminal/pipe detection, NO_COLOR/FORCE_COLOR, help alignment,
   color-free configuration/session writes and forced-color protocol safety tested.
 * Release/static executable built and package smoke-tested with a PATH containing

@@ -1,6 +1,45 @@
 require "./spec_helper"
 
 describe RvmCli do
+  it "preserves complete missing-version explanations for commands and aliases" do
+    aliases = {
+      "install"   => %w(install i),
+      "upgrade"   => %w(upgrade up),
+      "kick"      => %w(kick k),
+      "reinstall" => %w(reinstall ri),
+      "uninstall" => %w(uninstall ui remove rem delete del),
+      "use"       => %w(use u),
+    }
+    aliases.each do |command, names|
+      expected = if command == "upgrade"
+                   "No version given. Run rvm upgrade <version> or rvm upgrade <from_version> <to_version> to upgrade an existing environment, for example: rvm upgrade ruby-3.0\n"
+                 else
+                   "No version given. Run rvm #{command} <version>, for example: rvm #{command} ruby-3.2.2\n"
+                 end
+      names.each do |name|
+        [[name], [name, ""]].each do |args|
+          output = IO::Memory.new
+          error = IO::Memory.new
+          RvmCli.run(args, false, output, error).should eq(1)
+          output.to_s.should eq("")
+          error.to_s.should eq(expected)
+        end
+      end
+    end
+  end
+
+  it "prints both upgrade forms and the original example in the compiled executable" do
+    Fixtures.with_home do
+      %w(upgrade up).each do |command|
+        output = IO::Memory.new
+        error = IO::Memory.new
+        status = Process.run(Fixtures.executable, [command], env: {"NO_COLOR" => "1"}, output: output, error: error)
+        status.exit_code.should eq(1)
+        error.to_s.should eq("No version given. Run rvm upgrade <version> or rvm upgrade <from_version> <to_version> to upgrade an existing environment, for example: rvm upgrade ruby-3.0\n")
+      end
+    end
+  end
+
   it "dispatches non-mutating commands and their aliases" do
     Fixtures.with_home do
       [%w(version v --version -v), %w(current c), %w(list l ls)].each do |aliases|
@@ -42,6 +81,7 @@ describe RvmCli do
       io = IO::Memory.new
       RvmCli.run(["not-a-task"], false, io).should eq(0)
       io.to_s.should contain("Invalid task")
+      io.to_s.should contain("The given task not-a-task is invalid.")
       # Preserve dispatch precedence: k is kick, not kit.
       error.clear
       RvmCli.run(["k"], false, IO::Memory.new, error).should eq(1)
@@ -53,6 +93,7 @@ describe RvmCli do
     io = IO::Memory.new
     RvmCli.run(["help"], false, io).should eq(0)
     RvmCliHelp::TASKS.each { |name, _, _| io.to_s.should contain(name) }
+    io.to_s.should contain("Install a bunch of widely used x64 dependencies automatically to the current ruby environment, which are needed to build native gems like postgresql, mysql2, ...")
   end
 
   it "removes only the explicitly selected temporary installation" do

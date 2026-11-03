@@ -38,7 +38,8 @@ module RvmCliColor
 
   def self.error(message : String, io : IO = STDERR) : String
     if match = message.match(/\A(No version given\.) Run (.+), for example: (.+)\z/)
-      "#{red(match[1], io)} Run #{primary(match[2], io)}, for example: #{primary(match[3], io)}"
+      usage = match[2].gsub(/rvm [a-z]+(?: <[^>]+>)+/) { |command| primary(command, io) }
+      "#{red(match[1], io)} Run #{usage}, for example: #{primary(match[3], io)}"
     elsif message.starts_with?("No system ruby found!")
       message.sub("No system ruby found!", red("No system ruby found!", io))
         .sub("rvm add <path>", primary("rvm add <path>", io))

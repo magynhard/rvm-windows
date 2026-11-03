@@ -3,6 +3,17 @@ require "./support/info_fixture"
 
 if package_root = ENV["RVM_PACKAGE_ROOT"]?
   describe "static release package" do
+    it "preserves the complete missing-parameter explanation for upgrade" do
+      Fixtures.with_home do
+        output = IO::Memory.new
+        error = IO::Memory.new
+        status = Process.run(File.join(package_root, "bin/rvm.exe"), ["upgrade"],
+          env: {"RVM_ROOT" => package_root, "NO_COLOR" => "1"}, output: output, error: error)
+        status.exit_code.should eq(1)
+        error.to_s.should eq("No version given. Run rvm upgrade <version> or rvm upgrade <from_version> <to_version> to upgrade an existing environment, for example: rvm upgrade ruby-3.0\n")
+      end
+    end
+
     it "runs info using CMD built-ins and a quoted Ruby installation path" do
       InfoFixtures.with_installation do
         output = IO::Memory.new

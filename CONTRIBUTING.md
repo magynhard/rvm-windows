@@ -95,8 +95,10 @@ crystal spec
 
 The live check retrieves the RubyInstaller archive. The differential check
 requires Node.js and the original repository with its dependencies installed;
-it compares the original version resolution, list output and wrapper selection
-with the Crystal implementation.
+it compares the original version resolution, list output, wrapper selection,
+missing-parameter explanations and all help task descriptions with the Crystal
+implementation. Preserve complete explanations and examples; only adapt content
+where the Crystal distribution or a deliberately changed behavior requires it.
 
 Remove these environment variables to return to the default offline suite.
 

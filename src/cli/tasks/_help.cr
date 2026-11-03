@@ -24,7 +24,7 @@ class RvmCliHelp
     {"init", "", "Initialize RVM by adding it to the PATH environment variable"},
     {"install <version>", "i <version>", "Install a specific ruby version"},
     {"kick <version>", "", "Only remove given ruby environment from the RVM list without deleting any ruby environment."},
-    {"kit", "k", "Install common x64 dependencies for native gems (postgresql, mysql2, ...)"},
+    {"kit", "k", "Install a bunch of widely used x64 dependencies automatically to the current ruby environment, which are needed to build native gems like postgresql, mysql2, ..."},
     {"list", "l ls", "List all installed ruby versions managed by RVM"},
     {"list all", "la", "List all installable ruby versions"},
     {"list known", "lk", "List all installable ruby versions with latest patch version"},
@@ -42,6 +42,15 @@ class RvmCliHelp
     {"use --default <version>", "u --default <version>", "Switch to specified ruby version and set it as default"},
     {"version", "v", "Display RVM build version"},
   ]
+
+  def self.missing_version_message(command : String) : String
+    usage, example = if command == "upgrade"
+                       {"rvm upgrade <version> or rvm upgrade <from_version> <to_version> to upgrade an existing environment", "rvm upgrade ruby-3.0"}
+                     else
+                       {"rvm #{command} <version>", "rvm #{command} ruby-3.2.2"}
+                     end
+    "No version given. Run #{usage}, for example: #{example}"
+  end
 
   def self.run_help(io : IO = STDOUT)
     io.puts "\n#{RvmCliColor.style("RVM CLI", :default, io, bold: true)}\n\n  The RVM CLI (rvm) provides several interactive tasks to ensure programmers happyness when working with several ruby environments on windows. 😊"
