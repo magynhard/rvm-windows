@@ -148,6 +148,17 @@ describe RvmCli do
     commands.join('\n').should contain("gem install nokogiri -v 1.10.10 ")
     commands.join('\n').should contain("msys64/mingw64")
   end
+
+  it "uses native Nokogiri on UCRT without changing legacy pins or the other source builds" do
+    commands = RvmCliKit.after_commands("x64-mingw-ucrt", "C:/Ruby With Spaces", "3.4.12")
+    commands.last.should eq("gem install nokogiri --platform=x64-mingw-ucrt")
+    commands.first(3).each do |command|
+      command.should contain("--platform=ruby")
+      command.should contain(%q(--with-mysql-dir="C:/Ruby With Spaces/msys64/ucrt64"))
+    end
+    legacy = RvmCliKit.after_commands("x64-mingw32", "C:/ruby", "2.7.8")
+    legacy.last.should contain("gem install nokogiri -v 1.15.6 --platform=ruby")
+  end
 end
 
 describe RvmCliGet do

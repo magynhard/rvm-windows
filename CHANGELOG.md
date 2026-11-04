@@ -1,4 +1,5 @@
 # 1.1.1-develop.1 - 2026-11-04
+- Use the native Nokogiri gem for UCRT Ruby in `rvm kit`, avoiding its bundled libiconv source-build failure in Ruby paths containing spaces; retain legacy pins.
 - Consolidate the native implementation into the original rvm-windows repository, preserving both Git histories and the JavaScript implementation on legacy-js.
 - Point updates, npm metadata and documentation to magynhard/rvm-windows; keep existing JavaScript tags and releases unchanged.
 - Prepare opt-in npm testing under the develop tag; leave latest unchanged.

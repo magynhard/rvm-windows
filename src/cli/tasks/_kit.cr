@@ -15,7 +15,13 @@ class RvmCliKit
     directory = platform == "x64-mingw-ucrt" ? "ucrt64" : "mingw64"
     %w(mysql2 pg eventmachine nokogiri).map do |gem|
       pin = LATEST_SUPPORTED_VERSIONS.find { |version, _| raw_version.starts_with?(version) }.try(&.[1][gem]?)
-      "gem install #{gem} #{pin ? "-v #{pin} " : ""}--platform=ruby -- --with-mysql-dir=\"#{RvmCliTools.normalize_path(ruby_env_path)}/msys64/#{directory}\""
+      if gem == "nokogiri" && platform == "x64-mingw-ucrt"
+        # The native gem bundles its libraries. Forcing a source build invokes
+        # libiconv/libtool, which cannot reliably handle Ruby paths with spaces.
+        "gem install nokogiri --platform=#{platform}"
+      else
+        "gem install #{gem} #{pin ? "-v #{pin} " : ""}--platform=ruby -- --with-mysql-dir=\"#{RvmCliTools.normalize_path(ruby_env_path)}/msys64/#{directory}\""
+      end
     end
   end
 

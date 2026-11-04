@@ -315,6 +315,14 @@ rvm fix
 Then restart your terminal. If RVM reports that no session was found, ensure that you are using the supplied CMD/PowerShell launcher, not `bin/rvm.exe` directly.
 
 <a name="trouble_proxy"></a>
+### Native gem installation and long directory paths
+
+Some RubyGems and MSYS2 tools still encounter Windows path-length limits. A deeply
+nested Ruby installation can fail while extracting a gem even though RVM itself
+preserves long PATH environment variables. Prefer a short data directory, such as
+the default `C:\ProgramData\rvm`, before installing Ruby environments. Changing
+the configured data directory does not relocate existing Ruby installations.
+
 ### Using behind a proxy
 
 RVM supports proxies with Basic Authentication. Configure your proxy using the following format:
