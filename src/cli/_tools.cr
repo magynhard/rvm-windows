@@ -6,6 +6,14 @@ require "./tasks/_version"
 require "./_color"
 
 class RvmCliTools
+  class HttpError < Exception
+    getter status_code : Int32
+
+    def initialize(@status_code : Int32, url : String)
+      super("HTTP #{@status_code} retrieving #{url}")
+    end
+  end
+
   # These overrides are also passed to subprocesses by the isolated test harness.
   # Without them, all paths use the established installation layout.
   def self.home_path : String
@@ -306,7 +314,7 @@ class RvmCliTools
           location = response.headers["Location"]? || raise "Redirect without Location"
           fetch_with_proxy(uri.resolve(location).to_s, redirects - 1, &block)
         else
-          raise "HTTP #{response.status_code} retrieving #{url}" unless response.success?
+          raise HttpError.new(response.status_code, url) unless response.success?
           block.call(response)
         end
       end

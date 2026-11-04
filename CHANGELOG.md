@@ -1,4 +1,5 @@
 # 1.1.1-develop.1 - 2026-11-04
+- Make `rvm get` explain an empty stable GitHub release channel without failing; retain errors for failed downloads and other HTTP responses.
 - Use the native Nokogiri gem for UCRT Ruby in `rvm kit`, avoiding its bundled libiconv source-build failure in Ruby paths containing spaces; retain legacy pins.
 - Consolidate the native implementation into the original rvm-windows repository, preserving both Git histories and the JavaScript implementation on legacy-js.
 - Point updates, npm metadata and documentation to magynhard/rvm-windows; keep existing JavaScript tags and releases unchanged.

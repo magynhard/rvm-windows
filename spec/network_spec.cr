@@ -10,6 +10,8 @@ module NetworkFixtures
         context.response.headers["Location"] = "/payload"
       when "/failure"
         context.response.status_code = 500
+      when "/missing"
+        context.response.status_code = 404
       else
         context.response.print "installer\u0000bytes"
       end
@@ -25,6 +27,26 @@ module NetworkFixtures
 end
 
 describe "HTTP transport" do
+  it "treats a missing latest release as a no-op without hiding other HTTP failures" do
+    Fixtures.with_home do |home|
+      NetworkFixtures.serve do |url|
+        output = IO::Memory.new
+        RvmCliGet.run_get(output, "#{url}/missing")
+        output.to_s.should contain("No stable GitHub release was found")
+        output.to_s.should contain("rvm-windows@develop")
+        File.exists?(File.join(RvmCliTools.get_rvm_data_dir, "downloads")).should be_false
+        expect_raises(RvmCliTools::HttpError, /HTTP 500/) do
+          RvmCliGet.run_get(IO::Memory.new, "#{url}/failure")
+        end
+        # A missing installer is still an error, not an empty release channel.
+        expect_raises(RvmCliTools::HttpError, /HTTP 404/) do
+          RvmCliInstall.download("#{url}/missing", File.join(home, "missing.exe"))
+        end
+        File.exists?(File.join(home, "missing.exe")).should be_false
+      end
+    end
+  end
+
   it "streams redirects into the download cache and never caches HTTP errors" do
     Fixtures.with_home do |home|
       NetworkFixtures.serve do |url|

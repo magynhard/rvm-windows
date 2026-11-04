@@ -9,11 +9,17 @@ class RvmCliGet
     SemanticVersion.parse(release_version) > SemanticVersion.parse(current_version)
   end
 
-  def self.run_get(io : IO = STDOUT)
+  def self.run_get(io : IO = STDOUT, latest_url : String = "https://api.github.com/repos/#{REPOSITORY}/releases/latest")
     old_version = RvmCliVersion.get_version
     io.puts "Current version of rvm-windows is #{RvmCliColor.primary(RvmCliVersion.get_full_version, io)}."
     io.puts "Updating to its latest version ... please wait ..."
-    release = JSON.parse(RvmCliTools.fetch_text("https://api.github.com/repos/#{REPOSITORY}/releases/latest"))
+    release = begin
+      JSON.parse(RvmCliTools.fetch_text(latest_url))
+    rescue ex : RvmCliTools::HttpError
+      raise ex unless ex.status_code == 404
+      io.puts "No stable GitHub release was found. For develop updates, install rvm-windows@develop explicitly with npm or use a newer setup."
+      return
+    end
     new_version = release["tag_name"].as_s.lchop('v')
     unless release_is_newer?(new_version, old_version)
       if SemanticVersion.parse(new_version) == SemanticVersion.parse(old_version)

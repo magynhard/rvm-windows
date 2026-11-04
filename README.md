@@ -267,6 +267,9 @@ rvm get
 
 This downloads the latest published release setup and starts the update after the command exits. Restart your terminal after upgrading.
 
+If no stable GitHub release exists yet, `rvm get` explains that the stable channel
+is empty and does not download anything. Develop updates remain explicitly opt-in.
+
 ### Existing installations
 
 Existing configuration, session files and Ruby environments remain compatible; you do not need to reinstall your Rubies.
