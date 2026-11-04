@@ -1,11 +1,12 @@
 require "../_tools"
 require "./_install"
+require "semantic_version"
 
 class RvmCliGet
   REPOSITORY = "magynhard/rvm-windows.cr"
 
   def self.release_is_newer?(release_version : String, current_version : String) : Bool
-    RvmCliTools.version_sort(release_version, current_version) > 0
+    SemanticVersion.parse(release_version) > SemanticVersion.parse(current_version)
   end
 
   def self.run_get(io : IO = STDOUT)
@@ -15,8 +16,7 @@ class RvmCliGet
     release = JSON.parse(RvmCliTools.fetch_text("https://api.github.com/repos/#{REPOSITORY}/releases/latest"))
     new_version = release["tag_name"].as_s.lchop('v')
     unless release_is_newer?(new_version, old_version)
-      comparison = RvmCliTools.version_sort(new_version, old_version)
-      if comparison == 0
+      if SemanticVersion.parse(new_version) == SemanticVersion.parse(old_version)
         io.puts "Nothing to do. rvm-windows is already up to date!"
       else
         io.puts "Nothing to do. Current rvm-windows version #{old_version} is newer than the latest release #{new_version}."

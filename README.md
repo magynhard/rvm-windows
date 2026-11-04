@@ -229,14 +229,16 @@ All published versions are available on the [Releases page](https://github.com/m
 
 ### npm alternative
 
-Starting with version 1.1.1, the npm package installs the same native application:
+The native npm bridge is currently available only as an opt-in develop prerelease:
 
 ```powershell
-npm install -g rvm-windows@latest
+npm install -g rvm-windows@develop
 ```
 
-Open a new terminal after installation. Subsequent updates can use
-`npm update -g rvm-windows`, `rvm get`, or setup. npm is required only for this
+The npm `latest` tag remains on the existing stable release. To update the test
+channel, repeat the explicit `@develop` installation or use a newer test setup.
+`rvm get` checks stable GitHub releases, not develop prereleases.
+Open a new terminal after installation. npm is required only for this
 distribution route, not for running the native application. The small npm bridge
 remains installed so npm can deliver future updates; it does not contain a second
 RVM implementation. A newer native installation is not downgraded by an older bridge.

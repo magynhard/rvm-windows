@@ -1,17 +1,22 @@
 require "yaml"
 require "json"
+require "semantic_version"
 
 # Deliberately local-only. Pushing a tag and publishing a release are explicit
 # maintainer actions; the workflow creates only a draft release.
 root = File.expand_path("..", __DIR__)
 Dir.cd(root) do
   abort "Usage: crystal run scripts/release.cr -- <new-version>" unless version = ARGV.first?
-  abort "Invalid version" unless version.matches?(/\A\d+\.\d+\.\d+\z/)
+  parsed_version = begin
+    SemanticVersion.parse(version)
+  rescue ArgumentError
+    abort "Invalid version"
+  end
   manifest = File.read("shard.yml")
   old_version = YAML.parse(manifest)["version"].as_s
   npm_manifest = JSON.parse(File.read("npm/package.json"))
   abort "npm/package.json and shard.yml versions differ" unless npm_manifest["version"].as_s == old_version
-  abort "Version must increase" unless version.split('.').map(&.to_i) > old_version.split('.').map(&.to_i)
+  abort "Version must increase" unless parsed_version > SemanticVersion.parse(old_version)
   date = Time.utc.to_s("%F")
   abort "CHANGELOG.md needs '# #{version} - #{date}'" unless File.read("CHANGELOG.md").matches?(/^#\s+#{Regex.escape(version)}\s*-\s*#{date}/m)
   output = IO::Memory.new

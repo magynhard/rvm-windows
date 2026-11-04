@@ -4,17 +4,20 @@ Unicode true
 !include "x64.nsh"
 
 !ifndef VERSION
-  !define VERSION "1.1.1"
+  !define VERSION "1.1.1-develop.1"
+!endif
+!ifndef FILE_VERSION
+  !define FILE_VERSION "1.1.1.0"
 !endif
 !ifndef PACKAGE_DIR
   !define PACKAGE_DIR "..\dist\rvm-windows-${VERSION}-windows-x64"
 !endif
 
 !define PUBLISHER "Matth${U+00E4}us J. N. Beyrle"
-VIProductVersion "${VERSION}.0"
+VIProductVersion "${FILE_VERSION}"
 VIAddVersionKey /LANG=0 "ProductName" "rvm-windows"
 VIAddVersionKey /LANG=0 "ProductVersion" "${VERSION}"
-VIAddVersionKey /LANG=0 "FileVersion" "${VERSION}.0"
+VIAddVersionKey /LANG=0 "FileVersion" "${FILE_VERSION}"
 VIAddVersionKey /LANG=0 "FileDescription" "Ruby Version Manager for Windows Setup"
 VIAddVersionKey /LANG=0 "CompanyName" "${PUBLISHER}"
 VIAddVersionKey /LANG=0 "LegalCopyright" "Copyright (c) 2024 ${PUBLISHER}"

@@ -156,4 +156,12 @@ describe RvmCliGet do
     RvmCliGet.release_is_newer?("1.1.1", "1.1.1").should be_false
     RvmCliGet.release_is_newer?("1.1.2", "1.1.1").should be_true
   end
+
+  it "orders develop releases numerically and allows updating to the final release" do
+    RvmCliGet.release_is_newer?("1.1.1", "1.1.1-develop.1").should be_true
+    RvmCliGet.release_is_newer?("1.1.1-develop.10", "1.1.1-develop.2").should be_true
+    RvmCliGet.release_is_newer?("1.1.1-develop.1", "1.1.1").should be_false
+    RvmCliGet.release_is_newer?("1.1.0", "1.1.1-develop.1").should be_false
+    RvmCliGet.release_is_newer?("1.1.1-develop.1", "1.1.1-develop.1").should be_false
+  end
 end

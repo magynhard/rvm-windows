@@ -3,6 +3,34 @@ param(
     [switch]$Preview,
     [switch]$Manual
 )
+function Compare-RvmVersion([string]$Left, [string]$Right) {
+    $pattern = '^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?(?:\+[0-9A-Za-z.-]+)?$'
+    $a = [regex]::Match($Left, $pattern)
+    $b = [regex]::Match($Right, $pattern)
+    if (-not $a.Success -or -not $b.Success) { throw 'Invalid RVM version.' }
+    $core = ([version]($a.Groups[1..3].Value -join '.')).CompareTo([version]($b.Groups[1..3].Value -join '.'))
+    if ($core -ne 0) { return $core }
+    $ap = $a.Groups[4].Value
+    $bp = $b.Groups[4].Value
+    if (-not $ap -and -not $bp) { return 0 }
+    if (-not $ap) { return 1 }
+    if (-not $bp) { return -1 }
+    $aa = $ap.Split('.')
+    $bb = $bp.Split('.')
+    for ($i = 0; $i -lt [Math]::Min($aa.Count, $bb.Count); $i++) {
+        $an = $aa[$i] -match '^\d+$'
+        $bn = $bb[$i] -match '^\d+$'
+        if ($an -and $bn) {
+            $comparison = $aa[$i].Length.CompareTo($bb[$i].Length)
+            if ($comparison -eq 0) { $comparison = [string]::CompareOrdinal($aa[$i], $bb[$i]) }
+        } elseif ($an) { $comparison = -1
+        } elseif ($bn) { $comparison = 1
+        } else { $comparison = [string]::CompareOrdinal($aa[$i], $bb[$i]) }
+        if ($comparison -ne 0) { return $comparison }
+    }
+    return $aa.Count.CompareTo($bb.Count)
+}
+
 $ErrorActionPreference = 'Stop'
 if (-not $Manual -and $env:npm_config_global -ne 'true') {
     throw 'RVM is a per-user Windows application. Use npm install -g rvm-windows, or run install.ps1 -Manual.'
@@ -26,14 +54,13 @@ if ($Preview) {
     exit 0
 }
 $native = Join-Path $InstallRoot 'bin/rvm.exe'
-$packageVersion = [version](Get-Content -LiteralPath (Join-Path $PSScriptRoot 'package.json') -Raw -Encoding UTF8 | ConvertFrom-Json).version
+$packageVersion = [string](Get-Content -LiteralPath (Join-Path $PSScriptRoot 'package.json') -Raw -Encoding UTF8 | ConvertFrom-Json).version
 $keepNewer = $false
 if (Test-Path -LiteralPath $native -PathType Leaf) {
     try {
         $output = @(& $native --internal-version 2>$null)
-        $installedVersion = $null
-        if ($LASTEXITCODE -eq 0 -and $output.Count -eq 1 -and [version]::TryParse([string]$output[0], [ref]$installedVersion)) {
-            $keepNewer = $installedVersion -gt $packageVersion
+        if ($LASTEXITCODE -eq 0 -and $output.Count -eq 1) {
+            $keepNewer = (Compare-RvmVersion ([string]$output[0]) $packageVersion) -gt 0
         }
     } catch { $keepNewer = $false }
 }

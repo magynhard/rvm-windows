@@ -20,7 +20,7 @@ class RvmCliInit
     root = RvmCliTools.rvm_root_path
     script = File.join(root, "src/tools/path/package_path.ps1")
     RvmCliTools.capture("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script,
-                                             "-InstallRoot", root, "-WrapperPath", wrapper, "-WrapperOnly"])
+                                           "-InstallRoot", root, "-WrapperPath", wrapper, "-WrapperOnly"])
     io.puts "Added path successfully!" unless silent
   rescue ex
     io.puts "Error when adding path: #{ex.message}" unless silent

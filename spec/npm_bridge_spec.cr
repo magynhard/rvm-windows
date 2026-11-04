@@ -51,6 +51,20 @@ describe "npm installation bridge" do
     manifest["cpu"].as_a.map(&.as_s).should eq(["x64"])
     manifest["bin"]["rvm"].as_s.should eq("rvm.cmd")
     manifest["dependencies"]?.should be_nil
+    manifest["publishConfig"]["tag"].as_s.should eq("develop")
+  end
+
+  it "compares native and bridge prerelease versions without installing anything" do
+    script = File.read(File.expand_path("../npm/install.ps1", __DIR__))
+    comparator = script.split("function Compare-RvmVersion", 2)[1].split("$ErrorActionPreference", 2)[0]
+    command = "function Compare-RvmVersion#{comparator}\n" +
+              "Compare-RvmVersion '1.1.1' '1.1.1-develop.1'; " +
+              "Compare-RvmVersion '1.1.1-develop.10' '1.1.1-develop.2'; " +
+              "Compare-RvmVersion '1.1.1-develop.1' '1.1.1'; " +
+              "Compare-RvmVersion '1.1.1-develop.1' '1.1.1-develop.1'; " +
+              "Compare-RvmVersion '9.0.0' '1.1.1-develop.1'"
+    result = RvmCliTools.capture("powershell.exe", ["-NoProfile", "-Command", command]).lines.map(&.strip.to_i)
+    result.map { |value| value <=> 0 }.should eq([1, 1, -1, 0, 1])
   end
 
   it "previews custom Unicode setup paths without installing or modifying launchers" do

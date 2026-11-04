@@ -1,4 +1,9 @@
-# 1.1.1 - 2026-11-03
+# 1.1.1-develop.1 - 2026-11-04
+- Prepare opt-in npm testing under the develop tag; leave latest unchanged.
+- Support prerelease versions in self-update, the npm bridge, release tooling and Windows installer metadata.
+- Mark GitHub prerelease drafts explicitly in CI.
+- Correct CLI help shortcuts, preserve long PATH values during init and keep sessions across boot-time rounding boundaries.
+- Fix Crystal formatting required by CI.
 - Add an npm installation bridge for native setup and updates.
 - Isolate legacy installation discovery, wrapper rollback and deferred package cleanup in a removable migration class.
 - Preserve configuration, sessions, Ruby installations and caches during migration.

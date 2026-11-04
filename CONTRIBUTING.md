@@ -136,10 +136,10 @@ $env:MAKENSIS = 'C:\Program Files (x86)\NSIS\makensis.exe'
 crystal run scripts/package.cr
 ```
 
-For version 1.1.1, output is
-`dist/rvm-windows-1.1.1-windows-x64.zip` and, with NSIS installed,
-`dist/rvm-windows-1.1.1-windows-x64-setup.exe` plus the npm bridge
-`dist/rvm-windows-1.1.1.tgz`. Building the latter also requires npm on PATH;
+For version 1.1.1-develop.1, output is
+`dist/rvm-windows-1.1.1-develop.1-windows-x64.zip` and, with NSIS installed,
+`dist/rvm-windows-1.1.1-develop.1-windows-x64-setup.exe` plus the npm bridge
+`dist/rvm-windows-1.1.1-develop.1.tgz`. Building the latter also requires npm on PATH;
 `npm pack` never publishes anything.
 
 The per-user NSIS setup supports installing over the same application directory.
@@ -165,7 +165,7 @@ Validate the full wait/download/replace/reinitialize flow on a disposable machin
 Add and commit a dated changelog entry, then run:
 
 ```powershell
-crystal run scripts/release.cr -- 1.1.1
+crystal run scripts/release.cr -- 1.1.1-develop.2
 ```
 
 This tests, bumps the manifest, commits and tags **locally only**. After review,
@@ -210,9 +210,15 @@ If setup was interrupted before commit, run the installed `bin/rvm.exe
 retrying setup. This restores owned wrappers, not arbitrary configuration edits.
 
 For an npm release, review the `.tgz` and test with a temporary prefix first.
-Publish explicitly using `npm publish dist/rvm-windows-1.1.1.tgz --access public`
+Publish explicitly using `npm publish dist/rvm-windows-1.1.1-develop.1.tgz --access public --tag develop`
 with an authorised npm account. Neither packaging nor tag CI publishes to npm.
 Do not replace existing tags or published package versions; publish a new version.
+
+Develop packages use prerelease versions and `publishConfig.tag` is `develop` as
+a safeguard. Verify npm's `latest` tag before and after publishing: it must remain
+unchanged. Testers explicitly install `rvm-windows@develop`. GitHub test releases
+must be marked as prereleases; do not promote either channel to stable yet.
+Code signing is a follow-up after manual installer and npm acceptance.
 
 ### Windows publisher identity and signing
 

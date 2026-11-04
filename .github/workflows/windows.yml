@@ -71,5 +71,7 @@ jobs:
           $version = (Select-String -Path shard.yml -Pattern '^version: (.+)$').Matches[0].Groups[1].Value.Trim()
           if ($env:GITHUB_REF_NAME -ne "v$version") { throw 'Tag does not match shard.yml version' }
           $assets = (Get-ChildItem dist -File).FullName
-          gh release create $env:GITHUB_REF_NAME --draft --verify-tag --generate-notes @assets
+          $releaseArgs = @('release', 'create', $env:GITHUB_REF_NAME, '--draft', '--verify-tag', '--generate-notes')
+          if ($version.Contains('-')) { $releaseArgs += '--prerelease' }
+          gh @releaseArgs @assets
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
