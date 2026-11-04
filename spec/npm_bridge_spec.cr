@@ -75,10 +75,15 @@ describe "npm installation bridge" do
       FileUtils.cp(File.expand_path("../npm/install.ps1", __DIR__), script)
       target = File.join(home, "Matthäus Native")
       result = JSON.parse(RvmCliTools.capture("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script, "-Manual", "-Preview", "-InstallRoot", target]))
-      result["installRoot"].as_s.should eq(target)
-      result["arguments"].as_s.should eq("/S /NPMBRIDGE /D=#{target}")
+      install_root = result["installRoot"].as_s
+      # PowerShell/.NET may expand the runner's 8.3 TEMP alias (RUNNER~1).
+      # The target does not exist in preview mode, so resolve only its parent.
+      File.same?(File.dirname(install_root), home).should be_true
+      File.basename(install_root).should eq("Matthäus Native")
+      result["arguments"].as_s.should eq("/S /NPMBRIDGE /D=#{install_root}")
       File.exists?(File.join(root, "install-root.txt")).should be_false
       File.exists?(target).should be_false
+      File.exists?(install_root).should be_false
     end
   end
 
@@ -86,6 +91,10 @@ describe "npm installation bridge" do
     it "updates a legacy global package and preserves sessions through real npm CMD and PowerShell shims" do
       Fixtures.with_home do |home|
         prefix = File.join(home, "Matthäus npm Prefix")
+        # npm resolves short prefixes before generating shims. Give the frozen
+        # legacy updater the same spelling so it does not insert duplicate lines.
+        prefix = RvmCliTools.capture("powershell.exe", ["-NoProfile", "-Command",
+                                                        "[IO.Path]::GetFullPath('#{prefix.gsub("'", "''")}')"]).strip
         legacy = File.join(home, "legacy-source")
         Dir.mkdir_p(File.join(legacy, "src/cli"))
         File.write(File.join(legacy, "package.json"), %({"name":"rvm-windows","version":"1.0.8","main":"src/cli/cli.js","bin":{"rvm":"src/cli/cli.js"}}))
@@ -109,8 +118,9 @@ describe "npm installation bridge" do
         output.to_s.should contain("Legacy update finalisation completed")
         package = File.join(prefix, "node_modules/rvm-windows")
         File.exists?(File.join(package, "src/cli/cli.js")).should be_false
-        File.read(File.join(package, "install-root.txt")).strip.should eq(native)
-        JSON.parse(File.read(args_file)).as_a.map(&.as_s).join(' ').should eq("/S /NPMBRIDGE /D=#{native}")
+        installed_root = File.read(File.join(package, "install-root.txt")).strip
+        File.same?(installed_root, native).should be_true
+        JSON.parse(File.read(args_file)).as_a.map(&.as_s).join(' ').should eq("/S /NPMBRIDGE /D=#{installed_root}")
 
         # An old `rvm get` finishes by reading the replacement manifest and
         # prepending these helper paths to npm shims. Keep those paths valid.
