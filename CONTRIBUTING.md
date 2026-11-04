@@ -212,7 +212,7 @@ If setup was interrupted before commit, run the installed `bin/rvm.exe
 retrying setup. This restores owned wrappers, not arbitrary configuration edits.
 
 For an npm release, review the `.tgz` and test with a temporary prefix first.
-Publish explicitly using `npm publish dist/rvm-windows-1.1.1-develop.1.tgz --access public --tag develop`
+Publish explicitly using `npm publish ./dist/rvm-windows-1.1.1-develop.1.tgz --access public --tag develop`
 with an authorised npm account. Neither packaging nor tag CI publishes to npm.
 Do not replace existing tags or published package versions; publish a new version.
 
