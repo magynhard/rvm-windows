@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <title>RVM for Windows</title>
+  <desc>A faceted red ruby and a blue four-pane window on a rounded midnight-blue square.</desc>
+  <defs>
+    <linearGradient id="background" x2="0.8" y2="1">
+      <stop stop-color="#182c46"/>
+      <stop offset="1" stop-color="#091321"/>
+    </linearGradient>
+    <linearGradient id="ruby" x2="0.7" y2="1">
+      <stop stop-color="#ff6171"/>
+      <stop offset="1" stop-color="#c41439"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="240" height="240" rx="48" fill="url(#background)"/>
+  <rect x="9" y="9" width="238" height="238" rx="47" fill="none" stroke="#416080" stroke-opacity=".5" stroke-width="2"/>
+  <path d="M64 48H176L216 100 120 204 24 100Z" fill="url(#ruby)"/>
+  <path d="M64 48 88 100 24 100Z" fill="#ff8690"/>
+  <path d="M64 48H120L88 100Z" fill="#ff5268"/>
+  <path d="M120 48H176L152 100Z" fill="#ff7b87"/>
+  <path d="M120 48 88 100H152Z" fill="#ffe0df"/>
+  <path d="M176 48 216 100H152Z" fill="#e63150"/>
+  <path d="M24 100H88L120 204Z" fill="#bc153b"/>
+  <path d="M88 100H152L120 204Z" fill="#f23553"/>
+  <path d="M152 100H216L120 204Z" fill="#970f34"/>
+  <rect x="146" y="146" width="88" height="88" rx="18" fill="#091321"/>
+  <path d="M158 158H187V187H158ZM193 158H222V187H193ZM158 193H187V222H158ZM193 193H222V222H193Z" fill="#42b6ff"/>
+</svg>

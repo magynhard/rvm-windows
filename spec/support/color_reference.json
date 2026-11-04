@@ -1,0 +1,1 @@
+{"list":"=* \u001b[94mruby-3.2.6\u001b[39m\n   \u001b[94mruby-3.1.5\u001b[39m\n   \u001b[94mruby-3.0.7\u001b[39m\n   \u001b[94mruby-2.4.10\u001b[39m\n\n# => - current\n# =* - current && default\n#  * - default\n","data":"RVM data directory at \u001b[94m{{HOME}}\\data\u001b[39m\n","proxy":"http://proxy.example:1234 [\u001b[31mdisabled\u001b[39m]\n"}

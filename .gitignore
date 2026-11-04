@@ -1,5 +1,13 @@
-.idea
-node_modules
-/tmp
+/bin/
+/lib/
+/dist/
+/.crystal/
+*.pdb
+*.obj
+/.idea/
+/rvm.cmd
+/rvm.ps1
+/node_modules/
+/tmp/
 /.npmrc
 /TEST-LOG.md
