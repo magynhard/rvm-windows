@@ -108,6 +108,24 @@ describe RvmCli do
     io.to_s.should contain("Install a bunch of widely used x64 dependencies automatically to the current ruby environment, which are needed to build native gems like postgresql, mysql2, ...")
   end
 
+  it "documents only shortcuts that the dispatcher actually supports" do
+    shortcuts = RvmCliHelp::TASKS.to_h { |name, shortcut, _| {name, shortcut} }
+    shortcuts["kit"].should eq("")
+    shortcuts["system"].should eq("")
+    shortcuts["kick <version>"].should eq("k <version>")
+    shortcuts["scan"].should eq("s")
+    shortcuts["reinstall <version>"].should eq("ri <version>")
+    shortcuts["list upgrades"].should eq("lu, list u")
+    shortcuts["list verbose"].should eq("lv, list v")
+  end
+
+  it "does not treat the stale reinstall shortcut as a valid command" do
+    output = IO::Memory.new
+    RvmCli.run(["r", "0.0.0"], false, output).should eq(0)
+    output.to_s.should contain("Invalid task")
+    output.to_s.should contain("The given task r is invalid.")
+  end
+
   it "removes only the explicitly selected temporary installation" do
     Fixtures.with_home do |home|
       target = RvmCliTools.envs["ruby-3.1.5"].as_s
@@ -129,5 +147,13 @@ describe RvmCli do
     commands.join('\n').should contain("gem install pg -v 1.2.3 ")
     commands.join('\n').should contain("gem install nokogiri -v 1.10.10 ")
     commands.join('\n').should contain("msys64/mingw64")
+  end
+end
+
+describe RvmCliGet do
+  it "does not schedule a downgrade when the public latest release is older" do
+    RvmCliGet.release_is_newer?("1.1.0", "1.1.1").should be_false
+    RvmCliGet.release_is_newer?("1.1.1", "1.1.1").should be_false
+    RvmCliGet.release_is_newer?("1.1.2", "1.1.1").should be_true
   end
 end

@@ -38,4 +38,11 @@ describe RvmCliInit do
       RvmCliTools.get_current_version.should eq("ruby-3.0.7")
     end
   end
+
+  it "keeps sessions when the stored boot time differs only across a minute boundary" do
+    previous = Time.parse_rfc3339("2026-11-04T05:07:00.000Z")
+    current = Time.parse_rfc3339("2026-11-04T05:06:35.235Z")
+    RvmCliInit.same_boot?(previous, current).should be_true
+    RvmCliInit.same_boot?(previous, current + 2.minutes).should be_false
+  end
 end

@@ -17,15 +17,11 @@ class RvmCliInit
 
   def self.ensure_wrapper_path_env_is_set(silent = false, io : IO = STDOUT)
     wrapper = File.expand_path(File.join(RvmCliTools.get_rvm_data_dir, "wrapper"))
-    user_path = get_user_path.strip
-    if user_path == wrapper || user_path.starts_with?("#{wrapper};")
-      io.puts "Path is already added!" unless silent
-    else
-      user_path = user_path.sub(";#{wrapper}", "")
-      # Keep the original setx mechanism and semantics.
-      RvmCliTools.capture("setx", ["PATH", "#{wrapper};#{user_path}"])
-      io.puts "Added path successfully!" unless silent
-    end
+    root = RvmCliTools.rvm_root_path
+    script = File.join(root, "src/tools/path/package_path.ps1")
+    RvmCliTools.capture("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script,
+                                             "-InstallRoot", root, "-WrapperPath", wrapper, "-WrapperOnly"])
+    io.puts "Added path successfully!" unless silent
   rescue ex
     io.puts "Error when adding path: #{ex.message}" unless silent
   end
@@ -66,13 +62,18 @@ class RvmCliInit
       data = RvmCliTools.config
       last_boot = data["last_run_boot_time"]?.try(&.as_s?) || ""
       previous = last_boot.empty? ? nil : Time.parse_rfc3339(last_boot)
-      if previous.nil? || previous.to_unix // 60 != boot_time.to_unix // 60
+      if !same_boot?(previous, boot_time)
         FileUtils.rm_rf(RvmCliTools.rvm_sessions_dir) if previous
         Dir.mkdir_p(RvmCliTools.rvm_sessions_dir)
         data.as_h["last_run_boot_time"] = JSON::Any.new(boot_time.to_rfc3339(fraction_digits: 3))
         RvmCliTools.write_rvm_config(data)
       end
     {% end %}
+  end
+
+  def self.same_boot?(previous : Time?, current : Time) : Bool
+    return false unless previous
+    (previous.to_unix_ms - current.to_unix_ms).abs < 60_000
   end
 
   def self.init_after_install(force = false, io : IO = STDOUT)

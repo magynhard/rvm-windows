@@ -1,6 +1,7 @@
 param(
     [Parameter(Mandatory = $true)][string]$InstallRoot,
     [string]$WrapperPath,
+    [switch]$WrapperOnly,
     [switch]$Remove,
     [switch]$Preview,
     [AllowEmptyString()][string]$CurrentPath = ''
@@ -17,10 +18,13 @@ if (-not $Remove -and -not $WrapperPath) {
 }
 
 function Convert-RvmPackagePath([string]$Value) {
-    $paths = @($Value.Split(';') | Where-Object { $_ -and $_.TrimEnd('\') -ine $InstallRoot.TrimEnd('\') })
+    $paths = @($Value.Split(';') | Where-Object { $_ })
+    if ($Remove -or -not $WrapperOnly) {
+        $paths = @($paths | Where-Object { $_.TrimEnd('\') -ine $InstallRoot.TrimEnd('\') })
+    }
     if (-not $Remove) {
         $paths = @($paths | Where-Object { $_.TrimEnd('\') -ine $WrapperPath.TrimEnd('\') })
-        $paths = @($WrapperPath, $InstallRoot) + $paths
+        $paths = if ($WrapperOnly) { @($WrapperPath) + $paths } else { @($WrapperPath, $InstallRoot) + $paths }
     }
     return ($paths -join ';')
 }

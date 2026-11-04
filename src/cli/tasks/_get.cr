@@ -4,14 +4,23 @@ require "./_install"
 class RvmCliGet
   REPOSITORY = "magynhard/rvm-windows.cr"
 
+  def self.release_is_newer?(release_version : String, current_version : String) : Bool
+    RvmCliTools.version_sort(release_version, current_version) > 0
+  end
+
   def self.run_get(io : IO = STDOUT)
     old_version = RvmCliVersion.get_version
     io.puts "Current version of rvm-windows is #{RvmCliColor.primary(RvmCliVersion.get_full_version, io)}."
     io.puts "Updating to its latest version ... please wait ..."
     release = JSON.parse(RvmCliTools.fetch_text("https://api.github.com/repos/#{REPOSITORY}/releases/latest"))
     new_version = release["tag_name"].as_s.lchop('v')
-    if new_version == old_version
-      io.puts "Nothing to do. rvm-windows is already up to date!"
+    unless release_is_newer?(new_version, old_version)
+      comparison = RvmCliTools.version_sort(new_version, old_version)
+      if comparison == 0
+        io.puts "Nothing to do. rvm-windows is already up to date!"
+      else
+        io.puts "Nothing to do. Current rvm-windows version #{old_version} is newer than the latest release #{new_version}."
+      end
       return
     end
     asset = release["assets"].as_a.find { |entry| entry["name"].as_s.ends_with?("-setup.exe") }
