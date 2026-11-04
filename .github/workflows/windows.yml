@@ -1,0 +1,77 @@
+name: Windows
+
+on:
+  push:
+    branches: [master, main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v6
+      - uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: 1.20.2
+          arch: x86_64
+      - name: Format and specs (offline, isolated)
+        run: |
+          crystal tool format --check src spec scripts
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          crystal spec
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Install NSIS compiler
+        run: choco install nsis -y --no-progress
+      - name: Build static executable, ZIP and NSIS setup
+        run: |
+          $env:MAKENSIS = "${env:ProgramFiles(x86)}\NSIS\makensis.exe"
+          crystal run scripts/package.cr
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Smoke-test the packaged executable with only Windows system directories on PATH
+        run: |
+          $stage = Get-ChildItem dist -Directory -Filter 'rvm-windows-*-windows-x64' | Select-Object -First 1
+          $env:RVM_PACKAGE_ROOT = $stage.FullName
+          crystal spec spec/package_spec.cr
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Test npm bridge in an isolated prefix with a harmless setup fixture
+        run: |
+          $env:RVM_NPM_TESTS = '1'
+          crystal spec spec/npm_bridge_spec.cr
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64
+          path: |
+            dist/*.zip
+            dist/*-setup.exe
+            dist/*.tgz
+          if-no-files-found: error
+
+  draft-release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: windows-2022
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v5
+        with:
+          name: windows-x64
+          path: dist
+      - name: Validate tag and create draft release (never publish automatically)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = (Select-String -Path shard.yml -Pattern '^version: (.+)$').Matches[0].Groups[1].Value.Trim()
+          if ($env:GITHUB_REF_NAME -ne "v$version") { throw 'Tag does not match shard.yml version' }
+          $assets = (Get-ChildItem dist -File).FullName
+          $releaseArgs = @('release', 'create', $env:GITHUB_REF_NAME, '--draft', '--verify-tag', '--generate-notes')
+          if ($version.Contains('-')) { $releaseArgs += '--prerelease' }
+          gh @releaseArgs @assets
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }

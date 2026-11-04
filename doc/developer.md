@@ -1,14 +1,25 @@
 # Developer documentation
-This documentation is not for using but for developing this library.
 
-## Setup
-To setup with dependencies, run the following command:
-```
-yarn install --ignore-engines
-```
-Or even set this to the config permanently:
-```
-yarn config set ignore-engines true
+Use native Windows x64 with Crystal 1.20.2+ and Visual Studio C++ build tools.
+Offline specs need no external shards or additional test runtimes. Packaging
+the npm bridge and running its optional integration checks also require npm.
+
+```powershell
+shards build
+crystal spec
+crystal run scripts/build.cr
+crystal run scripts/package.cr
 ```
 
-We ignore engines, as the `jasmine` dependency "requires" a even version of node (12, 14, 16) which is bullshit.
+`shards build` produces a dynamic development executable. The build/package
+scripts produce a release/static executable with only Windows DLL imports.
+Always use root `rvm.cmd`/`rvm.ps1` to retain session changes across commands.
+
+Specs have a fresh temporary RVM home and configured data directory per example.
+Use `Fixtures.with_home` for configuration and session tests. Do not call `init`,
+`fix`, `kit`, registry-mutating installer paths, or process-killing methods against
+the real host. For a task that shells out, prefer pure command builders or a
+compiled executable fixture instead of interacting with a real Ruby installation.
+
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for optional live checks, offline
+compatibility coverage and the complete build, packaging and release guide.
