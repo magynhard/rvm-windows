@@ -1,3 +1,7 @@
+# 1.1.1 - 2026-11-04
+- Publish the first stable native GitHub release; the npm native bridge remains available separately via the develop tag.
+- Show the product's full name instead of its implementation language in Windows Installed Apps.
+
 # 1.1.1-develop.1 - 2026-11-04
 - Make `rvm get` explain an empty stable GitHub release channel without failing; retain errors for failed downloads and other HTTP responses.
 - Use the native Nokogiri gem for UCRT Ruby in `rvm kit`, avoiding its bundled libiconv source-build failure in Ruby paths containing spaces; retain legacy pins.

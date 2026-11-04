@@ -4,7 +4,7 @@ Unicode true
 !include "x64.nsh"
 
 !ifndef VERSION
-  !define VERSION "1.1.1-develop.1"
+  !define VERSION "1.1.1"
 !endif
 !ifndef FILE_VERSION
   !define FILE_VERSION "1.1.1.0"
@@ -22,7 +22,7 @@ VIAddVersionKey /LANG=0 "FileDescription" "Ruby Version Manager for Windows Setu
 VIAddVersionKey /LANG=0 "CompanyName" "${PUBLISHER}"
 VIAddVersionKey /LANG=0 "LegalCopyright" "Copyright (c) 2024 ${PUBLISHER}"
 
-Name "rvm-windows ${VERSION} (Crystal)"
+Name "rvm-windows ${VERSION} (Ruby Version Manager 4 Windows)"
 OutFile "..\dist\rvm-windows-${VERSION}-windows-x64-setup.exe"
 InstallDir "$LOCALAPPDATA\Programs\rvm-windows"
 InstallDirRegKey HKCU "Software\rvm-windows.cr" "InstallDir"
@@ -84,7 +84,7 @@ Section "rvm-windows" Main
   ${EndIf}
   WriteRegStr HKCU "Software\rvm-windows.cr" "InstallDir" "$INSTDIR"
   WriteUninstaller "$INSTDIR\uninstall.exe"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "DisplayName" "rvm-windows (Crystal)"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "DisplayName" "rvm-windows (Ruby Version Manager 4 Windows)"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "DisplayVersion" "${VERSION}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "Publisher" "${PUBLISHER}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr" "DisplayIcon" '$\"$INSTDIR\uninstall.exe$\",0'

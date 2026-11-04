@@ -1,6 +1,14 @@
 require "./spec_helper"
 require "./support/info_fixture"
 
+describe "Windows installer branding" do
+  it "uses the product name without exposing the implementation in Installed Apps" do
+    installer = File.read(File.expand_path("../installer/rvm-windows.nsi", __DIR__))
+    installer.should contain(%q("DisplayName" "rvm-windows (Ruby Version Manager 4 Windows)"))
+    installer.should_not contain(%q("DisplayName" "rvm-windows (Crystal)"))
+  end
+end
+
 if package_root = ENV["RVM_PACKAGE_ROOT"]?
   describe "static release package" do
     it "ships an explicitly UTF-8 license with the correct copyright holder" do

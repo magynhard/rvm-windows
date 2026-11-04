@@ -5,7 +5,9 @@
 # rvm-windows
 
 [![GitHub release](https://img.shields.io/github/v/release/magynhard/rvm-windows?color=default&style=plastic&logo=github)](https://github.com/magynhard/rvm-windows/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/magynhard/rvm-windows/total?color=blue&style=plastic)](https://github.com/magynhard/rvm-windows/releases)
+[![GitHub downloads](https://img.shields.io/github/downloads/magynhard/rvm-windows/total?color=blue&style=plastic&label=GitHub%20downloads)](https://github.com/magynhard/rvm-windows/releases)
+[![npm version](https://img.shields.io/npm/v/rvm-windows?style=plastic&logo=npm)](https://www.npmjs.com/package/rvm-windows)
+[![npm downloads](https://img.shields.io/npm/dt/rvm-windows?color=blue&style=plastic&logo=npm&label=npm%20downloads)](https://www.npmjs.com/package/rvm-windows)
 [![Windows build](https://img.shields.io/github/actions/workflow/status/magynhard/rvm-windows/windows.yml?branch=master&style=plastic&label=Windows)](https://github.com/magynhard/rvm-windows/actions/workflows/windows.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg?style=plastic&logo=mit)](LICENSE)
 
@@ -20,8 +22,8 @@ It automatically detects `.ruby-version` files or Ruby version definitions in Ge
 RVM is a native Windows application written in Crystal. **No compiler or separate runtime installation is required to use it.** Existing Ruby environments, configuration and sessions are retained.
 
 > [!IMPORTANT]
-> The native rewrite is currently an opt-in develop prerelease. npm `latest`
-> remains on the JavaScript version until stable 1.1.1 is explicitly released.
+> The native application is available from GitHub Releases. The npm native bridge
+> is an opt-in develop prerelease; npm `latest` remains on the JavaScript version.
 > The previous implementation is preserved on [legacy-js](https://github.com/magynhard/rvm-windows/tree/legacy-js)
 > and in the existing 1.0.x tags; this repository keeps its original history and issues.
 
@@ -221,7 +223,7 @@ rvm use --default 3.2
 
 ### Setup
 
-1. Open **[GitHub Releases](https://github.com/magynhard/rvm-windows/releases)** and select the native develop prerelease while testing. Stable native releases start with 1.1.1.
+1. Open the **[latest GitHub Release](https://github.com/magynhard/rvm-windows/releases/latest)**.
 2. Download `rvm-windows-<version>-windows-x64-setup.exe` from the release assets.
 3. Run the setup wizard. It installs RVM for your Windows user and configures PATH.
 4. Open a **new** CMD or PowerShell terminal and check the installation:
@@ -257,7 +259,7 @@ bridge does not uninstall the native application; use Windows Installed Apps.
 
 ### Upgrading
 
-Download the newer setup from [GitHub Releases](https://github.com/magynhard/rvm-windows/releases) and install it over the same application directory. During develop testing, explicitly select the prerelease. Close running RVM commands first. Your configuration, installed Ruby environments and download cache are retained.
+Download the newer setup from [GitHub Releases](https://github.com/magynhard/rvm-windows/releases) and install it over the same application directory. Close running RVM commands first. Your configuration, installed Ruby environments and download cache are retained.
 
 You can also use:
 
