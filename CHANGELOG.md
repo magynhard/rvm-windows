@@ -1,3 +1,6 @@
+# Unreleased
+- Preserve Unicode paths when `rvm get` launches Windows PowerShell 5.1 and record the silent setup result in a log.
+
 # 1.1.2 - 2026-11-05
 - Preflight the staged executable and migration before replacing installed package files.
 - Deploy package files with per-file staging, SHA-256 verification and atomic replacement; restore backups on failure and recover interrupted deployments on setup retry.
