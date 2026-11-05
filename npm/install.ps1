@@ -78,10 +78,9 @@ $utf8 = New-Object Text.UTF8Encoding($false)
 # npm's CMD shim uses SETLOCAL. Establish the session before that scope begins;
 # PowerShell must likewise set the parent process environment before calling CMD.
 # Modify only shims that demonstrably target this package's own bridge.
-$helpers = Join-Path $PSScriptRoot 'src/tools/current'
 $lines = @{
-    '.cmd' = 'call "' + (Join-Path $helpers 'cmd_rvm_prepend.bat') + '"'
-    '.ps1' = "& '" + (Join-Path $helpers 'ps_rvm_prepend.ps1').Replace("'", "''") + "'"
+    '.cmd' = 'call "%~dp0node_modules\rvm-windows\src\tools\current\cmd_rvm_prepend.bat"'
+    '.ps1' = '& (Join-Path $PSScriptRoot ''node_modules\rvm-windows\src\tools\current\ps_rvm_prepend.ps1'')'
 }
 foreach ($extension in @('.cmd', '.ps1')) {
     $shim = Join-Path $prefix ('rvm' + $extension)
@@ -92,7 +91,8 @@ foreach ($extension in @('.cmd', '.ps1')) {
     $parts = @($text -split '\r?\n')
     if ($parts -notcontains $line) {
         $text = (@($parts[0], $line) + @($parts | Select-Object -Skip 1)) -join "`r`n"
-        # PS 5.1 requires a BOM for non-ASCII helper paths; CMD must not have one.
+        # Keep PS 5.1's UTF-8 BOM; CMD must not have one. The helper paths are
+        # relative and ASCII, so CMD need not decode a Unicode absolute prefix.
         $encoding = New-Object Text.UTF8Encoding($extension -eq '.ps1')
         [IO.File]::WriteAllText($shim, $text, $encoding)
     }

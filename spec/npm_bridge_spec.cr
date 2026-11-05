@@ -197,6 +197,8 @@ describe "npm installation bridge" do
         status.success?.should be_false
         File.exists?(File.join(package, "install-root.txt")).should be_false
         RvmCliTools.capture("powershell.exe", args)
+        File.read(File.join(prefix, "rvm.cmd")).should contain(%q(call "%~dp0node_modules\rvm-windows\src\tools\current\cmd_rvm_prepend.bat"))
+        File.read(File.join(prefix, "rvm.ps1")).should contain(%q(& (Join-Path $PSScriptRoot 'node_modules\rvm-windows\src\tools\current\ps_rvm_prepend.ps1')))
         before = File.read(File.join(prefix, "rvm.ps1"))
         RvmCliTools.capture("powershell.exe", args)
         File.read(File.join(prefix, "rvm.ps1")).should eq(before)
