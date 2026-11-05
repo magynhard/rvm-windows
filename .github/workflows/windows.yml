@@ -75,7 +75,11 @@ jobs:
         run: |
           $version = (Select-String -Path shard.yml -Pattern '^version: (.+)$').Matches[0].Groups[1].Value.Trim()
           if ($env:GITHUB_REF_NAME -ne "v$version") { throw 'Tag does not match shard.yml version' }
-          $assets = (Get-ChildItem dist -File).FullName
+          # npm tarballs remain CI artifacts, not GitHub release downloads.
+          $zips = @(Get-ChildItem dist -File -Filter '*.zip')
+          $setups = @(Get-ChildItem dist -File -Filter '*-setup.exe')
+          if ($zips.Count -ne 1 -or $setups.Count -ne 1) { throw 'Expected exactly one ZIP and one setup executable' }
+          $assets = @($zips[0].FullName, $setups[0].FullName)
           $releaseArgs = @('release', 'create', $env:GITHUB_REF_NAME, '--draft', '--verify-tag', '--generate-notes')
           if ($version.Contains('-')) { $releaseArgs += '--prerelease' }
           gh @releaseArgs @assets
