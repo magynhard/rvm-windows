@@ -9,6 +9,26 @@ class RvmCliGet
     SemanticVersion.parse(release_version) > SemanticVersion.parse(current_version)
   end
 
+  def self.updater_script(pid : Int, destination : String, root : String) : String
+    escaped = destination.gsub("'", "''")
+    escaped_root = root.gsub("'", "''")
+    # Windows PowerShell 5.1 reads scripts without a BOM using the system ANSI
+    # codepage, which corrupts non-ASCII installation and download paths.
+    "\uFEFF" + <<-POWERSHELL
+      $ErrorActionPreference = 'Stop'
+      $log = $PSCommandPath + '.log'
+      try {
+        Wait-Process -Id #{pid} -ErrorAction SilentlyContinue
+        $setup = Start-Process -FilePath '#{escaped}' -ArgumentList '/S /D=#{escaped_root}' -Wait -PassThru
+        [IO.File]::WriteAllText($log, "Setup exit code: $($setup.ExitCode)`r`n", [Text.UTF8Encoding]::new($true))
+        exit $setup.ExitCode
+      } catch {
+        [IO.File]::WriteAllText($log, $_.Exception.ToString(), [Text.UTF8Encoding]::new($true))
+        exit 1
+      }
+      POWERSHELL
+  end
+
   def self.run_get(io : IO = STDOUT, latest_url : String = "https://api.github.com/repos/#{REPOSITORY}/releases/latest")
     old_version = RvmCliVersion.get_version
     io.puts "Current version of rvm-windows is #{RvmCliColor.primary(RvmCliVersion.get_full_version, io)}."
@@ -36,12 +56,11 @@ class RvmCliGet
     # Start a detached updater that waits for this process before replacing the
     # running binary. NSIS then refreshes wrappers using the new executable.
     script = File.join(RvmCliTools.get_rvm_data_dir, "downloads", "update-#{Process.pid}.ps1")
-    escaped = destination.gsub("'", "''")
-    root = RvmCliTools.rvm_root_path.gsub("'", "''")
     # NSIS requires /D to be the last, unquoted portion of the raw command line.
-    RvmCliTools.write_file(script, "Wait-Process -Id #{Process.pid} -ErrorAction SilentlyContinue\n$setup = Start-Process -FilePath '#{escaped}' -ArgumentList '/S /D=#{root}' -Wait -PassThru\nRemove-Item -LiteralPath $PSCommandPath\nexit $setup.ExitCode\n")
+    RvmCliTools.write_file(script, updater_script(Process.pid, destination, RvmCliTools.rvm_root_path))
     Process.new("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script],
       input: Process::Redirect::Close, output: Process::Redirect::Close, error: Process::Redirect::Close)
     io.puts "Update to #{RvmCliColor.primary(new_version, io)} scheduled. Setup will start after this command exits."
+    io.puts "Setup runs silently. Result log: #{script}.log"
   end
 end

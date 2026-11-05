@@ -162,6 +162,14 @@ describe RvmCli do
 end
 
 describe RvmCliGet do
+  it "preserves Unicode paths in the Windows PowerShell updater script" do
+    script = RvmCliGet.updater_script(123, "C:/Benutzer/Matthäus/setup.exe", "C:/Benutzer/Matthäus/O'Brien")
+    script.starts_with?("\uFEFF").should be_true
+    script.should contain("C:/Benutzer/Matthäus/setup.exe")
+    script.should contain("C:/Benutzer/Matthäus/O''Brien")
+    script.should contain("Setup exit code:")
+  end
+
   it "uses the original repository for official native updates" do
     RvmCliGet::REPOSITORY.should eq("magynhard/rvm-windows")
   end
