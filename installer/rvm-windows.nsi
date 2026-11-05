@@ -56,12 +56,14 @@ Section "rvm-windows" Main
   # Validate the new executable before touching an existing installation.
   # Security software may quarantine an extracted executable immediately.
   InitPluginsDir
-  SetOutPath "$PLUGINSDIR"
+  SetOutPath "$PLUGINSDIR\package"
   ClearErrors
-  File /oname=rvm-preflight.exe "${PACKAGE_DIR}\bin\rvm.exe"
+  File /r "${PACKAGE_DIR}\*"
   IfErrors preflight_extract_failed
+  SetOutPath "$PLUGINSDIR"
+  File /oname=rvm-package-transaction.ps1 "..\src\tools\path\package_transaction.ps1"
   System::Call 'kernel32::SetEnvironmentVariable(t "RVM_ROOT", t "$INSTDIR")'
-  nsExec::ExecToStack '"$PLUGINSDIR\rvm-preflight.exe" --internal-version'
+  nsExec::ExecToStack '"$PLUGINSDIR\package\bin\rvm.exe" --internal-version'
   Pop $0
   Pop $1
   ${If} $0 != 0
@@ -69,15 +71,77 @@ Section "rvm-windows" Main
     SetErrorLevel 1
     Abort
   ${EndIf}
-  SetOutPath "$INSTDIR"
-  nsExec::ExecToStack '"$PLUGINSDIR\rvm-preflight.exe" --internal-migration prepare'
+  IfFileExists "$INSTDIR\.rvm-package-transaction" recover_package_transaction
+  IfFileExists "$INSTDIR\.legacy-migration.json" recover_migration_only
+  Goto prepare_migration
+  recover_package_transaction:
+    nsExec::ExecToStack 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$PLUGINSDIR\rvm-package-transaction.ps1" -Action rollback -Target "$INSTDIR"'
+    Pop $0
+    Pop $1
+    ${If} $0 != 0
+      MessageBox MB_ICONSTOP "Automatic recovery could not restore the interrupted package transaction: $1. Preserve the recovery marker and backup; do not uninstall." /SD IDOK
+      SetErrorLevel 1
+      Abort
+    ${EndIf}
+    nsExec::ExecToStack '"$PLUGINSDIR\package\bin\rvm.exe" --internal-migration rollback'
+    Pop $0
+    Pop $1
+    ${If} $0 != 0
+      MessageBox MB_ICONSTOP "Package files were restored, but migration recovery failed: $1. Preserve the recovery backup and retry setup." /SD IDOK
+      SetErrorLevel 1
+      Abort
+    ${EndIf}
+    Delete "$INSTDIR\.rvm-package-transaction"
+    Goto prepare_migration
+  recover_migration_only:
+    # A crash after migration prepare but before package snapshot did not alter
+    # package files, so only its wrapper/config migration journal needs rollback.
+    nsExec::ExecToStack '"$PLUGINSDIR\package\bin\rvm.exe" --internal-migration rollback'
+    Pop $0
+    Pop $1
+    ${If} $0 != 0
+      MessageBox MB_ICONSTOP "Could not recover the previous migration journal: $1. No package files were replaced." /SD IDOK
+      SetErrorLevel 1
+      Abort
+    ${EndIf}
+  prepare_migration:
+  # Create recovery material before prepare or any package changes. It contains
+  # a runnable rollback executable even if Defender removes the staged copy.
+  ClearErrors
+  GetTempFileName $4
+  IfErrors recovery_backup_failed
+  Delete "$4"
+  CreateDirectory "$4"
+  IfErrors recovery_backup_failed
+  CopyFiles /SILENT "$PLUGINSDIR\rvm-package-transaction.ps1" "$4\package_transaction.ps1"
+  IfErrors recovery_backup_failed
+  CopyFiles /SILENT "$PLUGINSDIR\package\bin\rvm.exe" "$4\recovery-rvm.exe"
+  IfErrors recovery_backup_failed
+  nsExec::ExecToStack '"$4\recovery-rvm.exe" --internal-version'
   Pop $0
   Pop $1
   ${If} $0 != 0
+    Goto recovery_backup_failed
+  ${EndIf}
+  SetOutPath "$INSTDIR"
+  nsExec::ExecToStack '"$4\recovery-rvm.exe" --internal-migration prepare'
+  Pop $0
+  Pop $1
+  ${If} $0 != 0
+    RMDir /r "$4"
     MessageBox MB_ICONSTOP "Could not prepare installation migration (exit $0): $1. The existing installation was not replaced." /SD IDOK
     SetErrorLevel 1
     Abort
   ${EndIf}
+  # Keep a durable per-file backup outside the install directory. It is never
+  # removed automatically and remains available for interrupted-install recovery.
+  nsExec::ExecToStack 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$4\package_transaction.ps1" -Action snapshot -Target "$INSTDIR" -Stage "$PLUGINSDIR\package" -Backup "$4"'
+  Pop $0
+  Pop $1
+  ${If} $0 != 0
+    Goto snapshot_failed
+  ${EndIf}
+  ClearErrors
   # Back up the old executable separately before deploying package files.
   StrCpy $2 0
   IfFileExists "$INSTDIR\bin\rvm.exe" 0 deploy
@@ -89,15 +153,14 @@ Section "rvm-windows" Main
     StrCpy $2 1
     Goto deploy
   backup_failed:
-    nsExec::Exec '"$PLUGINSDIR\rvm-preflight.exe" --internal-migration rollback'
-    MessageBox MB_ICONSTOP "Could not back up the existing RVM executable. The installation was not replaced." /SD IDOK
-    SetErrorLevel 1
-    Abort
+    Goto deployment_failed
   deploy:
-  SetOverwrite on
-  ClearErrors
-  File /r "${PACKAGE_DIR}\*"
-  IfErrors deployment_failed
+  nsExec::ExecToStack 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$4\package_transaction.ps1" -Action deploy -Target "$INSTDIR" -Stage "$PLUGINSDIR\package" -Backup "$4"'
+  Pop $0
+  Pop $1
+  ${If} $0 != 0
+    Goto deployment_failed
+  ${EndIf}
   nsExec::ExecToStack '"$INSTDIR\bin\rvm.exe" --internal-version'
   Pop $0
   Pop $1
@@ -132,18 +195,69 @@ Section "rvm-windows" Main
   Pop $0
   Pop $1
   ${If} $0 != 0
-    DetailPrint "Native RVM installed; legacy cleanup needs attention: $1"
+    DetailPrint "Native RVM is installed; deferred legacy migration cleanup needs attention: $1"
   ${EndIf}
   ${If} $2 == 1
     Delete "$3"
   ${EndIf}
+  Delete "$INSTDIR\.rvm-package-transaction"
+  RMDir /r "$4"
   Goto install_done
   preflight_extract_failed:
     MessageBox MB_ICONSTOP "Could not extract the new RVM executable. The existing installation was not replaced. Check Windows Security before retrying." /SD IDOK
     SetErrorLevel 1
     Abort
+  recovery_backup_failed:
+    ${If} $4 != ""
+      RMDir /r "$4"
+    ${EndIf}
+    MessageBox MB_ICONSTOP "Could not create or validate the installer recovery backup (exit $0): $1. The existing installation was not replaced." /SD IDOK
+    SetErrorLevel 1
+    Abort
+  snapshot_failed:
+    FileOpen $7 "$4\snapshot-error.txt" w
+    IfErrors +3
+    FileWrite $7 "Snapshot exit $0: $1"
+    FileClose $7
+    IfFileExists "$INSTDIR\.rvm-package-transaction" 0 snapshot_rollback_migration
+    nsExec::ExecToStack 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$PLUGINSDIR\rvm-package-transaction.ps1" -Action rollback -Target "$INSTDIR" -Backup "$4"'
+    Pop $5
+    Pop $6
+    ${If} $5 != 0
+      MessageBox MB_ICONSTOP "Package rollback failed: $6. Backup: $4" /SD IDOK
+      SetErrorLevel 1
+      Abort
+    ${EndIf}
+    Delete "$INSTDIR\.rvm-package-transaction"
+  snapshot_rollback_migration:
+    nsExec::ExecToStack '"$4\recovery-rvm.exe" --internal-migration rollback'
+    Pop $5
+    Pop $6
+    ${If} $5 != 0
+      MessageBox MB_ICONSTOP "Migration rollback failed: $6. Backup: $4" /SD IDOK
+      SetErrorLevel 1
+      Abort
+    ${EndIf}
+    MessageBox MB_ICONSTOP "Could not back up package files (exit $0): $1. Previous package files were restored." /SD IDOK
+    SetErrorLevel 1
+    Abort
   deployment_failed:
-    nsExec::Exec '"$PLUGINSDIR\rvm-preflight.exe" --internal-migration rollback'
+    nsExec::ExecToStack '"$4\recovery-rvm.exe" --internal-migration rollback'
+    Pop $8
+    Pop $9
+    nsExec::ExecToStack 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$4\package_transaction.ps1" -Action rollback -Target "$INSTDIR" -Backup "$4"'
+    Pop $5
+    Pop $6
+    ${If} $5 != 0
+      MessageBox MB_ICONSTOP "Package rollback needs manual attention: $6. Backup: $4" /SD IDOK
+      SetErrorLevel 1
+      Abort
+    ${EndIf}
+    ${If} $8 != 0
+      MessageBox MB_ICONSTOP "Package files were restored, but wrapper rollback needs manual attention: $9. Backup: $4" /SD IDOK
+      SetErrorLevel 1
+      Abort
+    ${EndIf}
     ${If} $2 == 1
       ClearErrors
       CopyFiles /SILENT "$3" "$INSTDIR\bin\rvm.exe"
@@ -152,6 +266,7 @@ Section "rvm-windows" Main
     ${Else}
       MessageBox MB_ICONSTOP "Installation failed. Check Windows Security before retrying." /SD IDOK
     ${EndIf}
+    Delete "$INSTDIR\.rvm-package-transaction"
     SetErrorLevel 1
     Abort
   restore_failed:
@@ -185,6 +300,7 @@ Section "Uninstall"
   Delete "$INSTDIR\src\tools\path\prepend_user_path.bat"
   Delete "$INSTDIR\src\tools\path\info.txt"
   Delete "$INSTDIR\src\tools\path\package_path.ps1"
+  Delete "$INSTDIR\src\tools\path\package_transaction.ps1"
   Delete "$INSTDIR\doc\PORTING.md"
   Delete "$INSTDIR\doc\VALIDATION.md"
   Delete "$INSTDIR\doc\developer.md"

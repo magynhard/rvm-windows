@@ -1,3 +1,9 @@
+# Unreleased
+- Preflight the staged executable and migration before replacing installed package files.
+- Deploy package files with per-file staging, SHA-256 verification and atomic replacement; restore backups on failure and recover interrupted deployments on setup retry.
+- Preserve concurrent user file changes by refusing conflicting rollback overwrites; retain a recovery marker and backup for manual inspection.
+- Keep npm CMD helper launchers safe under non-UTF-8 codepages and Unicode Node installation paths, including legacy `rvm get` finalisation.
+
 # 1.1.1 - 2026-11-04
 - Publish the first stable native GitHub release; the npm native bridge remains available separately via the develop tag.
 - Show the product's full name instead of its implementation language in Windows Installed Apps.
