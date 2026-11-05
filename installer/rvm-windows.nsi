@@ -12,6 +12,9 @@ Unicode true
 !ifndef PACKAGE_DIR
   !define PACKAGE_DIR "..\dist\rvm-windows-${VERSION}-windows-x64"
 !endif
+!ifndef OUTPUT_FILE
+  !define OUTPUT_FILE "..\dist\rvm-windows-${VERSION}-windows-x64-setup.exe"
+!endif
 
 !define PUBLISHER "Matth${U+00E4}us J. N. Beyrle"
 VIProductVersion "${FILE_VERSION}"
@@ -23,7 +26,7 @@ VIAddVersionKey /LANG=0 "CompanyName" "${PUBLISHER}"
 VIAddVersionKey /LANG=0 "LegalCopyright" "Copyright (c) 2024 ${PUBLISHER}"
 
 Name "rvm-windows ${VERSION} (Ruby Version Manager 4 Windows)"
-OutFile "..\dist\rvm-windows-${VERSION}-windows-x64-setup.exe"
+OutFile "${OUTPUT_FILE}"
 InstallDir "$LOCALAPPDATA\Programs\rvm-windows"
 InstallDirRegKey HKCU "Software\rvm-windows.cr" "InstallDir"
 RequestExecutionLevel user

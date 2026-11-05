@@ -27,6 +27,10 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Install NSIS compiler
         run: choco install nsis -y --no-progress
+      - name: Test installer failure handling with isolated fixtures
+        run: |
+          ./scripts/test-installer-failures.ps1 -Makensis "${env:ProgramFiles(x86)}\NSIS\makensis.exe"
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Build static executable, ZIP and NSIS setup
         run: |
           $env:MAKENSIS = "${env:ProgramFiles(x86)}\NSIS\makensis.exe"

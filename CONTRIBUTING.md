@@ -157,6 +157,17 @@ its own wrappers and package files, not installed Rubies or user configuration.
 
 Use a disposable Windows VM for installer, upgrade and uninstall acceptance tests.
 
+To run the isolated NSIS failure-path fixtures on Windows (they retain their
+temporary test directories and never run the production setup):
+
+```powershell
+./scripts/test-installer-failures.ps1 -Makensis 'C:\Program Files (x86)\NSIS\makensis.exe'
+```
+
+These fixtures test preflight, migration preparation, deployment failure and a
+locked executable. They do not replace real installer/update acceptance or prove
+that all package files roll back after an interruption.
+
 ## Releases and self-update
 
 `rvm get` uses GitHub Releases in `magynhard/rvm-windows`: it fetches the
