@@ -9,7 +9,7 @@ New-Item -ItemType Directory -Force -Path (Join-Path $package 'src\tools\path') 
 [IO.File]::WriteAllText((Join-Path $package 'src\templates\rvm.cmd'),'new-template')
 [IO.File]::WriteAllText((Join-Path $package 'src\templates\new.cmd'),'new-package-file')
 $fixture = Join-Path $package 'bin\rvm.exe'
-& crystal build (Join-Path $repo 'spec\support\installer_failure_fixture.cr') --release --static -o $fixture
+& crystal build (Join-Path $repo 'spec\support\installer_failure_fixture.cr') --release -o $fixture
 if ($LASTEXITCODE -ne 0) { throw 'Fixture build failed.' }
 Copy-Item -LiteralPath (Join-Path $repo 'src\tools\path\package_path.ps1') -Destination (Join-Path $package 'src\tools\path\package_path.ps1')
 $setup = Join-Path $testRoot 'fixture-setup.exe'
