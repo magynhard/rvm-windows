@@ -50,37 +50,68 @@ FunctionEnd
 
 Section "rvm-windows" Main
   SetRegView 64
-  SetOutPath "$INSTDIR"
-  SetOverwrite on
-  File /r "${PACKAGE_DIR}\*"
-  # Bypass normal startup: preserve config and installed Ruby paths, regenerate
-  # wrappers for this executable, but do not scan, kill MSYS or run installers.
+  # Validate the new executable before touching an existing installation.
+  # Security software may quarantine an extracted executable immediately.
+  InitPluginsDir
+  SetOutPath "$PLUGINSDIR"
+  ClearErrors
+  File /oname=rvm-preflight.exe "${PACKAGE_DIR}\bin\rvm.exe"
+  IfErrors preflight_extract_failed
   System::Call 'kernel32::SetEnvironmentVariable(t "RVM_ROOT", t "$INSTDIR")'
-  nsExec::ExecToStack '"$INSTDIR\bin\rvm.exe" --internal-migration prepare'
+  nsExec::ExecToStack '"$PLUGINSDIR\rvm-preflight.exe" --internal-version'
   Pop $0
   Pop $1
   ${If} $0 != 0
-    MessageBox MB_ICONSTOP "Could not prepare installation migration: $1"
+    MessageBox MB_ICONSTOP "Cannot start the new RVM executable (exit $0): $1. The existing installation was not replaced. Check Windows Security before retrying." /SD IDOK
     SetErrorLevel 1
     Abort
+  ${EndIf}
+  SetOutPath "$INSTDIR"
+  nsExec::ExecToStack '"$PLUGINSDIR\rvm-preflight.exe" --internal-migration prepare'
+  Pop $0
+  Pop $1
+  ${If} $0 != 0
+    MessageBox MB_ICONSTOP "Could not prepare installation migration (exit $0): $1. The existing installation was not replaced." /SD IDOK
+    SetErrorLevel 1
+    Abort
+  ${EndIf}
+  # Back up the old executable separately before deploying package files.
+  StrCpy $2 0
+  IfFileExists "$INSTDIR\bin\rvm.exe" 0 deploy
+    ClearErrors
+    GetTempFileName $3
+    IfErrors backup_failed
+    CopyFiles /SILENT "$INSTDIR\bin\rvm.exe" "$3"
+    IfErrors backup_failed
+    StrCpy $2 1
+    Goto deploy
+  backup_failed:
+    nsExec::Exec '"$PLUGINSDIR\rvm-preflight.exe" --internal-migration rollback'
+    MessageBox MB_ICONSTOP "Could not back up the existing RVM executable. The installation was not replaced." /SD IDOK
+    SetErrorLevel 1
+    Abort
+  deploy:
+  SetOverwrite on
+  ClearErrors
+  File /r "${PACKAGE_DIR}\*"
+  IfErrors deployment_failed
+  nsExec::ExecToStack '"$INSTDIR\bin\rvm.exe" --internal-version'
+  Pop $0
+  Pop $1
+  ${If} $0 != 0
+    Goto deployment_failed
   ${EndIf}
   nsExec::ExecToStack '"$INSTDIR\bin\rvm.exe" --internal-install'
   Pop $0
   Pop $1
   ${If} $0 != 0
-    nsExec::Exec '"$INSTDIR\bin\rvm.exe" --internal-migration rollback'
-    MessageBox MB_ICONSTOP "Could not initialize RVM wrappers: $1"
-    SetErrorLevel 1
-    Abort
+    Goto deployment_failed
   ${EndIf}
   # Read the UTF-8 JSON in PowerShell instead of round-tripping a Unicode path
   # through the NSIS process-output code page.
   ExecWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$INSTDIR\src\tools\path\package_path.ps1" -InstallRoot "$INSTDIR"' $0
   ${If} $0 != 0
-    nsExec::Exec '"$INSTDIR\bin\rvm.exe" --internal-migration rollback'
-    MessageBox MB_ICONSTOP "Could not update user PATH. Run rvm init manually."
-    SetErrorLevel 1
-    Abort
+    Goto deployment_failed
   ${EndIf}
   WriteRegStr HKCU "Software\rvm-windows.cr" "InstallDir" "$INSTDIR"
   WriteUninstaller "$INSTDIR\uninstall.exe"
@@ -100,6 +131,31 @@ Section "rvm-windows" Main
   ${If} $0 != 0
     DetailPrint "Native RVM installed; legacy cleanup needs attention: $1"
   ${EndIf}
+  ${If} $2 == 1
+    Delete "$3"
+  ${EndIf}
+  Goto install_done
+  preflight_extract_failed:
+    MessageBox MB_ICONSTOP "Could not extract the new RVM executable. The existing installation was not replaced. Check Windows Security before retrying." /SD IDOK
+    SetErrorLevel 1
+    Abort
+  deployment_failed:
+    nsExec::Exec '"$PLUGINSDIR\rvm-preflight.exe" --internal-migration rollback'
+    ${If} $2 == 1
+      ClearErrors
+      CopyFiles /SILENT "$3" "$INSTDIR\bin\rvm.exe"
+      IfErrors restore_failed
+      MessageBox MB_ICONSTOP "Installation failed. The previous RVM executable was restored. Check Windows Security and retry after investigating." /SD IDOK
+    ${Else}
+      MessageBox MB_ICONSTOP "Installation failed. Check Windows Security before retrying." /SD IDOK
+    ${EndIf}
+    SetErrorLevel 1
+    Abort
+  restore_failed:
+    MessageBox MB_ICONSTOP "Installation failed and the previous executable could not be restored. The backup remains at $3." /SD IDOK
+    SetErrorLevel 1
+    Abort
+  install_done:
 SectionEnd
 
 Section "Uninstall"

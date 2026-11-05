@@ -157,7 +157,9 @@ class LegacyInstallationMigration
     return unless File.file?(pointer)
     state = read_job(pointer)
     # Never overwrite files another installation may have created meanwhile.
-    RvmCliFix.remove_package_wrappers
+    # Rollback may be launched by the separately staged preflight executable;
+    # wrappers created by installation point at the target installation instead.
+    RvmCliFix.remove_package_wrappers(File.join(root, "bin", "rvm.exe"))
     backup = File.join(state["job"].as_s, "wrappers")
     if File.directory?(backup)
       Dir.mkdir_p(wrapper_path)

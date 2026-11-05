@@ -135,6 +135,8 @@ describe LegacyInstallationMigration do
       migration = MigrationFixtures.migration(home)
       migration.prepare([] of String)
       RvmCliFix.fix_wrapper_files
+      # The staged preflight executable differs from the target executable.
+      File.write(wrapper, RvmCliFix.render_wrapper(File.join(migration.root, "bin", "rvm.exe")))
       extra = File.join(RvmCliTools.get_rvm_data_dir, "wrapper/other.bat")
       File.write(extra, "third-party wrapper")
       migration.rollback
