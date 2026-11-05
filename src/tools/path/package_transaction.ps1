@@ -14,6 +14,11 @@ function Get-Sha256([string]$Path) {
     try { return ([BitConverter]::ToString($algorithm.ComputeHash($stream))).Replace('-','') }
     finally { $stream.Dispose(); $algorithm.Dispose() }
 }
+function Write-TransactionTrace([string]$Message) {
+    if ($env:RVM_PACKAGE_TRANSACTION_TRACE) {
+        [IO.File]::AppendAllText($env:RVM_PACKAGE_TRANSACTION_TRACE, "$(Get-Date -Format o) $Message`r`n", [Text.Encoding]::UTF8)
+    }
+}
 function Assert-NoLinks([string]$Path) {
     $current = [IO.Path]::GetFullPath($Path)
     while ($current) {
@@ -34,20 +39,26 @@ function Get-TargetPath([string]$Relative) {
 }
 Assert-NoLinks $targetPath
 if ($Action -eq 'snapshot') {
+    Write-TransactionTrace "snapshot start target=$Target stage=$Stage backup=$Backup"
     if (-not $Backup) { throw 'Backup is required for a snapshot.' }
     $backupPath = [IO.Path]::GetFullPath($Backup).TrimEnd('\')
     $manifestPath = Join-Path $backupPath 'manifest.json'
     Assert-NoLinks $backupPath
+    Write-TransactionTrace "backup path checked: $backupPath"
     if ($backupPath.StartsWith($targetPath + '\',[StringComparison]::OrdinalIgnoreCase) -or $targetPath.StartsWith($backupPath + '\',[StringComparison]::OrdinalIgnoreCase) -or $backupPath -ieq $targetPath) { throw 'Backup and installation must be separate.' }
     if (-not $Stage) { throw 'Stage is required.' }
     $stagePath = [IO.Path]::GetFullPath($Stage).TrimEnd('\')
     Assert-NoLinks $stagePath
+    Write-TransactionTrace "stage path checked: $stagePath"
     if ($stagePath -ieq $targetPath -or $stagePath.StartsWith($targetPath + '\',[StringComparison]::OrdinalIgnoreCase) -or $targetPath.StartsWith($stagePath + '\',[StringComparison]::OrdinalIgnoreCase)) { throw 'Stage and installation must be separate.' }
     if (Test-Path -LiteralPath $manifestPath) { throw 'Snapshot already exists.' }
     New-Item -ItemType Directory -Force -Path $backupPath | Out-Null
+    Write-TransactionTrace 'backup directory created'
     $records = New-Object System.Collections.Generic.List[object]
     $directories = New-Object System.Collections.Generic.List[object]
+    Write-TransactionTrace 'enumerating stage directories'
     foreach ($directory in @(Get-ChildItem -LiteralPath $stagePath -Recurse -Force | Where-Object { $_.PSIsContainer })) {
+        Write-TransactionTrace "stage directory: $($directory.FullName)"
         Assert-NoLinks $directory.FullName
         $relative = $directory.FullName.Substring($stagePath.Length + 1)
         $destination = Get-TargetPath $relative
@@ -55,7 +66,9 @@ if ($Action -eq 'snapshot') {
         if ($existed -and -not (Test-Path -LiteralPath $destination -PathType Container)) { throw "Package directory collides with a file: $destination" }
         $directories.Add(@{ relative=$relative; existed=$existed })
     }
+    Write-TransactionTrace 'enumerating stage files'
     foreach ($file in @(Get-ChildItem -LiteralPath $stagePath -Recurse -Force | Where-Object { -not $_.PSIsContainer })) {
+        Write-TransactionTrace "stage file: $($file.FullName)"
         Assert-NoLinks $file.FullName
         $relative = $file.FullName.Substring($stagePath.Length + 1)
         $destination = Get-TargetPath $relative
@@ -63,16 +76,20 @@ if ($Action -eq 'snapshot') {
         if ($existed -and -not (Test-Path -LiteralPath $destination -PathType Leaf)) { throw "Package target is not a file: $destination" }
         $oldHash = $null
         if ($existed) {
+            Write-TransactionTrace "hashing existing target: $destination"
             $oldHash = Get-Sha256 $destination
             $old = Join-Path (Join-Path $backupPath 'files') $relative
             New-Item -ItemType Directory -Force -Path (Split-Path -Parent $old) | Out-Null
             Copy-Item -LiteralPath $destination -Destination $old
+            Write-TransactionTrace "backed up target: $relative"
             if ((Get-Sha256 $old) -ne $oldHash) { throw "Backup verification failed: $relative" }
         }
+        Write-TransactionTrace "hashing staged file: $($file.FullName)"
         $records.Add(@{ relative=$relative; existed=$existed; oldHash=$oldHash; newHash=(Get-Sha256 $file.FullName) })
     }
     $manifest = @{ schema=2; transactionId=[Guid]::NewGuid().ToString('N'); target=$targetPath; files=@($records.ToArray()); directories=@($directories.ToArray()) }
     [IO.File]::WriteAllText($manifestPath,($manifest | ConvertTo-Json -Depth 10),[Text.UTF8Encoding]::new($false))
+    Write-TransactionTrace 'manifest written'
     # Publish the marker atomically. If the process stops while the snapshot is
     # being prepared, no target package files have been touched yet.
     $marker = Join-Path $targetPath '.rvm-package-transaction'
@@ -86,6 +103,7 @@ if ($Action -eq 'snapshot') {
     try { [IO.File]::Move($markerTemp,$marker) }
     catch { if (Test-Path -LiteralPath $markerTemp) { Remove-Item -LiteralPath $markerTemp }; throw }
     Write-Output "Package snapshot: $backupPath"
+    Write-TransactionTrace 'snapshot complete'
 } elseif ($Action -eq 'deploy') {
     if (-not $Backup -or -not $Stage) { throw 'Backup and Stage are required for deployment.' }
     $backupPath = [IO.Path]::GetFullPath($Backup).TrimEnd('\')
