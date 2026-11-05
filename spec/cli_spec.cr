@@ -162,12 +162,25 @@ describe RvmCli do
 end
 
 describe RvmCliGet do
+  it "explains that the launcher waits for the update, while direct executable calls do not" do
+    output = IO::Memory.new
+    RvmCliGet.print_update_instructions(output, "1.2.3", "C:/rvm/update.ps1.log", true)
+    text = output.to_s
+    text.should contain("will start after the RVM executable exits")
+    text.should contain("launcher will wait for setup to finish")
+    text.should contain("C:/rvm/update.ps1.log")
+    output.clear
+    RvmCliGet.print_update_instructions(output, "1.2.3", "C:/rvm/update.ps1.log", false)
+    output.to_s.should contain("Direct executable invocation does not wait")
+  end
+
   it "preserves Unicode paths in the Windows PowerShell updater script" do
-    script = RvmCliGet.updater_script(123, "C:/Benutzer/Matthäus/setup.exe", "C:/Benutzer/Matthäus/O'Brien")
+    script = RvmCliGet.updater_script(123, "C:/Benutzer/Matthäus/setup.exe", "C:/Benutzer/Matthäus/O'Brien", "C:/Benutzer/Matthäus/.rvm-update-123.status")
     script.starts_with?("\uFEFF").should be_true
     script.should contain("C:/Benutzer/Matthäus/setup.exe")
     script.should contain("C:/Benutzer/Matthäus/O''Brien")
     script.should contain("Setup exit code:")
+    script.should contain("C:/Benutzer/Matthäus/.rvm-update-123.status")
   end
 
   it "uses the original repository for official native updates" do

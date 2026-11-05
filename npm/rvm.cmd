@@ -12,5 +12,5 @@ if not exist "%RVM_ROOT%\bin\rvm.exe" (
   echo Native RVM is missing. Rerun "%~dp0install.ps1" -Manual or reinstall using setup. 1>&2
   exit /b 1
 )
-"%RVM_ROOT%\bin\rvm.exe" %*
+call "%RVM_ROOT%\rvm.cmd" %*
 exit /b %ERRORLEVEL%

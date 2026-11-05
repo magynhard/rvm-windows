@@ -37,6 +37,9 @@ module NpmFixtures
     %w(tools templates).each do |dir|
       FileUtils.cp_r(File.join(RvmCliTools.rvm_root_path, "src", dir), File.join(root, "src", dir))
     end
+    %w(rvm.cmd rvm.ps1).each do |wrapper|
+      FileUtils.cp(File.join(RvmCliTools.rvm_root_path, "src/templates", wrapper), File.join(root, wrapper))
+    end
     root
   end
 end
