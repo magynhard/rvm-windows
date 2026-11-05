@@ -9,7 +9,7 @@ New-Item -ItemType Directory -Force -Path (Join-Path $package 'src\tools\path') 
 [IO.File]::WriteAllText((Join-Path $package 'src\templates\rvm.cmd'),'new-template')
 [IO.File]::WriteAllText((Join-Path $package 'src\templates\new.cmd'),'new-package-file')
 $fixture = Join-Path $package 'bin\rvm.exe'
-& crystal build (Join-Path $repo 'spec\support\installer_failure_fixture.cr') --release --static -o $fixture
+& crystal build (Join-Path $repo 'spec\support\installer_failure_fixture.cr') --release -o $fixture
 if ($LASTEXITCODE -ne 0) { throw 'Fixture build failed.' }
 Copy-Item -LiteralPath (Join-Path $repo 'src\tools\path\package_path.ps1') -Destination (Join-Path $package 'src\tools\path\package_path.ps1')
 $setup = Join-Path $testRoot 'fixture-setup.exe'
@@ -30,6 +30,7 @@ for($i=0;$i -lt $registryKeys.Count;$i++){
     if($registryExisted[$i]){ & reg.exe export $registryKeys[$i] (Join-Path $testRoot "$i.reg") /y | Out-Null; if($LASTEXITCODE -ne 0){ throw 'Host registry backup failed.' } }
 }
 $env:RVM_HOME = $profileHome
+$env:RVM_PACKAGE_TRANSACTION_TRACE = Join-Path $testRoot 'package-transaction-trace.log'
 try {
     foreach ($mode in @('preflight','prepare','deployment','locked','interrupted','interrupted-retry')) {
         Write-Output "RUNNING_INSTALLER_FIXTURE=$mode"
@@ -66,6 +67,7 @@ try {
                     Write-Output "FIXTURE_TRANSACTION_BACKUP=$transactionBackup"
                     Get-ChildItem -LiteralPath $transactionBackup -Force -ErrorAction SilentlyContinue | Select-Object Name,Length | Format-Table -AutoSize | Out-String | Write-Output
                 }
+                if (Test-Path -LiteralPath $env:RVM_PACKAGE_TRANSACTION_TRACE) { Get-Content -LiteralPath $env:RVM_PACKAGE_TRANSACTION_TRACE | Write-Output }
                 $process.Kill()
                 $process.WaitForExit()
                 throw "Fixture installer hung during $mode."
@@ -98,6 +100,7 @@ try {
     }
 } finally {
     Remove-Item Env:RVM_TEST_INSTALLER_FAILURE -ErrorAction SilentlyContinue
+    Remove-Item Env:RVM_PACKAGE_TRANSACTION_TRACE -ErrorAction SilentlyContinue
     $key = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey('Environment')
     try {
         $finalPath = [string]$key.GetValue('Path','',[Microsoft.Win32.RegistryValueOptions]::DoNotExpandEnvironmentNames)
