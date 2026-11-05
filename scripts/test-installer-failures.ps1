@@ -32,6 +32,7 @@ for($i=0;$i -lt $registryKeys.Count;$i++){
 $env:RVM_HOME = $profileHome
 try {
     foreach ($mode in @('preflight','prepare','deployment','locked','interrupted','interrupted-retry')) {
+        Write-Output "RUNNING_INSTALLER_FIXTURE=$mode"
         $target = Join-Path $testRoot $mode
         New-Item -ItemType Directory -Force -Path (Join-Path $target 'bin'),(Join-Path $target 'src\templates') | Out-Null
         $oldExe = Join-Path $target 'bin\rvm.exe'
@@ -57,6 +58,9 @@ try {
             if ($mode -eq 'interrupted-retry') {
                 if ($process.ExitCode -ne 0) { throw 'Setup did not continue after interrupted transaction recovery.' }
             } elseif ($process.ExitCode -eq 0) { throw "Fixture installer unexpectedly succeeded during $mode." }
+        } catch {
+            Write-Error "INSTALLER_FIXTURE_FAILED=$mode`n$($_.Exception.ToString())"
+            throw
         } finally { if ($lock) { $lock.Dispose() } }
         if($mode -eq 'interrupted-retry') {
             if(-not (Test-Path (Join-Path $target 'src\tools\path\package_path.ps1')) -or (Test-Path (Join-Path $target '.rvm-package-transaction'))){throw 'Retried setup did not complete cleanly after recovery.'}
