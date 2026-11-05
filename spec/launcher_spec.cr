@@ -1,6 +1,49 @@
 require "./spec_helper"
 
 describe "session launchers" do
+  it "waits for the silent update result in CMD and PowerShell launchers" do
+    Fixtures.with_home do |home|
+      root = File.join(home, "Author Matthäus's Software")
+      Dir.mkdir_p(File.join(root, "bin"))
+      Dir.mkdir_p(File.join(root, "src/tools"))
+      executable = Fixtures.build_executable("update-wait-fixture", File.join(__DIR__, "support/update_wait_fixture.cr"))
+      FileUtils.cp(executable, File.join(root, "bin/rvm.exe"))
+      FileUtils.cp_r(File.join(RvmCliTools.rvm_root_path, "src/tools/current"), File.join(root, "src/tools/current"))
+      FileUtils.cp_r(File.join(RvmCliTools.rvm_root_path, "src/templates"), File.join(root, "src/templates"))
+      FileUtils.cp(File.join(root, "src/templates/rvm.cmd"), File.join(root, "rvm.cmd"))
+      FileUtils.cp(File.join(root, "src/templates/rvm.ps1"), File.join(root, "rvm.ps1"))
+
+      script = File.join(home, "wait-test.cmd")
+      File.write(script, "@echo off\r\ncall \"#{root}\\rvm.cmd\" get\r\necho CMD_RETURNED\r\n")
+      output = IO::Memory.new
+      error = IO::Memory.new
+      status = Process.run("cmd.exe", ["/d", "/c", script], env: {"RVM_SESSION" => nil}, output: output, error: error)
+      status.exit_code.should eq(0), "#{output}\n#{error}"
+      output.to_s.should contain("Waiting for the silent RVM setup to finish")
+      output.to_s.should contain("RVM update completed successfully")
+      output.to_s.index("RVM update completed successfully").not_nil!.should be < output.to_s.index("CMD_RETURNED").not_nil!
+
+      output.clear
+      error.clear
+      launcher = File.join(root, "rvm.ps1").gsub("'", "''")
+      command = "& '#{launcher}' get; Write-Output 'PS_RETURNED'; exit $LASTEXITCODE"
+      status = Process.run("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", command],
+        env: {"RVM_SESSION" => nil}, output: output, error: error)
+      status.exit_code.should eq(0), "#{output}\n#{error}"
+      output.to_s.should contain("Waiting for the silent RVM setup to finish")
+      output.to_s.index("RVM update completed successfully").not_nil!.should be < output.to_s.index("PS_RETURNED").not_nil!
+      error.to_s.should eq("")
+
+      output.clear
+      error.clear
+      status = Process.run("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", command],
+        env: {"RVM_SESSION" => nil, "RVM_TEST_UPDATE_RESULT" => "1"}, output: output, error: error)
+      status.exit_code.should eq(1), "#{output}\n#{error}"
+      error.to_s.should contain("RVM setup failed")
+      Dir.glob(File.join(root, ".rvm-update-*.status")).should be_empty
+    end
+  end
+
   it "retargets existing wrappers during setup without suppressing fresh-install discovery" do
     Fixtures.with_home do
       Fixtures.add_command("ruby-3.2.6", "ruby.exe")
