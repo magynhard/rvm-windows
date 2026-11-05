@@ -1,4 +1,4 @@
-# Unreleased
+# 1.1.3-develop.1 - 2026-11-05
 - Preserve Unicode paths when `rvm get` launches Windows PowerShell 5.1 and record the silent setup result in a log.
 
 # 1.1.2 - 2026-11-05
