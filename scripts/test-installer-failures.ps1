@@ -51,6 +51,21 @@ try {
             if ($mode -eq 'locked') { $lock = [IO.File]::Open($oldExe,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::Read) }
             $process = Start-Process -FilePath $setup -ArgumentList "/S /D=$target" -PassThru
             if (-not $process.WaitForExit(30000)) {
+                Write-Output "FIXTURE_TIMEOUT_PID=$($process.Id) MODE=$mode TARGET=$target"
+                $allProcesses = @(Get-CimInstance Win32_Process)
+                $parentIds = @($process.Id)
+                while ($parentIds.Count -gt 0) {
+                    $children = @($allProcesses | Where-Object { $_.ParentProcessId -in $parentIds })
+                    $children | Select-Object ProcessId,ParentProcessId,Name,CommandLine | Format-List | Out-String | Write-Output
+                    $parentIds = @($children | ForEach-Object { $_.ProcessId })
+                }
+                Get-ChildItem -LiteralPath $target -Recurse -Force -ErrorAction SilentlyContinue | Select-Object FullName,Length | Format-Table -AutoSize | Out-String | Write-Output
+                $marker = Join-Path $target '.rvm-package-transaction'
+                if (Test-Path -LiteralPath $marker -PathType Leaf) {
+                    $transactionBackup = [IO.File]::ReadAllText($marker,[Text.Encoding]::UTF8)
+                    Write-Output "FIXTURE_TRANSACTION_BACKUP=$transactionBackup"
+                    Get-ChildItem -LiteralPath $transactionBackup -Force -ErrorAction SilentlyContinue | Select-Object Name,Length | Format-Table -AutoSize | Out-String | Write-Output
+                }
                 $process.Kill()
                 $process.WaitForExit()
                 throw "Fixture installer hung during $mode."
