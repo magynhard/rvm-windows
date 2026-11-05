@@ -157,6 +157,45 @@ its own wrappers and package files, not installed Rubies or user configuration.
 
 Use a disposable Windows VM for installer, upgrade and uninstall acceptance tests.
 
+To run the isolated NSIS failure-path fixtures on Windows (they retain their
+temporary test directories and never run the production setup):
+
+```powershell
+./scripts/test-installer-failures.ps1 -Makensis 'C:\Program Files (x86)\NSIS\makensis.exe'
+```
+
+These fixtures test preflight, migration preparation, deployment failure, a
+locked executable, interrupted deployment recovery and changed-file conflict
+preservation. They do not replace real installer/update acceptance or prove that
+all system state rolls back after an interruption.
+
+The package transaction saves every existing file the new package will replace,
+plus a manifest of newly added files and directories. Rollback verifies SHA-256:
+it restores original package bytes, removes new files/directories only when they
+still match the package bytes, and refuses to overwrite a file changed since the
+snapshot. Tests cover interrupted-deployment recovery and conflict preservation.
+
+If setup terminates abruptly, `.rvm-package-transaction` remains in the
+installation root with the UTF-8 backup path. Rerunning setup automatically
+restores the package snapshot, rolls back saved wrappers, then starts a fresh
+installation. If recovery finds conflicts or fails, it preserves the marker and
+backup and aborts. Manual recovery uses the backup's
+`package_transaction.ps1 -Action rollback -Target <install-root>` followed by
+`recovery-rvm.exe --internal-migration rollback`, with `RVM_ROOT` set to the
+installation root. Do not remove the marker or backup until both steps succeed.
+
+Package files are deployed individually through a same-directory temporary file,
+SHA-256 verification and a file replacement. A killed setup therefore leaves
+each destination as either its old or new complete file, not a partial copy.
+Temporary deploy/restore files are tied to the transaction ID and recovery removes
+them. Directory removal is limited to newly-created, empty package directories.
+
+This package-file transaction is not a system-wide atomic transaction: registry,
+PATH, abrupt power loss, and concurrent edits between validation and replacement
+require separate acceptance. The tested interruption fixture simulates a completed
+partial deployment and retry; hard power-loss testing on physical hardware remains
+outstanding.
+
 ## Releases and self-update
 
 `rvm get` uses GitHub Releases in `magynhard/rvm-windows`: it fetches the

@@ -129,6 +129,16 @@ describe "npm installation bridge" do
         %w(cmd_rvm_prepend.bat ps_rvm_prepend.ps1).each do |helper|
           File.file?(File.join(package, "src/tools/current", helper)).should be_true
         end
+        # The old updater patches its absolute Unicode helper path after npm's
+        # postinstall. A fresh Windows CMD can still be using a non-UTF-8 page.
+        codepage_script = File.join(home, "legacy-codepage.cmd")
+        File.write(codepage_script, "@echo off\r\nchcp 437 > NUL\r\ncall \"%RVM_TEST_PREFIX%\\rvm.cmd\" --internal-version\r\nexit /b %ERRORLEVEL%\r\n")
+        output = IO::Memory.new
+        error = IO::Memory.new
+        status = Process.run("cmd.exe", ["/d", "/c", codepage_script],
+          env: {"RVM_TEST_PREFIX" => prefix, "RVM_SESSION" => nil}, output: output, error: error)
+        status.success?.should be_true, "#{output}\n#{error}"
+        error.to_s.should eq("")
         script = File.join(home, "session.cmd")
         File.write(script, "@echo off\r\nchcp 65001 > NUL\r\ncall \"#{prefix}\\rvm.cmd\" use 3.1.5\r\ncall \"#{prefix}\\rvm.cmd\" current\r\necho SESSION=%RVM_SESSION%\r\n")
         [%w(cmd.exe /d /c) + [script], ["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command",
@@ -197,6 +207,8 @@ describe "npm installation bridge" do
         status.success?.should be_false
         File.exists?(File.join(package, "install-root.txt")).should be_false
         RvmCliTools.capture("powershell.exe", args)
+        File.read(File.join(prefix, "rvm.cmd")).should contain(%q(call "%~dp0node_modules\rvm-windows\src\tools\current\cmd_rvm_prepend.bat"))
+        File.read(File.join(prefix, "rvm.ps1")).should contain(%q(& (Join-Path $PSScriptRoot 'node_modules\rvm-windows\src\tools\current\ps_rvm_prepend.ps1')))
         before = File.read(File.join(prefix, "rvm.ps1"))
         RvmCliTools.capture("powershell.exe", args)
         File.read(File.join(prefix, "rvm.ps1")).should eq(before)

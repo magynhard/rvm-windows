@@ -78,10 +78,9 @@ $utf8 = New-Object Text.UTF8Encoding($false)
 # npm's CMD shim uses SETLOCAL. Establish the session before that scope begins;
 # PowerShell must likewise set the parent process environment before calling CMD.
 # Modify only shims that demonstrably target this package's own bridge.
-$helpers = Join-Path $PSScriptRoot 'src/tools/current'
 $lines = @{
-    '.cmd' = 'call "' + (Join-Path $helpers 'cmd_rvm_prepend.bat') + '"'
-    '.ps1' = "& '" + (Join-Path $helpers 'ps_rvm_prepend.ps1').Replace("'", "''") + "'"
+    '.cmd' = 'call "%~dp0node_modules\rvm-windows\src\tools\current\cmd_rvm_prepend.bat"'
+    '.ps1' = '& (Join-Path $PSScriptRoot ''node_modules\rvm-windows\src\tools\current\ps_rvm_prepend.ps1'')'
 }
 foreach ($extension in @('.cmd', '.ps1')) {
     $shim = Join-Path $prefix ('rvm' + $extension)
@@ -90,9 +89,25 @@ foreach ($extension in @('.cmd', '.ps1')) {
     if ($text -notmatch 'node_modules[\\/]rvm-windows[\\/]rvm\.cmd') { throw "Refusing to modify an unrelated launcher: $shim" }
     $line = $lines[$extension]
     $parts = @($text -split '\r?\n')
+    $changed = $false
+    if ($extension -eq '.cmd') {
+        # The legacy JavaScript updater inserts its own absolute helper call on
+        # line two after npm exits. Set UTF-8 on line one so that call is decoded
+        # correctly even when the global npm prefix contains non-ASCII letters.
+        if ($parts[0] -notmatch '^@echo off(?:\s*&\s*chcp 65001 > NUL)?\s*$') { throw "Unexpected CMD launcher header: $shim" }
+        if ($parts[0] -ine '@echo off & chcp 65001 > NUL') {
+            $parts[0] = '@echo off & chcp 65001 > NUL'
+            $changed = $true
+        }
+    }
     if ($parts -notcontains $line) {
-        $text = (@($parts[0], $line) + @($parts | Select-Object -Skip 1)) -join "`r`n"
-        # PS 5.1 requires a BOM for non-ASCII helper paths; CMD must not have one.
+        $parts = @($parts[0], $line) + @($parts | Select-Object -Skip 1)
+        $changed = $true
+    }
+    if ($changed) {
+        $text = $parts -join "`r`n"
+        # Keep PS 5.1's UTF-8 BOM; CMD must not have one. The helper paths are
+        # relative and ASCII, so CMD need not decode a Unicode absolute prefix.
         $encoding = New-Object Text.UTF8Encoding($extension -eq '.ps1')
         [IO.File]::WriteAllText($shim, $text, $encoding)
     }

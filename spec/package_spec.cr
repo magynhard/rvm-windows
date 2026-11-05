@@ -7,6 +7,23 @@ describe "Windows installer branding" do
     installer.should contain(%q("DisplayName" "rvm-windows (Ruby Version Manager 4 Windows)"))
     installer.should_not contain(%q("DisplayName" "rvm-windows (Crystal)"))
   end
+
+  it "checks and prepares the staged executable before deploying package files" do
+    installer = File.read(File.expand_path("../installer/rvm-windows.nsi", __DIR__))
+    version_check = installer.index(%q(--internal-version)).not_nil!
+    migration_prepare = installer.index(%q(--internal-migration prepare)).not_nil!
+    snapshot = installer.index(%q(-Action snapshot)).not_nil!
+    deployment = installer.index("  deploy:").not_nil!
+    version_check.should be < migration_prepare
+    migration_prepare.should be < deployment
+    snapshot.should be < deployment
+    installer.should contain(%q(CopyFiles /SILENT "$INSTDIR\bin\rvm.exe" "$3"))
+    installer.should contain(%q(CopyFiles /SILENT "$3" "$INSTDIR\bin\rvm.exe"))
+    installer.should contain("The backup remains at $3")
+    installer.should contain(%q(IfFileExists "$INSTDIR\.rvm-package-transaction" recover_package_transaction))
+    installer.should contain(%q(recovery-rvm.exe" --internal-migration rollback))
+    installer.should contain(%q(Delete "$INSTDIR\.rvm-package-transaction"))
+  end
 end
 
 if package_root = ENV["RVM_PACKAGE_ROOT"]?
