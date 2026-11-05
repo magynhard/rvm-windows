@@ -1,4 +1,4 @@
-# Unreleased
+# 1.1.2 - 2026-11-05
 - Preflight the staged executable and migration before replacing installed package files.
 - Deploy package files with per-file staging, SHA-256 verification and atomic replacement; restore backups on failure and recover interrupted deployments on setup retry.
 - Preserve concurrent user file changes by refusing conflicting rollback overwrites; retain a recovery marker and backup for manual inspection.
