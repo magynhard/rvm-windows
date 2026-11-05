@@ -1,4 +1,4 @@
-# Unreleased
+# 1.1.4 - 2026-11-05
 - Wait synchronously in CMD, PowerShell and npm launchers for the silent `rvm get` setup to complete; report setup success or failure before returning to the prompt.
 
 # 1.1.3 - 2026-11-05
