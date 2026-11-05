@@ -1,6 +1,6 @@
 {
   "name": "rvm-windows",
-  "version": "1.1.1",
+  "version": "1.1.2-develop.1",
   "description": "Ruby Version Manager for Windows — native installer bridge",
   "author": "Matthäus J. N. Beyrle",
   "license": "MIT",
