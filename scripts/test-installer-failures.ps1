@@ -23,7 +23,12 @@ try {
     $originalKind = $key.GetValueKind('Path')
 } finally { $key.Close() }
 $registryKeys=@('HKCU\Software\rvm-windows.cr','HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr')
-for($i=0;$i -lt $registryKeys.Count;$i++){ & reg.exe export $registryKeys[$i] (Join-Path $testRoot "$i.reg") /y | Out-Null; if($LASTEXITCODE -ne 0){ throw 'Host registry backup failed.' } }
+$registryPsPaths=@('HKCU:\Software\rvm-windows.cr','HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\rvm-windows.cr')
+$registryExisted=@()
+for($i=0;$i -lt $registryKeys.Count;$i++){
+    $registryExisted+=Test-Path -LiteralPath $registryPsPaths[$i]
+    if($registryExisted[$i]){ & reg.exe export $registryKeys[$i] (Join-Path $testRoot "$i.reg") /y | Out-Null; if($LASTEXITCODE -ne 0){ throw 'Host registry backup failed.' } }
+}
 $env:RVM_HOME = $profileHome
 try {
     foreach ($mode in @('preflight','prepare','deployment','locked','interrupted','interrupted-retry')) {
@@ -84,6 +89,13 @@ try {
         try { $key.SetValue('Path',$originalPath,$originalKind) } finally { $key.Close() }
     }
     if ($configHash -and (Get-FileHash -Algorithm SHA256 $config).Hash -ne $configHash) { throw 'Host RVM config unexpectedly changed.' }
-    for($i=0;$i -lt $registryKeys.Count;$i++){ & reg.exe import (Join-Path $testRoot "$i.reg") | Out-Null; if($LASTEXITCODE -ne 0){throw 'Host registry restoration failed.'} }
+    for($i=0;$i -lt $registryKeys.Count;$i++){
+        if($registryExisted[$i]){
+            & reg.exe import (Join-Path $testRoot "$i.reg") | Out-Null
+            if($LASTEXITCODE -ne 0){throw 'Host registry restoration failed.'}
+        } elseif(Test-Path -LiteralPath $registryPsPaths[$i]) {
+            Remove-Item -LiteralPath $registryPsPaths[$i] -Recurse -Force
+        }
+    }
     Write-Output "TEST_DATA_RETAINED=$testRoot"
 }
