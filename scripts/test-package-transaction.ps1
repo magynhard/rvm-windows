@@ -15,7 +15,9 @@ foreach ($mode in @('recovery','conflict')) {
     [IO.File]::WriteAllText((Join-Path $target 'unrelated.txt'),'unrelated')
     & $helper -Action snapshot -Stage $stage -Target $target -Backup $backup
     $marker = Join-Path $target '.rvm-package-transaction'
-    if ([IO.File]::ReadAllText($marker,[Text.Encoding]::UTF8) -cne $backup) { throw 'Recovery marker missing or incorrect.' }
+    $markerBackup = [IO.File]::ReadAllText($marker,[Text.Encoding]::UTF8)
+    $expectedBackup = [IO.Path]::GetFullPath($backup).TrimEnd('\')
+    if ($markerBackup -cne $expectedBackup) { throw "Recovery marker incorrect. Expected: '$expectedBackup'; actual: '$markerBackup'." }
     & $helper -Action deploy -Stage $stage -Target $target -Backup $backup
     if ($mode -eq 'recovery') {
         $manifest = Get-Content -Raw (Join-Path $backup 'manifest.json') | ConvertFrom-Json
