@@ -37,6 +37,8 @@ launchers in the project root. Keep `src/templates` and `src/tools` alongside
 it. End users need neither a compiler nor separate runtime DLLs.
 
 `shards build` produces a faster, dynamically linked developer build instead.
+Packaging the npm bridge and running its optional integration checks also require
+Node.js and npm.
 
 ### Installer artwork
 
@@ -200,7 +202,9 @@ outstanding.
 
 `rvm get` uses GitHub Releases in `magynhard/rvm-windows`: it fetches the
 latest published `*-setup.exe` and schedules silent installation after the
-current process exits. This requires published setup assets.
+current process exits. The CMD and PowerShell launchers wait for the result;
+direct executable invocation is asynchronous. This requires published stable
+setup assets; GitHub prereleases are not selected.
 Validate the full wait/download/replace/reinitialize flow on a disposable machine.
 
 Add and commit a dated changelog entry, then run:
@@ -211,8 +215,9 @@ crystal run scripts/release.cr -- 1.1.1-develop.2
 
 This tests, bumps the manifest, commits and tags **locally only**. After review,
 push explicitly. The [Windows workflow](.github/workflows/windows.yml) builds
-ZIP/setup assets and creates a **draft** GitHub Release for version tags.
-Publication remains a maintainer action.
+ZIP, setup and npm tarball artifacts and creates a **draft** GitHub Release for
+version tags containing only ZIP and setup. The `.tgz` remains a CI artifact,
+not a GitHub Release asset. Publication remains a maintainer action.
 
 ### npm distribution and legacy migration
 
@@ -250,16 +255,33 @@ If setup was interrupted before commit, run the installed `bin/rvm.exe
 --internal-migration rollback` with `RVM_ROOT` set to that installation before
 retrying setup. This restores owned wrappers, not arbitrary configuration edits.
 
-For an npm release, review the `.tgz` and test with a temporary prefix first.
-Publish explicitly using `npm publish ./dist/rvm-windows-1.1.1-develop.1.tgz --access public --tag develop`
-with an authorised npm account. Neither packaging nor tag CI publishes to npm.
-Do not replace existing tags or published package versions; publish a new version.
+For each npm release:
 
-Develop packages use prerelease versions and `publishConfig.tag` is `develop` as
-a safeguard. Verify npm's `latest` tag before and after publishing: it must remain
-unchanged. Testers explicitly install `rvm-windows@develop`. GitHub test releases
-must be marked as prereleases; do not promote either channel to stable yet.
-Code signing is a follow-up after manual installer and npm acceptance.
+1. Build the version-matched package with NSIS and npm available, or download the
+   `windows-x64` artifact from the successful tagged CI run. The `.tgz` includes
+   that build's setup; it is not necessary to attach it to the GitHub Release.
+   CI artifacts have limited retention, so retain the tested tarball as needed.
+2. Review its manifest and bundled setup, verify the versions and hashes, and test
+   installation with a temporary prefix and real setup acceptance separately.
+   Check Defender results for the exact binaries; a verdict on a different build
+   does not establish the verdict for this one.
+3. With an authorised npm account, publish the **same tested tarball** explicitly:
+
+   ```powershell
+   npm publish ./dist/rvm-windows-1.1.1-develop.1.tgz --access public --tag develop
+   ```
+
+4. Verify the registry version, integrity and dist-tags, then test installation
+   from the public registry. Neither packaging nor tag CI publishes to npm.
+
+Currently npm publication is restricted to `develop`: use a new prerelease version
+for every publication, and verify that `latest` remains on JavaScript 1.0.8 before
+and after publishing. `publishConfig.tag` is `develop` as a safeguard. GitHub
+prereleases must be marked as such; stable GitHub releases are published separately.
+Existing published npm versions cannot be overwritten. Any future move of npm
+`latest` to native RVM requires a separate maintainer decision and release plan.
+Code signing remains a follow-up; a signature does not guarantee Defender or
+SmartScreen acceptance.
 
 ### Windows publisher identity and signing
 

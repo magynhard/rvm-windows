@@ -32,6 +32,7 @@ describe "HTTP transport" do
       NetworkFixtures.serve do |url|
         output = IO::Memory.new
         RvmCliGet.run_get(output, "#{url}/missing")
+        output.to_s.should start_with("Current version is #{RvmCliVersion.get_version}.\nChecking for updates...\n")
         output.to_s.should contain("No stable GitHub release was found")
         output.to_s.should contain("rvm-windows@develop")
         File.exists?(File.join(RvmCliTools.get_rvm_data_dir, "downloads")).should be_false

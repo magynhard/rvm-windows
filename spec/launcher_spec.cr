@@ -19,7 +19,6 @@ describe "session launchers" do
       error = IO::Memory.new
       status = Process.run("cmd.exe", ["/d", "/c", script], env: {"RVM_SESSION" => nil}, output: output, error: error)
       status.exit_code.should eq(0), "#{output}\n#{error}"
-      output.to_s.should contain("Waiting for the silent RVM setup to finish")
       output.to_s.should contain("RVM update completed successfully")
       output.to_s.index("RVM update completed successfully").not_nil!.should be < output.to_s.index("CMD_RETURNED").not_nil!
 
@@ -30,7 +29,6 @@ describe "session launchers" do
       status = Process.run("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", command],
         env: {"RVM_SESSION" => nil}, output: output, error: error)
       status.exit_code.should eq(0), "#{output}\n#{error}"
-      output.to_s.should contain("Waiting for the silent RVM setup to finish")
       output.to_s.index("RVM update completed successfully").not_nil!.should be < output.to_s.index("PS_RETURNED").not_nil!
       error.to_s.should eq("")
 
@@ -40,6 +38,7 @@ describe "session launchers" do
         env: {"RVM_SESSION" => nil, "RVM_TEST_UPDATE_RESULT" => "1"}, output: output, error: error)
       status.exit_code.should eq(1), "#{output}\n#{error}"
       error.to_s.should contain("RVM setup failed")
+      error.to_s.should contain("update-*.ps1.log")
       Dir.glob(File.join(root, ".rvm-update-*.status")).should be_empty
     end
   end

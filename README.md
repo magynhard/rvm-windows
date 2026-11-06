@@ -22,8 +22,9 @@ It automatically detects `.ruby-version` files or Ruby version definitions in Ge
 RVM is a native Windows application written in Crystal. **No compiler or separate runtime installation is required to use it.** Existing Ruby environments, configuration and sessions are retained.
 
 > [!IMPORTANT]
-> The native application is available from GitHub Releases. The npm native bridge
-> is an opt-in develop prerelease; npm `latest` remains on the JavaScript version.
+> The native application is available from GitHub Releases and, as an official
+> alternative, through the npm bridge. The native npm package is currently an
+> opt-in develop prerelease; npm `latest` remains on JavaScript 1.0.8.
 > The previous implementation is preserved on [legacy-js](https://github.com/magynhard/rvm-windows/tree/legacy-js)
 > and in the existing 1.0.x tags; this repository keeps its original history and issues.
 
@@ -235,21 +236,27 @@ rvm use --default 3.2
 
 All published versions are available on the [Releases page](https://github.com/magynhard/rvm-windows/releases).
 
-### npm alternative
+### Install with npm
 
-The native npm bridge is currently available only as an opt-in develop prerelease:
+As an official alternative to setup, install the native npm bridge with Node.js
+and npm. The native package is currently available only as an opt-in develop
+prerelease:
 
 ```powershell
 npm install -g rvm-windows@develop
 ```
 
-The npm `latest` tag remains on the existing stable release. To update the test
-channel, repeat the explicit `@develop` installation or use a newer test setup.
-`rvm get` checks stable GitHub releases, not develop prereleases.
-Open a new terminal after installation. npm is required only for this
-distribution route, not for running the native application. The small npm bridge
-remains installed so npm can deliver future updates; it does not contain a second
-RVM implementation. A newer native installation is not downgraded by an older bridge.
+The npm `latest` tag currently points to the legacy JavaScript version 1.0.8,
+so an installation without `@develop` does **not** install the native version.
+The bridge runs its bundled native setup; it is not a second RVM implementation.
+Open a new CMD or PowerShell terminal and run `rvm version` after installation.
+Node.js and npm are needed for this installation and future npm bridge updates,
+but not to run the native application through its own launchers. A newer native
+installation is not downgraded by an older bridge.
+
+To update the npm develop channel, repeat the explicit `@develop` installation.
+Alternatively, `rvm get` updates the native application to the latest stable
+GitHub release; it does not update the npm package or install develop prereleases.
 
 Installation scripts must be permitted for this package. If your npm version
 requires explicit approval, add `--allow-scripts=rvm-windows`. If scripts were
@@ -267,7 +274,10 @@ You can also use:
 rvm get
 ```
 
-This downloads the latest published release setup and starts the update after the command exits. Restart your terminal after upgrading.
+This downloads the latest stable GitHub release setup. The CMD and PowerShell
+launchers wait for setup to finish and report success or failure before returning.
+Direct calls to `bin/rvm.exe get` instead start the update asynchronously. Restart
+your terminal after upgrading.
 
 If no stable GitHub release exists yet, `rvm get` explains that the stable channel
 is empty and does not download anything. Develop updates remain explicitly opt-in.

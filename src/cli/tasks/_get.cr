@@ -38,19 +38,19 @@ class RvmCliGet
   end
 
   def self.print_update_instructions(io : IO, version : String, log : String, launcher_waits : Bool)
-    io.puts "Silent setup for #{RvmCliColor.primary(version, io)} will start after the RVM executable exits."
     if launcher_waits
-      io.puts "The rvm command launcher will wait for setup to finish before returning to the prompt."
+      io.puts "Updating rvm-windows to #{RvmCliColor.primary(version, io)}..."
     else
+      io.puts "Updating rvm-windows to #{RvmCliColor.primary(version, io)} in the background."
       io.puts "Direct executable invocation does not wait; use rvm.cmd or rvm.ps1 to wait for setup completion."
+      io.puts "Result log: #{log}"
     end
-    io.puts "Result log: #{log}"
   end
 
   def self.run_get(io : IO = STDOUT, latest_url : String = "https://api.github.com/repos/#{REPOSITORY}/releases/latest")
     old_version = RvmCliVersion.get_version
-    io.puts "Current version of rvm-windows is #{RvmCliColor.primary(RvmCliVersion.get_full_version, io)}."
-    io.puts "Checking for the latest stable release ..."
+    io.puts "Current version is #{RvmCliColor.primary(old_version, io)}."
+    io.puts "Checking for updates..."
     release = begin
       JSON.parse(RvmCliTools.fetch_text(latest_url))
     rescue ex : RvmCliTools::HttpError

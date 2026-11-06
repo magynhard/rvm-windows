@@ -10,16 +10,15 @@ if ($updateStatus) { $env:RVM_UPDATE_LAUNCHER = '1' }
 $exitCode = $LASTEXITCODE
 if ($updateStatus) { $env:RVM_UPDATE_LAUNCHER = $oldUpdateLauncher }
 if ($updateStatus -and (Test-Path -LiteralPath $updateStatus)) {
-    Write-Output 'Waiting for the silent RVM setup to finish. Press Ctrl+C to stop waiting; setup will continue.'
     do {
         Start-Sleep -Seconds 1
         $result = if (Test-Path -LiteralPath $updateStatus) { [IO.File]::ReadAllText($updateStatus).Trim() } else { '' }
     } while ($result -notin @('0','1'))
     Remove-Item -LiteralPath $updateStatus -Force -ErrorAction SilentlyContinue
     if ($result -eq '0') {
-        Write-Output 'RVM update completed successfully. Run rvm version to verify.'
+        Write-Output 'RVM update completed successfully.'
     } else {
-        [Console]::Error.WriteLine('RVM setup failed. Check the result log printed above.')
+        [Console]::Error.WriteLine('RVM setup failed. Check update-*.ps1.log in your RVM data downloads directory.')
         $exitCode = 1
     }
 }

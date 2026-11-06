@@ -166,12 +166,12 @@ describe RvmCliGet do
     output = IO::Memory.new
     RvmCliGet.print_update_instructions(output, "1.2.3", "C:/rvm/update.ps1.log", true)
     text = output.to_s
-    text.should contain("will start after the RVM executable exits")
-    text.should contain("launcher will wait for setup to finish")
-    text.should contain("C:/rvm/update.ps1.log")
+    text.should contain("Updating rvm-windows to 1.2.3...")
+    text.should_not contain("C:/rvm/update.ps1.log")
     output.clear
     RvmCliGet.print_update_instructions(output, "1.2.3", "C:/rvm/update.ps1.log", false)
     output.to_s.should contain("Direct executable invocation does not wait")
+    output.to_s.should contain("C:/rvm/update.ps1.log")
   end
 
   it "preserves Unicode paths in the Windows PowerShell updater script" do

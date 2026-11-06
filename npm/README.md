@@ -1,16 +1,19 @@
 # rvm-windows
 
-Ruby Version Manager for Windows, implemented in Crystal. This package installs
-the native per-user Windows application; it is not a second CLI implementation.
+Ruby Version Manager for Windows, implemented in Crystal. This official npm
+alternative installs the native per-user Windows application; it is not a second
+CLI implementation.
 
 ```powershell
 npm install -g rvm-windows@develop
 ```
 
-This is an opt-in develop prerelease. The npm `latest` tag is not changed.
+The native package is an opt-in develop prerelease. The npm `latest` tag currently
+points to the legacy JavaScript version 1.0.8, not the native application.
 Open a new CMD or PowerShell terminal, then run `rvm version`. To update within
 the test channel, repeat `npm install -g rvm-windows@develop` or use a newer test
-setup. `rvm get` checks stable GitHub releases, not the develop channel.
+setup. `rvm get` updates the native application from stable GitHub releases; it
+does not update this npm package or check the develop channel.
 
 The native setup is bundled, so installation does not download an executable
 from a separate server. Existing `.rvm.json`, sessions and Ruby installations
