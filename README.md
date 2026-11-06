@@ -22,11 +22,22 @@ It automatically detects `.ruby-version` files or Ruby version definitions in Ge
 RVM is a native Windows application written in Crystal. **No compiler or separate runtime installation is required to use it.** Existing Ruby environments, configuration and sessions are retained.
 
 > [!IMPORTANT]
-> The native application is available from GitHub Releases and, as an official
-> alternative, through the npm bridge. The native npm package is currently an
-> opt-in develop prerelease; npm `latest` remains on JavaScript 1.0.8.
-> The previous implementation is preserved on [legacy-js](https://github.com/magynhard/rvm-windows/tree/legacy-js)
-> and in the existing 1.0.x tags; this repository keeps its original history and issues.
+> **Migration to native Windows**
+>
+> rvm-windows is transitioning from its original JavaScript implementation to a
+> native Crystal implementation. The native application is available as a Windows
+> setup and ZIP from [GitHub Releases](https://github.com/magynhard/rvm-windows/releases)
+> and can already be used.
+>
+> The native npm bridge is currently available as an opt-in prerelease via
+> `npm install -g rvm-windows@develop`. The npm `latest` tag still points to the
+> legacy JavaScript version 1.0.8.
+>
+> The migration and release process are still being refined. Existing Ruby
+> installations, configuration and sessions are intended to remain compatible.
+> The JavaScript implementation remains available on the
+> [legacy-js](https://github.com/magynhard/rvm-windows/tree/legacy-js) branch and
+> in the existing 1.0.x tags; this repository keeps its original history and issues.
 
 Configuration is managed per user in `%USERPROFILE%\.rvm.json`, with terminal sessions in `%USERPROFILE%\.rvm\sessions`. Ruby environments are stored in `C:\ProgramData\rvm` by default.
 
